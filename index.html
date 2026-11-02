@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>ਖਾਤਾ ਬੁੱਕ ਅਤੇ ਫੈਕਟਰੀ ਸਟੋਕ ਮੈਨੇਜਰ</title>
+  <title>ਖਾਤਾ ਬੁੱਕ, ਫੈਕਟਰੀ ਸਟੋਕ & ਲੇਬਰ ਮੈਨੇਜਰ</title>
   <link href="https://fonts.googleapis.com/css2?family=Mukta+Mahee:wght@400;600;700;800&display=swap" rel="stylesheet">
   
   <!-- Firebase Scripts -->
@@ -69,6 +69,32 @@
       background: #4ade80;
       border-radius: 50%;
       display: inline-block;
+    }
+
+    /* Pending Delivery Banner */
+    #deliveryReminderBanner {
+      display: none;
+      background: #fffbeb;
+      border-left: 5px solid var(--warning);
+      padding: 12px 16px;
+      margin: 12px auto;
+      max-width: 960px;
+      border-radius: 8px;
+      box-shadow: var(--shadow);
+    }
+    #deliveryReminderBanner h4 {
+      color: #b45309;
+      font-size: 0.95rem;
+      font-weight: 800;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    #deliveryReminderBanner ul {
+      margin-top: 6px;
+      padding-left: 20px;
+      font-size: 0.85rem;
+      color: #92400e;
     }
 
     .nav-tabs {
@@ -163,6 +189,21 @@
     .form-group input:focus, .form-group select:focus { border-color: var(--primary-light); }
     .form-group input[readonly] { background: #f8fafc; font-weight: bold; color: var(--primary); }
 
+    .checkbox-row {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      margin-top: 6px;
+    }
+    .checkbox-label {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 0.85rem;
+      cursor: pointer;
+      user-select: none;
+    }
+
     .btn {
       display: inline-flex;
       align-items: center;
@@ -181,10 +222,11 @@
     .btn-success { background: var(--success); color: white; }
     .btn-danger { background: var(--danger); color: white; }
     .btn-purple { background: var(--purple); color: white; }
+    .btn-warning { background: var(--warning); color: white; }
     .btn-edit { background: #0284c7; color: white; }
     .btn-outline { background: transparent; border: 1.5px solid var(--border); color: var(--text); }
     .btn-whatsapp { background: #25d366; color: white; }
-    .btn-sm { padding: 5px 9px; font-size: 0.8rem; border-radius: 6px; }
+    .btn-sm { padding: 5px 8px; font-size: 0.78rem; border-radius: 6px; }
 
     .table-responsive { overflow-x: auto; margin-top: 12px; }
     table { width: 100%; border-collapse: collapse; font-size: 0.88rem; text-align: left; }
@@ -201,6 +243,7 @@
     .badge-pending { background: #fee2e2; color: var(--danger); }
     .badge-cleared { background: #dcfce7; color: var(--success); }
     .badge-stock { background: #e0e7ff; color: #3730a3; font-size: 0.85rem; }
+    .badge-partial { background: #fef3c7; color: #b45309; }
 
     .stats-grid {
       display: grid;
@@ -219,10 +262,10 @@
     .stat-card.credit { border-left-color: var(--success); }
     .stat-card.debit { border-left-color: var(--danger); }
     .stat-card.pending { border-left-color: var(--warning); }
-    .stat-card.purple { border-left-color: var(--purple); }
     .stat-title { font-size: 0.8rem; color: var(--text-muted); font-weight: 600; }
     .stat-val { font-size: 1.3rem; font-weight: 800; margin-top: 4px; }
 
+    /* Modals */
     .modal {
       display: none;
       position: fixed;
@@ -237,7 +280,7 @@
     .modal-box {
       background: white;
       border-radius: var(--radius);
-      max-width: 420px;
+      max-width: 440px;
       width: 100%;
       padding: 20px;
       box-shadow: var(--shadow);
@@ -266,7 +309,13 @@
     </div>
   </header>
 
-  <!-- 6 MAIN BLOCKS NAVIGATION -->
+  <!-- PENDING DELIVERY REMINDER BANNER -->
+  <div id="deliveryReminderBanner">
+    <h4>⚠️ ਡਿਲਿਵਰੀ ਬਕਾਇਆ ਚੇਤਾਵਨੀ (Pending Dispatches):</h4>
+    <ul id="reminderList"></ul>
+  </div>
+
+  <!-- NAVIGATION TABS -->
   <nav class="nav-tabs">
     <button class="tab-btn active" onclick="switchTab('sale')">
       <span>📦</span>
@@ -290,7 +339,7 @@
     </button>
     <button class="tab-btn" onclick="switchTab('labour')">
       <span>👷</span>
-      <span>6. ਲੇਬਰ ਪੇ-ਰੇਟ</span>
+      <span>6. ਲੇਬਰ & ਸੀਮੈਂਟ</span>
     </button>
   </nav>
 
@@ -300,7 +349,7 @@
     <section id="tab-sale" class="tab-content active">
       <div class="card">
         <div class="card-title">
-          <span id="saleFormTitle">ਨਵੀਂ ਸੇਲ ਐਂਟਰੀ (ਸਟੋਕ ਵਿੱਚੋਂ ਆਟੋ-ਮਾਈਨਸ ਹੋਵੇਗੀ)</span>
+          <span id="saleFormTitle">ਨਵੀਂ ਸੇਲ ਆਰਡਰ ਐਂਟਰੀ</span>
           <button type="button" id="cancelSaleEditBtn" class="btn btn-outline btn-sm" style="display:none;" onclick="cancelSaleEdit()">ਰੱਦ ਕਰੋ ✖</button>
         </div>
         <form id="saleForm" onsubmit="saveSale(event)">
@@ -315,12 +364,12 @@
               <input type="tel" id="salePhone" placeholder="10 ਅੰਕਾਂ ਦਾ ਨੰਬਰ" pattern="[0-9]{10}">
             </div>
             <div class="form-group">
-              <label>ਸੇਲ ਆਈਟਮ (17 ਸਟੈਂਡਰਡ ਆਈਟਮਾਂ ਵਿੱਚੋਂ)</label>
+              <label>ਸੇਲ ਆਈਟਮ (ਸਟੈਂਡਰਡ ਆਈਟਮਾਂ ਵਿੱਚੋਂ)</label>
               <input type="text" id="saleItem" list="standardItemList" placeholder="ਚੁਣੋ ਜਾਂ ਟਾਈਪ ਕਰੋ" required>
             </div>
             <div class="form-group">
-              <label>ਕੁੱਲ ਨਗ / ਕੁਆਂਟਿਟੀ (Qty)</label>
-              <input type="number" id="saleQty" min="1" placeholder="ਮਾਤਰਾ" oninput="calcSaleTotal()" required>
+              <label>ਕੁੱਲ ਬੁੱਕ ਕੀਤੇ ਨਗ (Total Qty)</label>
+              <input type="number" id="saleQty" min="1" placeholder="ਜਿਵੇਂ 3000 ਜਾਂ 10000" oninput="calcSaleTotal()" required>
             </div>
             <div class="form-group">
               <label>ਪ੍ਰਤੀ ਨਗ ਰੇਟ (₹)</label>
@@ -339,10 +388,11 @@
               <input type="number" id="saleBalance" readonly>
             </div>
             <div class="form-group">
-              <label>ਤਾਰੀਖ</label>
+              <label>ਆਰਡਰ ਤਾਰੀਖ</label>
               <input type="date" id="saleDate" required>
             </div>
           </div>
+
           <div style="margin-top: 14px; display: flex; gap: 10px;">
             <button type="submit" id="saleSubmitBtn" class="btn btn-primary">➕ ਸੇਲ ਸੇਵ ਕਰੋ</button>
             <button type="button" class="btn btn-outline" onclick="exportToCSV('sales')">📥 Excel Export</button>
@@ -351,7 +401,7 @@
       </div>
 
       <div class="card">
-        <div class="card-title"><span>ਸੇਲਜ਼ ਹਿਸਾਬ ਸੂਚੀ</span></div>
+        <div class="card-title"><span>ਸੇਲਜ਼ ਆਰਡਰ ਅਤੇ ਡਿਲਿਵਰੀ ਸੂਚੀ</span></div>
         <div class="table-responsive">
           <table id="salesTable">
             <thead>
@@ -359,12 +409,11 @@
                 <th>ਤਾਰੀਖ</th>
                 <th>ਕਲਾਇੰਟ</th>
                 <th>ਆਈਟਮ</th>
-                <th>ਨਗ</th>
-                <th>ਰੇਟ</th>
-                <th>ਕੁੱਲ</th>
-                <th>ਮਿਲੇ</th>
-                <th>ਬਕਾਇਆ</th>
-                <th>ਐਕਸ਼ਨ</th>
+                <th>ਕੁੱਲ ਆਰਡਰ</th>
+                <th>ਭੇਜਿਆ ਮਾਲ (Dispatched)</th>
+                <th>ਬਾਕੀ ਭੇਜਣ ਵਾਲਾ</th>
+                <th>ਪੇਮੈਂਟ ਬਕਾਇਆ</th>
+                <th>ਐਕਸ਼ਨ & ਡਿਲਿਵਰੀ</th>
               </tr>
             </thead>
             <tbody></tbody>
@@ -377,7 +426,7 @@
     <section id="tab-purchase" class="tab-content">
       <div class="card">
         <div class="card-title">
-          <span id="purFormTitle">ਨਵੀਂ ਖਰੀਦ ਐਂਟਰੀ</span>
+          <span id="purFormTitle">ਨਵੀਂ ਖਰੀਦ ਐਂਟਰੀ (ਕੱਚਾ ਮਾਲ / ਸੀਮਿੰਟ)</span>
           <button type="button" id="cancelPurEditBtn" class="btn btn-outline btn-sm" style="display:none;" onclick="cancelPurEdit()">ਰੱਦ ਕਰੋ ✖</button>
         </div>
         <form id="purchaseForm" onsubmit="savePurchase(event)">
@@ -393,10 +442,10 @@
             </div>
             <div class="form-group">
               <label>ਸਮਾਨ ਦਾ ਨਾਮ</label>
-              <input type="text" id="purItem" list="rawMaterialList" placeholder="ਸੀਮਿੰਟ, ਡਸਟ, ਫਲਾਈ ਐਸ਼..." required>
+              <input type="text" id="purItem" list="rawMaterialList" placeholder="ਜਿਵੇਂ Cement Bags, ਡਸਟ..." required>
             </div>
             <div class="form-group">
-              <label>ਕੁਆਂਟਿਟੀ / ਮਾਤਰਾ</label>
+              <label>ਕੁਆਂਟਿਟੀ / ਮਾਤਰਾ (ਬੋਰੀਆਂ/ਟਨ)</label>
               <input type="number" id="purQty" min="1" placeholder="ਮਾਤਰਾ" oninput="calcPurTotal()" required>
             </div>
             <div class="form-group">
@@ -555,25 +604,25 @@
       </div>
     </section>
 
-    <!-- BLOCK 5: FACTORY STOCK (17 ITEMS AUTO-CALCULATED) -->
+    <!-- BLOCK 5: FACTORY STOCK (18 ITEMS LIVE CALCULATION) -->
     <section id="tab-stock" class="tab-content">
       <div class="card">
         <div class="card-title">
-          <span>ਫੈਕਟਰੀ ਸਟੋਕ ਰਜਿਸਟਰ (17 ਆਈਟਮਾਂ ਦਾ ਲਾਈਵ ਸਟੋਕ)</span>
+          <span>ਫੈਕਟਰੀ ਸਟੋਕ ਰਜਿਸਟਰ (18 ਆਈਟਮਾਂ ਸਮੇਤ ਸੀਮੈਂਟ ਬੋਰੀਆਂ)</span>
           <button class="btn btn-outline btn-sm" onclick="exportToCSV('stock')">📥 Stock Export</button>
         </div>
         <p style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 12px;">
-          ℹ️ ਲੇਬਰ ਬਲੌਕ ਵਿੱਚ ਬਣਿਆ ਮਾਲ ਇੱਥੇ ਜੁੜਦਾ ਹੈ (+) ਅਤੇ ਸੇਲ ਵਿੱਚ ਵੇਚਿਆ ਮਾਲ ਆਟੋਮੈਟਿਕ ਮਾਈਨਸ (-) ਹੁੰਦਾ ਹੈ।
+          ℹ️ ਲੇਬਰ ਬਲੌਕ ਵਿੱਚ ਬਣਿਆ ਮਾਲ ਜੁੜਦਾ ਹੈ (+), ਸੇਲ ਵਿੱਚ ਡਿਸਪੈਚ ਕੀਤਾ ਮਾਲ ਘਟਦਾ ਹੈ (-), ਅਤੇ ਸੀਮੈਂਟ ਖਰੀਦ/ਵਰਤੋਂ ਆਟੋਮੈਟਿਕ 18ਵੇਂ ਨੰਬਰ 'ਤੇ ਅੱਪਡੇਟ ਹੁੰਦੀ ਹੈ।
         </p>
         <div class="table-responsive">
           <table id="stockTable">
             <thead>
               <tr>
-                <th>ਸੀਰੀਅਲ ਨੰ.</th>
+                <th>ਲੜੀ ਨੰ.</th>
                 <th>ਆਈਟਮ ਦਾ ਨਾਮ</th>
-                <th>ਕੁੱਲ ਬਣਿਆ ਮਾਲ (Made +)</th>
-                <th>ਕੁੱਲ ਵੇਚਿਆ ਮਾਲ (Sold -)</th>
-                <th>ਮੌਜੂਦਾ ਸਟੋਕ (Available Balance)</th>
+                <th>ਕੁੱਲ ਆਇਆ / ਬਣਿਆ ਮਾਲ (+)</th>
+                <th>ਕੁੱਲ ਵੇਚਿਆ / ਵਰਤਿਆ ਮਾਲ (-)</th>
+                <th>ਮੌਜੂਦਾ ਬਾਕੀ ਸਟੋਕ (Available Balance)</th>
               </tr>
             </thead>
             <tbody></tbody>
@@ -582,54 +631,52 @@
       </div>
     </section>
 
-    <!-- BLOCK 6: LABOUR PAY RATE & PRODUCTION -->
+    <!-- BLOCK 6: LABOUR PAY & CEMENT CONSUMPTION -->
     <section id="tab-labour" class="tab-content">
+      
+      <!-- Upper Section: Labour Production -->
       <div class="card">
         <div class="card-title">
-          <span id="labourFormTitle">ਨਵੀਂ ਲੇਬਰ ਪ੍ਰੋਡਕਸ਼ਨ ਐਂਟਰੀ (Material Made)</span>
+          <span id="labourFormTitle">1. ਲੇਬਰ ਉਤਪਾਦਨ ਐਂਟਰੀ (Material Made)</span>
           <button type="button" id="cancelLabourEditBtn" class="btn btn-outline btn-sm" style="display:none;" onclick="cancelLabourEdit()">ਰੱਦ ਕਰੋ ✖</button>
         </div>
         <form id="labourForm" onsubmit="saveLabour(event)">
           <input type="hidden" id="editLabourId" value="">
           <div class="form-grid">
             <div class="form-group">
-              <label>ਤਾਰੀਖ (Date)</label>
+              <label>ਤਾਰੀਖ</label>
               <input type="date" id="labourDate" required>
             </div>
             <div class="form-group">
-              <label>ਆਈਟਮ (17 ਆਈਟਮਾਂ ਦੀ ਸੂਚੀ)</label>
-              <select id="labourItem" required>
-                <!-- 17 Fixed items options injected automatically -->
-              </select>
+              <label>ਆਈਟਮ (17 ਸਟੈਂਡਰਡ ਆਈਟਮਾਂ)</label>
+              <select id="labourItem" required></select>
             </div>
             <div class="form-group">
-              <label>ਕੁੱਲ ਬਣੇ ਪੀਸ (Material Made / Qty)</label>
+              <label>ਬਣੇ ਪੀਸ (Qty)</label>
               <input type="number" id="labourQty" min="1" placeholder="ਜਿਵੇਂ 5000" oninput="calcLabourTotal()" required>
             </div>
             <div class="form-group">
-              <label>ਲੇਬਰ ਪ੍ਰਤੀ ਪੀਸ ਰੇਟ (Rate ₹)</label>
+              <label>ਪ੍ਰਤੀ ਪੀਸ ਲੇਬਰ ਰੇਟ (₹)</label>
               <input type="number" step="0.01" id="labourRate" min="0" placeholder="ਜਿਵੇਂ 1.50" oninput="calcLabourTotal()" required>
             </div>
             <div class="form-group">
-              <label>ਕੁੱਲ ਲੇਬਰ ਪੇਮੈਂਟ (Payable ₹)</label>
+              <label>ਕੁੱਲ ਮਜ਼ਦੂਰੀ (₹)</label>
               <input type="number" id="labourTotal" readonly>
             </div>
             <div class="form-group">
               <label>ਕਾਰੀਗਰ / ਲੇਬਰ ਟੀਮ ਦਾ ਨਾਮ</label>
-              <input type="text" id="labourTeam" placeholder="ਮਿਸਤਰੀ ਜਾਂ ਟੀਮ ਨਾਮ (ਵਿਕਲਪਿਕ)">
+              <input type="text" id="labourTeam" placeholder="ਮਿਸਤਰੀ / ਟੀਮ (ਆਪਸ਼ਨਲ)">
             </div>
           </div>
           <div style="margin-top: 14px; display: flex; gap: 10px;">
             <button type="submit" id="labourSubmitBtn" class="btn btn-purple">➕ ਲੇਬਰ ਐਂਟਰੀ ਸੇਵ ਕਰੋ</button>
-            <button type="button" class="btn btn-outline" onclick="exportToCSV('labour')">📥 ਲੇਬਰ ਰਿਕਾਰਡ Export</button>
+            <button type="button" class="btn btn-outline" onclick="exportToCSV('labour')">📥 ਲੇਬਰ Export</button>
           </div>
         </form>
       </div>
 
       <div class="card">
-        <div class="card-title">
-          <span>ਲੇਬਰ ਉਤਪਾਦਨ ਅਤੇ ਮਜ਼ਦੂਰੀ ਰਿਕਾਰਡ (Production Logs)</span>
-        </div>
+        <div class="card-title"><span>ਲੇਬਰ ਉਤਪਾਦਨ ਰਿਕਾਰਡ</span></div>
         <div class="table-responsive">
           <table id="labourTable">
             <thead>
@@ -639,7 +686,7 @@
                 <th>ਬਣੇ ਪੀਸ</th>
                 <th>ਰੇਟ (₹)</th>
                 <th>ਕੁੱਲ ਮਜ਼ਦੂਰੀ (₹)</th>
-                <th>ਲੇਬਰ ਟੀਮ</th>
+                <th>ਟੀਮ</th>
                 <th>ਐਕਸ਼ਨ</th>
               </tr>
             </thead>
@@ -647,6 +694,50 @@
           </table>
         </div>
       </div>
+
+      <!-- Lower Section: Separate Cement Consumption Block -->
+      <div class="card" style="border-top: 4px solid var(--primary);">
+        <div class="card-title">
+          <span>2. ਸੀਮੈਂਟ ਰੋਜ਼ਾਨਾ ਖਪਤ ਰਜਿਸਟਰ (Daily Cement Bags Used)</span>
+        </div>
+        <p style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 12px;">
+          ਇੱਥੇ ਦਰਜ ਕੀਤੀਆਂ ਸੀਮੈਂਟ ਬੋਰੀਆਂ ਫੈਕਟਰੀ ਸਟੋਕ (18ਵੇਂ ਨੰਬਰ) ਵਿੱਚੋਂ ਆਟੋਮੈਟਿਕ ਮਾਈਨਸ ਹੋਣਗੀਆਂ।
+        </p>
+        <form id="cementForm" onsubmit="saveCementUsage(event)">
+          <div class="form-grid">
+            <div class="form-group">
+              <label>ਤਾਰੀਖ</label>
+              <input type="date" id="cementDate" required>
+            </div>
+            <div class="form-group">
+              <label>ਵਰਤੀਆਂ ਸੀਮੈਂਟ ਬੋਰੀਆਂ (Bags Used)</label>
+              <input type="number" id="cementBags" min="1" placeholder="ਜਿਵੇਂ 10, 25, 50" required>
+            </div>
+            <div class="form-group">
+              <label>ਕੰਮ / ਰਿਮਾਰਕ (Remark)</label>
+              <input type="text" id="cementRemark" placeholder="ਜਿਵੇਂ 60mm ਬਲੌਕ ਬਣਾਉਣ 'ਚ">
+            </div>
+          </div>
+          <div style="margin-top: 14px;">
+            <button type="submit" class="btn btn-primary">➕ ਸੀਮੈਂਟ ਖਪਤ ਸੇਵ ਕਰੋ</button>
+          </div>
+        </form>
+
+        <div class="table-responsive" style="margin-top: 16px;">
+          <table id="cementTable">
+            <thead>
+              <tr>
+                <th>ਤਾਰੀਖ</th>
+                <th>ਵਰਤੀਆਂ ਬੋਰੀਆਂ</th>
+                <th>ਵੇਰਵਾ</th>
+                <th>ਐਕਸ਼ਨ</th>
+              </tr>
+            </thead>
+            <tbody></tbody>
+          </table>
+        </div>
+      </div>
+
     </section>
 
   </div>
@@ -685,11 +776,49 @@
     </div>
   </div>
 
+  <!-- Dispatch / Delivery Modal with Optional Load/Unload Checkboxes -->
+  <div class="modal" id="dispatchModal">
+    <div class="modal-box">
+      <div class="modal-header">
+        <h3 style="font-size:1.1rem; font-weight:800;">ਮਾਲ ਡਿਸਪੈਚ / ਗੱਡੀ ਭੇਜੋ</h3>
+        <button class="close-modal" onclick="closeDispatchModal()">×</button>
+      </div>
+      <p id="dispatchSub" style="margin-bottom: 12px; font-size: 0.85rem; color: var(--text-muted);"></p>
+      <form onsubmit="handleDispatchSubmit(event)">
+        <div class="form-group" style="margin-bottom: 12px;">
+          <label>ਬਾਕੀ ਰਹਿੰਦਾ ਮਾਲ (Pending Qty)</label>
+          <input type="number" id="dispatchPendingQty" readonly>
+        </div>
+        <div class="form-group" style="margin-bottom: 12px;">
+          <label>ਹੁਣ ਭੇਜੀ ਜਾ ਰਹੀ ਕੁਆਂਟਿਟੀ (Sending Qty)</label>
+          <input type="number" id="dispatchSendQty" min="1" placeholder="ਨਗ ਭਰੋ (ਜਿਵੇਂ 1000 ਜਾਂ 5000)" required>
+        </div>
+        <div class="form-group" style="margin-bottom: 12px;">
+          <label>ਤਾਰੀਖ</label>
+          <input type="date" id="dispatchDate" required>
+        </div>
+        <div class="form-group" style="margin-bottom: 14px;">
+          <label>ਲੋਡਿੰਗ / ਅਨਲੋਡਿੰਗ (ਆਪਸ਼ਨਲ ਟਿੱਕ):</label>
+          <div class="checkbox-row">
+            <label class="checkbox-label">
+              <input type="checkbox" id="dispatchLoaded"> 📦 Loaded (ਲੋਡ ਹੋਇਆ)
+            </label>
+            <label class="checkbox-label">
+              <input type="checkbox" id="dispatchUnloaded"> 🚛 Unloaded (ਅਨਲੋਡ ਹੋਇਆ)
+            </label>
+          </div>
+        </div>
+        <div style="display: flex; justify-content: flex-end; gap: 8px;">
+          <button type="button" class="btn btn-outline" onclick="closeDispatchModal()">ਰੱਦ ਕਰੋ</button>
+          <button type="submit" class="btn btn-warning">🚚 ਡਿਸਪੈਚ ਦਰਜ ਕਰੋ</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
   <script>
-    // -------------------------------------------------------------
-    // 17 FIXED ITEMS FROM USER LIST (IMAGE)
-    // -------------------------------------------------------------
-    const STANDARD_17_ITEMS = [
+    // 17 FIXED ITEMS + 18TH CEMENT BAGS
+    const STANDARD_18_ITEMS = [
       "BARFI 60 MM",
       "ZABRA 60 MM",
       "ZABRA 40 MM",
@@ -706,7 +835,8 @@
       "BANCH",
       "TABLE",
       "4*4 dabi",
-      "Stone 80mm"
+      "Stone 80mm",
+      "ਸੀਮੈਂਟ (Cement Bags)"
     ];
 
     const firebaseConfig = {
@@ -725,10 +855,12 @@
     let sales = [];
     let purchases = [];
     let labourLogs = [];
+    let cementUsage = [];
     let parties = [];
-    let rawMaterials = ['ਸੀਮਿੰਟ', 'ਰੇਤ / ਡਸਟ', 'ਫਲਾਈ ਐਸ਼', 'ਕੈਮੀਕਲ'];
+    let rawMaterials = ['Cement Bags', 'ਸੀਮੈਂਟ', 'ਰੇਤ / ਡਸਟ', 'ਫਲਾਈ ਐਸ਼', 'ਕੈਮੀਕਲ'];
 
     let currentSettlement = null;
+    let currentDispatchSaleId = null;
     let selectedLedgerParty = null;
 
     window.addEventListener('DOMContentLoaded', () => {
@@ -736,7 +868,9 @@
       document.getElementById('saleDate').value = today;
       document.getElementById('purDate').value = today;
       document.getElementById('labourDate').value = today;
+      document.getElementById('cementDate').value = today;
       document.getElementById('modalPayDate').value = today;
+      document.getElementById('dispatchDate').value = today;
       document.getElementById('summaryMonth').value = today.slice(0, 7);
 
       initItemSelectOptions();
@@ -744,13 +878,15 @@
     });
 
     function initItemSelectOptions() {
+      // First 17 items for Labour
       const select = document.getElementById('labourItem');
-      select.innerHTML = STANDARD_17_ITEMS.map((item, idx) => 
+      select.innerHTML = STANDARD_18_ITEMS.slice(0, 17).map((item, idx) => 
         `<option value="${item}">${idx + 1}) ${item}</option>`
       ).join('');
 
+      // All for sales
       const datalist = document.getElementById('standardItemList');
-      datalist.innerHTML = STANDARD_17_ITEMS.map(item => `<option value="${item}">`).join('');
+      datalist.innerHTML = STANDARD_18_ITEMS.map(item => `<option value="${item}">`).join('');
 
       const rawList = document.getElementById('rawMaterialList');
       rawList.innerHTML = rawMaterials.map(m => `<option value="${m}">`).join('');
@@ -770,28 +906,30 @@
         }
       });
 
-      // 1. Sales sync
       db.ref('sales').on('value', snapshot => {
         const val = snapshot.val();
         sales = val ? Object.values(val) : [];
         updateAllViews();
       });
 
-      // 2. Purchases sync
       db.ref('purchases').on('value', snapshot => {
         const val = snapshot.val();
         purchases = val ? Object.values(val) : [];
         updateAllViews();
       });
 
-      // 3. Labour Logs sync
       db.ref('labourLogs').on('value', snapshot => {
         const val = snapshot.val();
         labourLogs = val ? Object.values(val) : [];
         updateAllViews();
       });
 
-      // 4. Parties sync
+      db.ref('cementUsage').on('value', snapshot => {
+        const val = snapshot.val();
+        cementUsage = val ? Object.values(val) : [];
+        updateAllViews();
+      });
+
       db.ref('knowledge/parties').on('value', snapshot => {
         const val = snapshot.val();
         parties = val ? val : [];
@@ -806,6 +944,8 @@
       renderClientList();
       renderFactoryStock();
       renderLabourTable();
+      renderCementTable();
+      renderPendingDeliveryReminders();
       refreshPartiesDropdown();
       if (selectedLedgerParty) showClientDetail(selectedLedgerParty);
     }
@@ -822,7 +962,7 @@
       if (tabId === 'monthly') renderMonthlySummary();
       if (tabId === 'clients') renderClientList();
       if (tabId === 'stock') renderFactoryStock();
-      if (tabId === 'labour') renderLabourTable();
+      if (tabId === 'labour') { renderLabourTable(); renderCementTable(); }
     }
 
     // Calculations
@@ -851,7 +991,29 @@
       document.getElementById('labourTotal').value = total.toFixed(2);
     }
 
-    // BLOCK 1: Save or Edit Sales
+    // Pending Delivery Top Reminder Banner
+    function renderPendingDeliveryReminders() {
+      const banner = document.getElementById('deliveryReminderBanner');
+      const list = document.getElementById('reminderList');
+      const pendingSales = sales.filter(s => {
+        const dispatched = (s.dispatches || []).reduce((acc, cur) => acc + (Number(cur.qty) || 0), 0);
+        return dispatched < s.qty;
+      });
+
+      if (pendingSales.length === 0) {
+        banner.style.display = 'none';
+        return;
+      }
+
+      banner.style.display = 'block';
+      list.innerHTML = pendingSales.map(s => {
+        const dispatched = (s.dispatches || []).reduce((acc, cur) => acc + (Number(cur.qty) || 0), 0);
+        const rem = s.qty - dispatched;
+        return `<li><strong>${s.client}</strong>: ${s.item} ਦੇ <strong>${rem.toLocaleString('en-IN')} ਪੀਸ</strong> ਭੇਜਣ ਵਾਲੇ ਪੈਂਡਿੰਗ ਹਨ (ਆਰਡਰ ਤਾਰੀਖ: ${s.date})।</li>`;
+      }).join('');
+    }
+
+    // BLOCK 1: Sales
     function saveSale(e) {
       e.preventDefault();
       const editId = document.getElementById('editSaleId').value;
@@ -867,10 +1029,12 @@
 
       const id = editId ? editId : ('S_' + Date.now());
       let existingPayments = [];
+      let existingDispatches = [];
 
       if (editId) {
         const prev = sales.find(s => s.id === editId);
         if (prev && prev.payments) existingPayments = prev.payments;
+        if (prev && prev.dispatches) existingDispatches = prev.dispatches;
       } else {
         if (advance > 0) existingPayments = [{ amount: advance, date }];
       }
@@ -878,14 +1042,15 @@
       const record = {
         id, client, phone, item, qty, rate, total,
         paid: advance, balance, date,
-        payments: existingPayments
+        payments: existingPayments,
+        dispatches: existingDispatches
       };
 
       db.ref('sales/' + id).set(record);
       saveParty(client, phone);
 
       cancelSaleEdit();
-      alert(editId ? 'ਸੇਲ ਅੱਪਡੇਟ ਹੋ ਗਈ ਹੈ!' : 'ਸੇਲ ਸੇਵ ਹੋ ਗਈ ਹੈ (ਸਟੋਕ ਵਿੱਚੋਂ ਘਟਾ ਦਿੱਤੀ ਗਈ ਹੈ)!');
+      alert(editId ? 'ਸੇਲ ਅੱਪਡੇਟ ਹੋ ਗਈ ਹੈ!' : 'ਸੇਲ ਆਰਡਰ ਸੇਵ ਹੋ ਗਿਆ ਹੈ!');
     }
 
     function editSale(id) {
@@ -913,10 +1078,61 @@
       document.getElementById('editSaleId').value = '';
       document.getElementById('saleForm').reset();
       document.getElementById('saleDate').value = new Date().toISOString().split('T')[0];
-      document.getElementById('saleFormTitle').textContent = 'ਨਵੀਂ ਸੇਲ ਐਂਟਰੀ';
+      document.getElementById('saleFormTitle').textContent = 'ਨਵੀਂ ਸੇਲ ਆਰਡਰ ਐਂਟਰੀ';
       document.getElementById('saleSubmitBtn').textContent = '➕ ਸੇਲ ਸੇਵ ਕਰੋ';
       document.getElementById('cancelSaleEditBtn').style.display = 'none';
       calcSaleTotal();
+    }
+
+    // Dispatch Modal Logic
+    function openDispatchModal(saleId) {
+      currentDispatchSaleId = saleId;
+      const s = sales.find(item => item.id === saleId);
+      if (!s) return;
+
+      const dispatched = (s.dispatches || []).reduce((acc, cur) => acc + (Number(cur.qty) || 0), 0);
+      const remaining = s.qty - dispatched;
+
+      document.getElementById('dispatchSub').textContent = `ਕਲਾਇੰਟ: ${s.client} | ਆਈਟਮ: ${s.item} (ਕੁੱਲ ਆਰਡਰ: ${s.qty})`;
+      document.getElementById('dispatchPendingQty').value = remaining;
+      document.getElementById('dispatchSendQty').value = remaining;
+      document.getElementById('dispatchSendQty').max = remaining;
+      document.getElementById('dispatchLoaded').checked = false;
+      document.getElementById('dispatchUnloaded').checked = false;
+
+      document.getElementById('dispatchModal').classList.add('show');
+    }
+
+    function closeDispatchModal() {
+      document.getElementById('dispatchModal').classList.remove('show');
+      currentDispatchSaleId = null;
+    }
+
+    function handleDispatchSubmit(e) {
+      e.preventDefault();
+      if (!currentDispatchSaleId) return;
+
+      const s = sales.find(item => item.id === currentDispatchSaleId);
+      if (!s) return;
+
+      const sendQty = parseFloat(document.getElementById('dispatchSendQty').value) || 0;
+      const date = document.getElementById('dispatchDate').value;
+      const loaded = document.getElementById('dispatchLoaded').checked;
+      const unloaded = document.getElementById('dispatchUnloaded').checked;
+
+      if (sendQty <= 0) return alert('ਕਿਰਪਾ ਕਰਕੇ ਸਹੀ ਕੁਆਂਟਿਟੀ ਭਰੋ!');
+
+      if (!s.dispatches) s.dispatches = [];
+      s.dispatches.push({
+        qty: sendQty,
+        date: date,
+        loaded: loaded,
+        unloaded: unloaded
+      });
+
+      db.ref('sales/' + s.id).set(s);
+      closeDispatchModal();
+      alert(`🚚 ${sendQty} ਪੀਸ ਡਿਸਪੈਚ ਹੋ ਗਏ ਹਨ ਅਤੇ ਫੈਕਟਰੀ ਸਟੋਕ ਵਿੱਚੋਂ ਘੱਟ ਗਏ ਹਨ!`);
     }
 
     // BLOCK 2: Purchases
@@ -987,7 +1203,7 @@
       calcPurTotal();
     }
 
-    // BLOCK 6: LABOUR / PRODUCTION LOGIC
+    // BLOCK 6: Labour & Cement
     function saveLabour(e) {
       e.preventDefault();
       const editId = document.getElementById('editLabourId').value;
@@ -1006,39 +1222,21 @@
 
       db.ref('labourLogs/' + id).set(record);
       cancelLabourEdit();
-      alert(editId ? 'ਲੇਬਰ ਐਂਟਰੀ ਅੱਪਡੇਟ ਹੋ ਗਈ ਹੈ!' : 'ਲੇਬਰ ਪ੍ਰੋਡਕਸ਼ਨ ਐਂਟਰੀ ਸੇਵ ਹੋ ਗਈ ਹੈ (ਫੈਕਟਰੀ ਸਟੋਕ ਵਿੱਚ ਜੁੜ ਗਈ ਹੈ)!');
-    }
-
-    function editLabour(id) {
-      const l = labourLogs.find(item => item.id === id);
-      if (!l) return;
-
-      document.getElementById('editLabourId').value = l.id;
-      document.getElementById('labourDate').value = l.date;
-      document.getElementById('labourItem').value = l.item;
-      document.getElementById('labourQty').value = l.qty;
-      document.getElementById('labourRate').value = l.rate;
-      document.getElementById('labourTotal').value = l.total;
-      document.getElementById('labourTeam').value = l.team || '';
-
-      document.getElementById('labourFormTitle').textContent = 'ਲੇਬਰ ਐਂਟਰੀ ਐਡਿਟ ਕਰੋ';
-      document.getElementById('labourSubmitBtn').textContent = '💾 ਬਦਲਾਅ ਅੱਪਡੇਟ ਕਰੋ';
-      document.getElementById('cancelLabourEditBtn').style.display = 'inline-block';
-      window.scrollTo({ top: 0, behavior: 'smooth' });
+      alert(editId ? 'ਲੇਬਰ ਐਂਟਰੀ ਅੱਪਡੇਟ ਹੋ ਗਈ ਹੈ!' : 'ਲੇਬਰ ਉਤਪਾਦਨ ਸੇਵ ਹੋ ਗਿਆ ਹੈ (ਸਟੋਕ ਵਿੱਚ ਜੁੜ ਗਿਆ ਹੈ)!');
     }
 
     function cancelLabourEdit() {
       document.getElementById('editLabourId').value = '';
       document.getElementById('labourForm').reset();
       document.getElementById('labourDate').value = new Date().toISOString().split('T')[0];
-      document.getElementById('labourFormTitle').textContent = 'ਨਵੀਂ ਲੇਬਰ ਪ੍ਰੋਡਕਸ਼ਨ ਐਂਟਰੀ';
+      document.getElementById('labourFormTitle').textContent = '1. ਲੇਬਰ ਉਤਪਾਦਨ ਐਂਟਰੀ (Material Made)';
       document.getElementById('labourSubmitBtn').textContent = '➕ ਲੇਬਰ ਐਂਟਰੀ ਸੇਵ ਕਰੋ';
       document.getElementById('cancelLabourEditBtn').style.display = 'none';
       calcLabourTotal();
     }
 
     function deleteLabour(id) {
-      if (!confirm('ਕੀ ਤੁਸੀਂ ਇਹ ਲੇਬਰ ਰਿਕਾਰਡ ਹਟਾਉਣਾ ਚਾਹੁੰਦੇ ਹੋ? ਇਹ ਸਟੋਕ ਵਿੱਚੋਂ ਵੀ ਘੱਟ ਜਾਵੇਗਾ।')) return;
+      if (!confirm('ਕੀ ਤੁਸੀਂ ਇਹ ਲੇਬਰ ਰਿਕਾਰਡ ਹਟਾਉਣਾ ਚਾਹੁੰਦੇ ਹੋ?')) return;
       db.ref('labourLogs/' + id).remove();
     }
 
@@ -1057,56 +1255,114 @@
           <td style="color:var(--purple); font-weight:700;">₹${l.total.toLocaleString('en-IN')}</td>
           <td>${l.team || '-'}</td>
           <td>
-            <div style="display:flex; gap:4px;">
-              <button class="btn btn-edit btn-sm" onclick="editLabour('${l.id}')">✏️</button>
-              <button class="btn btn-danger btn-sm" onclick="deleteLabour('${l.id}')">🗑️</button>
-            </div>
+            <button class="btn btn-danger btn-sm" onclick="deleteLabour('${l.id}')">🗑️</button>
           </td>
         </tr>
       `).join('');
     }
 
-    // BLOCK 5: FACTORY STOCK LIVE CALCULATION
+    // Separate Cement Usage Logic
+    function saveCementUsage(e) {
+      e.preventDefault();
+      const date = document.getElementById('cementDate').value;
+      const bags = parseFloat(document.getElementById('cementBags').value) || 0;
+      const remark = document.getElementById('cementRemark').value.trim();
+      const id = 'C_' + Date.now();
+
+      const record = { id, date, bags, remark };
+      db.ref('cementUsage/' + id).set(record);
+
+      document.getElementById('cementForm').reset();
+      document.getElementById('cementDate').value = new Date().toISOString().split('T')[0];
+      alert(`✅ ${bags} ਸੀਮੈਂਟ ਬੋਰੀਆਂ ਦੀ ਖਪਤ ਸੇਵ ਹੋ ਗਈ ਹੈ (ਸਟੋਕ 'ਚੋਂ ਮਾਈਨਸ ਹੋ ਚੁੱਕੀ ਹੈ)!`);
+    }
+
+    function deleteCementUsage(id) {
+      if (!confirm('ਕੀ ਤੁਸੀਂ ਇਹ ਸੀਮੈਂਟ ਖਪਤ ਰਿਕਾਰਡ ਹਟਾਉਣਾ ਚਾਹੁੰਦੇ ਹੋ?')) return;
+      db.ref('cementUsage/' + id).remove();
+    }
+
+    function renderCementTable() {
+      const tbody = document.querySelector('#cementTable tbody');
+      if (cementUsage.length === 0) {
+        tbody.innerHTML = '<tr><td colspan="4" style="text-align:center;">ਕੋਈ ਸੀਮੈਂਟ ਖਪਤ ਰਿਕਾਰਡ ਨਹੀਂ ਹੈ</td></tr>';
+        return;
+      }
+      tbody.innerHTML = cementUsage.slice().reverse().map(c => `
+        <tr>
+          <td>${c.date}</td>
+          <td><strong style="color:var(--danger);">${c.bags} ਬੋਰੀਆਂ</strong></td>
+          <td>${c.remark || '-'}</td>
+          <td>
+            <button class="btn btn-danger btn-sm" onclick="deleteCementUsage('${c.id}')">🗑️</button>
+          </td>
+        </tr>
+      `).join('');
+    }
+
+    // BLOCK 5: FACTORY STOCK (18 Items Auto Live Calculation)
     function renderFactoryStock() {
       const tbody = document.querySelector('#stockTable tbody');
       
-      const stockSummary = STANDARD_17_ITEMS.map((itemName, index) => {
-        // 1. Calculate Total Made from Block 6
-        let totalMade = 0;
-        labourLogs.forEach(log => {
-          if (log.item && log.item.trim().toLowerCase() === itemName.trim().toLowerCase()) {
-            totalMade += Number(log.qty) || 0;
-          }
-        });
+      const stockSummary = STANDARD_18_ITEMS.map((itemName, index) => {
+        let totalMadeOrIn = 0;
+        let totalSoldOrUsed = 0;
 
-        // 2. Calculate Total Sold from Block 1
-        let totalSold = 0;
-        sales.forEach(s => {
-          if (s.item && s.item.trim().toLowerCase() === itemName.trim().toLowerCase()) {
-            totalSold += Number(s.qty) || 0;
-          }
-        });
+        if (index === 17) {
+          // 18th ITEM: Cement Bags
+          // IN: From Purchases (Block 2)
+          purchases.forEach(p => {
+            const pi = (p.item || '').toLowerCase();
+            if (pi.includes('cement') || pi.includes('ਸੀਮੈਂਟ')) {
+              totalMadeOrIn += Number(p.qty) || 0;
+            }
+          });
+          // OUT: From Cement Daily Usage (Block 6)
+          cementUsage.forEach(c => {
+            totalSoldOrUsed += Number(c.bags) || 0;
+          });
+        } else {
+          // 1 to 17 ITEMS: Concrete Blocks / Bricks
+          // IN: Material Made from Labour (Block 6)
+          labourLogs.forEach(log => {
+            if (log.item && log.item.trim().toLowerCase() === itemName.trim().toLowerCase()) {
+              totalMadeOrIn += Number(log.qty) || 0;
+            }
+          });
 
-        const available = totalMade - totalSold;
+          // OUT: Dispatched Sales (Only what actually left the factory)
+          sales.forEach(s => {
+            if (s.item && s.item.trim().toLowerCase() === itemName.trim().toLowerCase()) {
+              if (s.dispatches && s.dispatches.length > 0) {
+                s.dispatches.forEach(d => {
+                  totalSoldOrUsed += Number(d.qty) || 0;
+                });
+              }
+            }
+          });
+        }
+
+        const available = totalMadeOrIn - totalSoldOrUsed;
 
         return {
           sr: index + 1,
           name: itemName,
-          made: totalMade,
-          sold: totalSold,
-          balance: available
+          in: totalMadeOrIn,
+          out: totalSoldOrUsed,
+          balance: available,
+          isCement: index === 17
         };
       });
 
       tbody.innerHTML = stockSummary.map(row => `
-        <tr>
+        <tr style="${row.isCement ? 'background:#f0fdf4; font-weight:bold;' : ''}">
           <td><strong>${row.sr})</strong></td>
           <td><strong>${row.name}</strong></td>
-          <td style="color:var(--success); font-weight:700;">+ ${row.made.toLocaleString('en-IN')}</td>
-          <td style="color:var(--danger); font-weight:700;">- ${row.sold.toLocaleString('en-IN')}</td>
+          <td style="color:var(--success); font-weight:700;">+ ${row.in.toLocaleString('en-IN')} ${row.isCement ? 'ਬੋਰੀਆਂ' : ''}</td>
+          <td style="color:var(--danger); font-weight:700;">- ${row.out.toLocaleString('en-IN')} ${row.isCement ? 'ਬੋਰੀਆਂ' : ''}</td>
           <td>
             <span class="badge ${row.balance < 0 ? 'badge-pending' : 'badge-stock'}">
-              ${row.balance.toLocaleString('en-IN')} ਪੀਸ
+              ${row.balance.toLocaleString('en-IN')} ${row.isCement ? 'ਬੋਰੀਆਂ ਬਾਕੀ' : 'ਪੀਸ ਬਾਕੀ'}
             </span>
           </td>
         </tr>
@@ -1174,36 +1430,62 @@
     }
 
     function deleteRecord(id, type) {
-      if (!confirm('ਕੀ ਤੁਸੀਂ ਇਹ ਰਿਕਾਰਡ ਹਟਾਉਣਾ ਚਾਹੁੰਦੇ ਹੋ? ਇਹ ਦੂਜੇ ਫ਼ੋਨ ਵਿੱਚੋਂ ਵੀ ਹਟ ਜਾਵੇਗਾ।')) return;
+      if (!confirm('ਕੀ ਤੁਸੀਂ ਇਹ ਰਿਕਾਰਡ ਹਟਾਉਣਾ ਚਾਹੁੰਦੇ ਹੋ?')) return;
       db.ref(`${type === 'sale' ? 'sales' : 'purchases'}/${id}`).remove();
     }
 
     function renderSales() {
       const tbody = document.querySelector('#salesTable tbody');
       if (sales.length === 0) {
-        tbody.innerHTML = '<tr><td colspan="9" style="text-align:center;">ਕੋਈ ਸੇਲ ਰਿਕਾਰਡ ਨਹੀਂ ਹੈ</td></tr>';
+        tbody.innerHTML = '<tr><td colspan="8" style="text-align:center;">ਕੋਈ ਸੇਲ ਰਿਕਾਰਡ ਨਹੀਂ ਹੈ</td></tr>';
         return;
       }
-      tbody.innerHTML = sales.slice().reverse().map(s => `
-        <tr>
-          <td>${s.date}</td>
-          <td><strong>${s.client}</strong>${s.phone ? `<br><small>${s.phone}</small>` : ''}</td>
-          <td>${s.item}</td>
-          <td>${s.qty}</td>
-          <td>₹${s.rate}</td>
-          <td>₹${s.total}</td>
-          <td style="color:var(--success); font-weight:700;">₹${s.paid}</td>
-          <td><span class="badge ${s.balance > 0 ? 'badge-pending' : 'badge-cleared'}">₹${s.balance}</span></td>
-          <td>
-            <div style="display:flex; gap:4px;">
-              ${s.balance > 0 ? `<button class="btn btn-success btn-sm" onclick="openPaymentModal('${s.id}', 'sale')">ਜਮ੍ਹਾਂ</button>` : ''}
-              <button class="btn btn-edit btn-sm" onclick="editSale('${s.id}')">✏️</button>
-              ${s.phone ? `<button class="btn btn-whatsapp btn-sm" onclick="sendWhatsAppInvoice('${s.id}', 'sale')">💬 WA</button>` : ''}
-              <button class="btn btn-danger btn-sm" onclick="deleteRecord('${s.id}', 'sale')">🗑️</button>
-            </div>
-          </td>
-        </tr>
-      `).join('');
+      tbody.innerHTML = sales.slice().reverse().map(s => {
+        const dispatched = (s.dispatches || []).reduce((acc, cur) => acc + (Number(cur.qty) || 0), 0);
+        const remaining = s.qty - dispatched;
+        const isCompleted = remaining <= 0;
+
+        let dispatchBadges = '';
+        if (s.dispatches && s.dispatches.length > 0) {
+          dispatchBadges = s.dispatches.map(d => 
+            `<small style="display:block; color:var(--text-muted); font-size:0.75rem;">
+              • ${d.qty} (${d.date}) ${d.loaded ? '☑️L' : ''} ${d.unloaded ? '☑️U' : ''}
+            </small>`
+          ).join('');
+        }
+
+        return `
+          <tr>
+            <td>${s.date}</td>
+            <td><strong>${s.client}</strong>${s.phone ? `<br><small>${s.phone}</small>` : ''}</td>
+            <td>${s.item}</td>
+            <td>${s.qty.toLocaleString('en-IN')}</td>
+            <td>
+              <span class="badge ${isCompleted ? 'badge-cleared' : dispatched > 0 ? 'badge-partial' : 'badge-pending'}">
+                ${dispatched.toLocaleString('en-IN')} ਭੇਜੇ
+              </span>
+              ${dispatchBadges}
+            </td>
+            <td>
+              <span class="badge ${isCompleted ? 'badge-cleared' : 'badge-pending'}">
+                ${isCompleted ? 'ਪੂਰਾ ਡਿਲੀਵਰਡ' : remaining.toLocaleString('en-IN') + ' ਪੈਂਡਿੰਗ'}
+              </span>
+            </td>
+            <td>
+              <span class="badge ${s.balance > 0 ? 'badge-pending' : 'badge-cleared'}">₹${s.balance}</span>
+            </td>
+            <td>
+              <div style="display:flex; flex-wrap:wrap; gap:4px;">
+                ${!isCompleted ? `<button class="btn btn-warning btn-sm" onclick="openDispatchModal('${s.id}')">🚚 ਮਾਲ ਭੇਜੋ</button>` : ''}
+                ${s.balance > 0 ? `<button class="btn btn-success btn-sm" onclick="openPaymentModal('${s.id}', 'sale')">ਜਮ੍ਹਾਂ</button>` : ''}
+                <button class="btn btn-edit btn-sm" onclick="editSale('${s.id}')">✏️</button>
+                ${s.phone ? `<button class="btn btn-whatsapp btn-sm" onclick="sendWhatsAppInvoice('${s.id}', 'sale')">💬 WA</button>` : ''}
+                <button class="btn btn-danger btn-sm" onclick="deleteRecord('${s.id}', 'sale')">🗑️</button>
+              </div>
+            </td>
+          </tr>
+        `;
+      }).join('');
     }
 
     function renderPurchases() {
@@ -1392,7 +1674,7 @@
       const rec = type === 'sale' ? sales.find(s => s.id === id) : purchases.find(p => p.id === id);
       if (!rec || !rec.phone) return alert('ਨੰਬਰ ਦਰਜ ਨਹੀਂ ਹੈ!');
       const txt = type === 'sale' 
-        ? `ਸਤਿ ਸ਼੍ਰੀ ਅਕਾਲ ਜੀ ${rec.client},\n\nਬਿੱਲ ਵੇਰਵਾ:\nਆਈਟਮ: ${rec.item}\nਨਗ: ${rec.qty}\nਕੁੱਲ: ₹${rec.total}\nਜਮ੍ਹਾਂ: ₹${rec.paid}\nਬਾਕੀ ਬਕਾਇਆ: ₹${rec.balance}\n\nਧੰਨਵਾਦ!`
+        ? `ਸਤਿ ਸ਼੍ਰੀ ਅਕਾਲ ਜੀ ${rec.client},\n\nਬਿੱਲ ਵੇਰਵਾ:\nਆਈਟਮ: ${rec.item}\nਆਰਡਰ ਨਗ: ${rec.qty}\nਕੁੱਲ: ₹${rec.total}\nਜਮ੍ਹਾਂ: ₹${rec.paid}\nਬਾਕੀ ਬਕਾਇਆ: ₹${rec.balance}\n\nਧੰਨਵਾਦ!`
         : `ਸਤਿ ਸ਼੍ਰੀ ਅਕਾਲ ਜੀ ${rec.supplier},\n\nਸਮਾਨ ਵੇਰਵਾ:\nਆਈਟਮ: ${rec.item}\nਕੁੱਲ: ₹${rec.total}\nਦਿੱਤੇ: ₹${rec.paid}\nਬਾਕੀ: ₹${rec.balance}\n\nਧੰਨਵਾਦ!`;
 
       let num = rec.phone.replace(/[^0-9]/g, '');
@@ -1426,11 +1708,20 @@
         csv += 'Date,Item,Material Made,Labour Rate,Total Wage,Labour Team\n';
         labourLogs.forEach(l => { csv += `"${l.date}","${l.item}",${l.qty},${l.rate},${l.total},"${l.team || ''}"\n`; });
       } else if (type === 'stock') {
-        csv += 'Sr No,Item Name,Total Made,Total Sold,Available Stock\n';
-        STANDARD_17_ITEMS.forEach((itemName, i) => {
+        csv += 'Sr No,Item Name,Total In/Made,Total Out/Sold,Available Stock\n';
+        STANDARD_18_ITEMS.forEach((itemName, i) => {
           let made = 0, sold = 0;
-          labourLogs.forEach(l => { if (l.item.toLowerCase() === itemName.toLowerCase()) made += Number(l.qty) || 0; });
-          sales.forEach(s => { if (s.item.toLowerCase() === itemName.toLowerCase()) sold += Number(s.qty) || 0; });
+          if (i === 17) {
+            purchases.forEach(p => { if ((p.item||'').toLowerCase().includes('cement') || (p.item||'').includes('ਸੀਮੈਂਟ')) made += Number(p.qty)||0; });
+            cementUsage.forEach(c => { sold += Number(c.bags)||0; });
+          } else {
+            labourLogs.forEach(l => { if (l.item.toLowerCase() === itemName.toLowerCase()) made += Number(l.qty) || 0; });
+            sales.forEach(s => {
+              if (s.item.toLowerCase() === itemName.toLowerCase() && s.dispatches) {
+                s.dispatches.forEach(d => sold += Number(d.qty) || 0);
+              }
+            });
+          }
           csv += `${i + 1},"${itemName}",${made},${sold},${made - sold}\n`;
         });
       }
