@@ -1,0 +1,1065 @@
+<!DOCTYPE html>
+<html lang="pa">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ਖਾਤਾ ਬੁੱਕ (Khata Book Realtime Sync)</title>
+  <link href="https://fonts.googleapis.com/css2?family=Mukta+Mahee:wght@400;600;700;800&display=swap" rel="stylesheet">
+  
+  <!-- Firebase Scripts -->
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
+
+  <style>
+    :root {
+      --primary: #1e3a8a;
+      --primary-light: #3b82f6;
+      --success: #16a34a;
+      --danger: #dc2626;
+      --warning: #f59e0b;
+      --bg: #f3f4f6;
+      --surface: #ffffff;
+      --text: #1f2937;
+      --text-muted: #6b7280;
+      --border: #e5e7eb;
+      --radius: 12px;
+      --shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: 'Mukta Mahee', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    }
+
+    body {
+      background-color: var(--bg);
+      color: var(--text);
+      padding-bottom: 60px;
+    }
+
+    header {
+      background: linear-gradient(135deg, var(--primary), #0f172a);
+      color: #ffffff;
+      padding: 16px;
+      text-align: center;
+    }
+
+    header h1 {
+      font-size: 1.5rem;
+      font-weight: 800;
+    }
+
+    .sync-status {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 0.8rem;
+      background: rgba(255, 255, 255, 0.15);
+      padding: 4px 10px;
+      border-radius: 20px;
+      margin-top: 6px;
+    }
+
+    .dot {
+      width: 8px;
+      height: 8px;
+      background: #4ade80;
+      border-radius: 50%;
+      display: inline-block;
+    }
+
+    .nav-tabs {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      background: var(--surface);
+      position: sticky;
+      top: 0;
+      z-index: 50;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .tab-btn {
+      padding: 12px 4px;
+      border: none;
+      background: none;
+      font-size: 0.85rem;
+      font-weight: 700;
+      color: var(--text-muted);
+      cursor: pointer;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 3px;
+      border-bottom: 3px solid transparent;
+      transition: all 0.2s;
+    }
+
+    .tab-btn.active {
+      color: var(--primary);
+      border-bottom-color: var(--primary);
+      background: #eff6ff;
+    }
+
+    .container {
+      max-width: 900px;
+      margin: 16px auto;
+      padding: 0 14px;
+    }
+
+    .tab-content { display: none; }
+    .tab-content.active { display: block; }
+
+    .card {
+      background: var(--surface);
+      border-radius: var(--radius);
+      padding: 18px;
+      margin-bottom: 18px;
+      box-shadow: var(--shadow);
+      border: 1px solid var(--border);
+    }
+
+    .card-title {
+      font-size: 1.1rem;
+      font-weight: 700;
+      margin-bottom: 14px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      color: var(--primary);
+      border-bottom: 2px solid #eff6ff;
+      padding-bottom: 8px;
+    }
+
+    .form-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 12px;
+    }
+
+    .form-group {
+      display: flex;
+      flex-direction: column;
+      gap: 5px;
+    }
+
+    .form-group label {
+      font-size: 0.85rem;
+      font-weight: 700;
+    }
+
+    .form-group input, .form-group select {
+      padding: 9px 12px;
+      border: 1.5px solid var(--border);
+      border-radius: 8px;
+      font-size: 0.95rem;
+      outline: none;
+    }
+
+    .form-group input:focus { border-color: var(--primary-light); }
+    .form-group input[readonly] { background: #f8fafc; font-weight: bold; color: var(--primary); }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      padding: 10px 16px;
+      border-radius: 8px;
+      font-size: 0.9rem;
+      font-weight: 700;
+      cursor: pointer;
+      border: none;
+      transition: background 0.2s;
+    }
+
+    .btn-primary { background: var(--primary); color: white; }
+    .btn-success { background: var(--success); color: white; }
+    .btn-danger { background: var(--danger); color: white; }
+    .btn-outline { background: transparent; border: 1.5px solid var(--border); color: var(--text); }
+    .btn-whatsapp { background: #25d366; color: white; }
+    .btn-sm { padding: 5px 9px; font-size: 0.8rem; border-radius: 6px; }
+
+    .table-responsive { overflow-x: auto; margin-top: 12px; }
+    table { width: 100%; border-collapse: collapse; font-size: 0.88rem; text-align: left; }
+    th, td { padding: 10px 8px; border-bottom: 1px solid var(--border); white-space: nowrap; }
+    th { background-color: #f8fafc; font-weight: 700; color: var(--text-muted); }
+
+    .badge {
+      display: inline-block;
+      padding: 3px 8px;
+      border-radius: 9999px;
+      font-size: 0.75rem;
+      font-weight: 700;
+    }
+    .badge-pending { background: #fee2e2; color: var(--danger); }
+    .badge-cleared { background: #dcfce7; color: var(--success); }
+
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+      gap: 12px;
+      margin-bottom: 18px;
+    }
+
+    .stat-card {
+      background: var(--surface);
+      padding: 14px;
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      border-left: 4px solid var(--primary);
+    }
+    .stat-card.credit { border-left-color: var(--success); }
+    .stat-card.debit { border-left-color: var(--danger); }
+    .stat-card.pending { border-left-color: var(--warning); }
+    .stat-title { font-size: 0.8rem; color: var(--text-muted); font-weight: 600; }
+    .stat-val { font-size: 1.3rem; font-weight: 800; margin-top: 4px; }
+
+    .modal {
+      display: none;
+      position: fixed;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background: rgba(0, 0, 0, 0.5);
+      z-index: 100;
+      align-items: center;
+      justify-content: center;
+      padding: 16px;
+    }
+    .modal.show { display: flex; }
+    .modal-box {
+      background: white;
+      border-radius: var(--radius);
+      max-width: 420px;
+      width: 100%;
+      padding: 20px;
+      box-shadow: var(--shadow);
+    }
+    .modal-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 14px;
+    }
+    .close-modal { font-size: 1.4rem; border: none; background: none; cursor: pointer; }
+
+    @media (max-width: 600px) {
+      .tab-btn { font-size: 0.75rem; }
+      .form-grid { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+
+  <header>
+    <h1>ਖਾਤਾ ਬੁੱਕ (Live Sync)</h1>
+    <div class="sync-status">
+      <span class="dot" id="syncDot"></span>
+      <span id="syncText">ਕਨੈਕਟ ਹੋ ਰਿਹਾ ਹੈ...</span>
+    </div>
+  </header>
+
+  <nav class="nav-tabs">
+    <button class="tab-btn active" onclick="switchTab('sale')">
+      <span>📦</span>
+      <span>1. ਸੇਲ ਆਈਟਮਸ</span>
+    </button>
+    <button class="tab-btn" onclick="switchTab('purchase')">
+      <span>🛒</span>
+      <span>2. ਖਰੀਦ</span>
+    </button>
+    <button class="tab-btn" onclick="switchTab('monthly')">
+      <span>📊</span>
+      <span>3. ਮਹੀਨਾਵਾਰ</span>
+    </button>
+    <button class="tab-btn" onclick="switchTab('clients')">
+      <span>👥</span>
+      <span>4. ਸਾਰੇ ਕਲਾਇੰਟਸ</span>
+    </button>
+  </nav>
+
+  <div class="container">
+    
+    <!-- BLOCK 1: SALES -->
+    <section id="tab-sale" class="tab-content active">
+      <div class="card">
+        <div class="card-title">
+          <span>ਨਵੀਂ ਸੇਲ ਐਂਟਰੀ</span>
+        </div>
+        <form id="saleForm" onsubmit="saveSale(event)">
+          <div class="form-grid">
+            <div class="form-group">
+              <label>ਕਲਾਇੰਟ / ਪਾਰਟੀ ਦਾ ਨਾਮ</label>
+              <input type="text" id="saleClient" list="clientList" placeholder="ਗਾਹਕ ਦਾ ਨਾਮ" required>
+            </div>
+            <div class="form-group">
+              <label>ਮੋਬਾਈਲ / WhatsApp ਨੰਬਰ</label>
+              <input type="tel" id="salePhone" placeholder="10 ਅੰਕਾਂ ਦਾ ਨੰਬਰ" pattern="[0-9]{10}">
+            </div>
+            <div class="form-group">
+              <label>ਆਈਟਮ ਦਾ ਨਾਮ</label>
+              <input type="text" id="saleItem" list="itemList" placeholder="ਜਿਵੇਂ 60 mm ਬਲੌਕ ਇੱਟ" required>
+            </div>
+            <div class="form-group">
+              <label>ਕੁੱਲ ਨਗ / ਕੁਆਂਟਿਟੀ</label>
+              <input type="number" id="saleQty" min="1" placeholder="ਮਾਤਰਾ" oninput="calcSaleTotal()" required>
+            </div>
+            <div class="form-group">
+              <label>ਪ੍ਰਤੀ ਨਗ ਰੇਟ (₹)</label>
+              <input type="number" step="0.01" id="saleRate" min="0" placeholder="ਰੇਟ" oninput="calcSaleTotal()" required>
+            </div>
+            <div class="form-group">
+              <label>ਕੁੱਲ ਰਕਮ (₹)</label>
+              <input type="number" id="saleTotal" readonly>
+            </div>
+            <div class="form-group">
+              <label>ਐਡਵਾਂਸ / ਮਿਲੀ ਰਕਮ (₹)</label>
+              <input type="number" step="0.01" id="saleAdvance" min="0" value="0" oninput="calcSaleTotal()" required>
+            </div>
+            <div class="form-group">
+              <label>ਬਕਾਇਆ ਰਕਮ (₹)</label>
+              <input type="number" id="saleBalance" readonly>
+            </div>
+            <div class="form-group">
+              <label>ਤਾਰੀਖ</label>
+              <input type="date" id="saleDate" required>
+            </div>
+          </div>
+          <div style="margin-top: 14px; display: flex; gap: 10px;">
+            <button type="submit" class="btn btn-primary">➕ ਸੇਲ ਸੇਵ ਕਰੋ</button>
+            <button type="button" class="btn btn-outline" onclick="exportToCSV('sales')">📥 Excel Export</button>
+          </div>
+        </form>
+      </div>
+
+      <div class="card">
+        <div class="card-title"><span>ਸੇਲਜ਼ ਹਿਸਾਬ ਸੂਚੀ</span></div>
+        <div class="table-responsive">
+          <table id="salesTable">
+            <thead>
+              <tr>
+                <th>ਤਾਰੀਖ</th>
+                <th>ਕਲਾਇੰਟ</th>
+                <th>ਆਈਟਮ</th>
+                <th>ਨਗ</th>
+                <th>ਰੇਟ</th>
+                <th>ਕੁੱਲ</th>
+                <th>ਮਿਲੇ</th>
+                <th>ਬਕਾਇਆ</th>
+                <th>ਐਕਸ਼ਨ</th>
+              </tr>
+            </thead>
+            <tbody></tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+    <!-- BLOCK 2: PURCHASE -->
+    <section id="tab-purchase" class="tab-content">
+      <div class="card">
+        <div class="card-title"><span>ਨਵੀਂ ਖਰੀਦ ਐਂਟਰੀ</span></div>
+        <form id="purchaseForm" onsubmit="savePurchase(event)">
+          <div class="form-grid">
+            <div class="form-group">
+              <label>ਸਪਲਾਇਰ / ਡੀਲਰ ਦਾ ਨਾਮ</label>
+              <input type="text" id="purSupplier" list="clientList" placeholder="ਸਪਲਾਇਰ ਦਾ ਨਾਮ" required>
+            </div>
+            <div class="form-group">
+              <label>ਮੋਬਾਈਲ / WhatsApp ਨੰਬਰ</label>
+              <input type="tel" id="purPhone" placeholder="10 ਅੰਕਾਂ ਦਾ ਨੰਬਰ" pattern="[0-9]{10}">
+            </div>
+            <div class="form-group">
+              <label>ਸਮਾਨ ਦਾ ਨਾਮ</label>
+              <input type="text" id="purItem" list="itemList" placeholder="ਸੀਮਿੰਟ, ਡਸਟ..." required>
+            </div>
+            <div class="form-group">
+              <label>ਕੁਆਂਟਿਟੀ / ਮਾਤਰਾ</label>
+              <input type="number" id="purQty" min="1" placeholder="ਮਾਤਰਾ" oninput="calcPurTotal()" required>
+            </div>
+            <div class="form-group">
+              <label>ਰੇਟ (₹)</label>
+              <input type="number" step="0.01" id="purRate" min="0" placeholder="ਰੇਟ" oninput="calcPurTotal()" required>
+            </div>
+            <div class="form-group">
+              <label>ਕੁੱਲ ਰਕਮ (₹)</label>
+              <input type="number" id="purTotal" readonly>
+            </div>
+            <div class="form-group">
+              <label>ਅਦਾ ਕੀਤੀ ਰਕਮ / ਐਡਵਾਂਸ (₹)</label>
+              <input type="number" step="0.01" id="purAdvance" min="0" value="0" oninput="calcPurTotal()" required>
+            </div>
+            <div class="form-group">
+              <label>ਦੇਣ ਵਾਲਾ ਬਕਾਇਆ (₹)</label>
+              <input type="number" id="purBalance" readonly>
+            </div>
+            <div class="form-group">
+              <label>ਤਾਰੀਖ</label>
+              <input type="date" id="purDate" required>
+            </div>
+          </div>
+          <div style="margin-top: 14px; display: flex; gap: 10px;">
+            <button type="submit" class="btn btn-primary">➕ ਖਰੀਦ ਸੇਵ ਕਰੋ</button>
+            <button type="button" class="btn btn-outline" onclick="exportToCSV('purchases')">📥 Excel Export</button>
+          </div>
+        </form>
+      </div>
+
+      <div class="card">
+        <div class="card-title"><span>ਖਰੀਦ ਹਿਸਾਬ ਸੂਚੀ</span></div>
+        <div class="table-responsive">
+          <table id="purchaseTable">
+            <thead>
+              <tr>
+                <th>ਤਾਰੀਖ</th>
+                <th>ਸਪਲਾਇਰ</th>
+                <th>ਸਮਾਨ</th>
+                <th>ਮਾਤਰਾ</th>
+                <th>ਰੇਟ</th>
+                <th>ਕੁੱਲ</th>
+                <th>ਦਿੱਤੇ</th>
+                <th>ਬਕਾਇਆ</th>
+                <th>ਐਕਸ਼ਨ</th>
+              </tr>
+            </thead>
+            <tbody></tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+    <!-- BLOCK 3: MONTHLY -->
+    <section id="tab-monthly" class="tab-content">
+      <div class="card">
+        <div class="card-title">
+          <span>ਮਹੀਨਾ ਚੁਣੋ</span>
+          <button class="btn btn-outline btn-sm" onclick="window.print()">🖨️ PDF / Print</button>
+        </div>
+        <div style="display: flex; gap: 10px;">
+          <input type="month" id="summaryMonth" style="padding: 8px 12px; border-radius: 8px; border: 1.5px solid var(--border);" onchange="renderMonthlySummary()">
+        </div>
+      </div>
+
+      <div class="stats-grid">
+        <div class="stat-card credit">
+          <div class="stat-title">ਕੁੱਲ ਆਇਆ ਪੈਸਾ (Credit)</div>
+          <div class="stat-val" id="statCredit">₹0</div>
+        </div>
+        <div class="stat-card debit">
+          <div class="stat-title">ਕੁੱਲ ਗਿਆ ਪੈਸਾ (Debit)</div>
+          <div class="stat-val" id="statDebit">₹0</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-title">ਸ਼ੁੱਧ ਬਚਤ (Net In-Hand)</div>
+          <div class="stat-val" id="statNet">₹0</div>
+        </div>
+        <div class="stat-card pending">
+          <div class="stat-title">ਮਾਰਕੀਟ 'ਚੋਂ ਲੈਣਾ ਬਕਾਇਆ</div>
+          <div class="stat-val" id="statMarketReceivable">₹0</div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-title"><span id="monthlyTableTitle">ਮਹੀਨਾਵਾਰ ਲੈਣ-ਦੇਣ</span></div>
+        <div class="table-responsive">
+          <table id="monthlyStatementTable">
+            <thead>
+              <tr>
+                <th>ਤਾਰੀਖ</th>
+                <th>ਕਿਸਮ</th>
+                <th>ਨਾਮ</th>
+                <th>ਵੇਰਵਾ</th>
+                <th>ਆਇਆ (+)</th>
+                <th>ਗਿਆ (-)</th>
+              </tr>
+            </thead>
+            <tbody></tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+    <!-- BLOCK 4: CLIENTS & PARTIES -->
+    <section id="tab-clients" class="tab-content">
+      <div class="card">
+        <div class="card-title">
+          <span>ਸਾਰੇ ਕਲਾਇੰਟ ਅਤੇ ਪਾਰਟੀ ਖਾਤੇ</span>
+          <button class="btn btn-outline btn-sm" onclick="exportToCSV('clients')">📥 ਸਾਰੇ ਖਾਤੇ Export</button>
+        </div>
+        <input type="text" id="clientSearch" placeholder="🔍 ਕਲਾਇੰਟ ਜਾਂ ਫ਼ੋਨ ਨੰਬਰ ਖੋਜੋ..." oninput="renderClientList()" style="width: 100%; padding: 10px 14px; border: 1.5px solid var(--border); border-radius: 8px; margin-bottom: 14px;">
+        <div class="table-responsive">
+          <table id="clientsOverviewTable">
+            <thead>
+              <tr>
+                <th>ਨਾਮ</th>
+                <th>ਫ਼ੋਨ ਨੰਬਰ</th>
+                <th>ਕੁੱਲ ਕਾਰੋਬਾਰ</th>
+                <th>ਨੈੱਟ ਬਕਾਇਆ</th>
+                <th>ਐਕਸ਼ਨ</th>
+              </tr>
+            </thead>
+            <tbody></tbody>
+          </table>
+        </div>
+      </div>
+
+      <div class="card" id="clientDetailCard" style="display: none;">
+        <div class="card-title">
+          <div>
+            <span id="detailClientName">ਗਾਹਕ ਦਾ ਖਾਤਾ</span>
+            <small id="detailClientPhone" style="display: block; font-size: 0.8rem; color: var(--text-muted);"></small>
+          </div>
+          <div style="display: flex; gap: 8px;">
+            <button class="btn btn-whatsapp btn-sm" onclick="sendWhatsAppLedger()">💬 WhatsApp ਖਾਤਾ ਭੇਜੋ</button>
+            <button class="btn btn-outline btn-sm" onclick="closeClientDetail()">ਬੰਦ ਕਰੋ ✖</button>
+          </div>
+        </div>
+        <div class="table-responsive">
+          <table id="clientTransactionsTable">
+            <thead>
+              <tr>
+                <th>ਤਾਰੀਖ</th>
+                <th>ਕਿਸਮ</th>
+                <th>ਵੇਰਵਾ</th>
+                <th>ਕੁੱਲ ਰਕਮ</th>
+                <th>ਮਿਲੇ/ਦਿੱਤੇ</th>
+                <th>ਬਾਕੀ</th>
+                <th>ਐਕਸ਼ਨ</th>
+              </tr>
+            </thead>
+            <tbody></tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+  </div>
+
+  <datalist id="itemList"></datalist>
+  <datalist id="clientList"></datalist>
+
+  <!-- Payment Modal -->
+  <div class="modal" id="paymentModal">
+    <div class="modal-box">
+      <div class="modal-header">
+        <h3 style="font-size:1.1rem; font-weight:800;">ਬਕਾਇਆ ਰਕਮ ਕਲੀਅਰ ਕਰੋ</h3>
+        <button class="close-modal" onclick="closeModal()">×</button>
+      </div>
+      <p id="modalSub" style="margin-bottom: 12px; font-size: 0.85rem; color: var(--text-muted);"></p>
+      <form onsubmit="handlePaymentSubmit(event)">
+        <div class="form-group" style="margin-bottom: 12px;">
+          <label>ਬਕਾਇਆ ਰਕਮ (₹)</label>
+          <input type="number" id="modalCurrentDue" readonly>
+        </div>
+        <div class="form-group" style="margin-bottom: 12px;">
+          <label>ਹੁਣ ਅਦਾ ਕੀਤੀ ਰਕਮ (₹)</label>
+          <input type="number" step="0.01" id="modalPayAmount" min="1" placeholder="ਰਕਮ ਭਰੋ" required>
+        </div>
+        <div class="form-group" style="margin-bottom: 14px;">
+          <label>ਭੁਗਤਾਨ ਦੀ ਤਾਰੀਖ</label>
+          <input type="date" id="modalPayDate" required>
+        </div>
+        <div style="display: flex; justify-content: flex-end; gap: 8px;">
+          <button type="button" class="btn btn-outline" onclick="closeModal()">ਰੱਦ ਕਰੋ</button>
+          <button type="submit" class="btn btn-success">✅ ਪੇਮੈਂਟ ਸੇਵ ਕਰੋ</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <script>
+    // -------------------------------------------------------------
+    // ਤੁਹਾਡੀ ਪ੍ਰੋਜੈਕਟ ਜਾਣਕਾਰੀ ਆਟੋਮੈਟਿਕ ਅੱਪਡੇਟ ਕਰ ਦਿੱਤੀ ਗਈ ਹੈ
+    // -------------------------------------------------------------
+    const firebaseConfig = {
+      apiKey: "AIzaSyAZdQ-7cmL5PmKY7X5tTGCjYy1JCbilleE",
+      authDomain: "my-khatabook-b2732.firebaseapp.com",
+      databaseURL: "https://my-khatabook-b2732-default-rtdb.firebaseio.com",
+      projectId: "my-khatabook-b2732",
+      storageBucket: "my-khatabook-b2732.firebasestorage.app",
+      messagingSenderId: "928485279720",
+      appId: "1:928485279720:web:f3cf7e3f814c06081f865d"
+    };
+
+    firebase.initializeApp(firebaseConfig);
+    const db = firebase.database();
+
+    let sales = [];
+    let purchases = [];
+    let items = ['60 mm ਬਲੌਕ ਇੱਟ', '80 mm ਇੰਟਰਲਾਕ', 'ਕਵਰ ਬਲਾਕ', 'ਫਲਾਈ ਐਸ਼ ਇੱਟ', 'ਸੀਮਿੰਟ'];
+    let parties = [];
+
+    let currentSettlement = null;
+    let selectedLedgerParty = null;
+
+    window.addEventListener('DOMContentLoaded', () => {
+      const today = new Date().toISOString().split('T')[0];
+      document.getElementById('saleDate').value = today;
+      document.getElementById('purDate').value = today;
+      document.getElementById('modalPayDate').value = today;
+      document.getElementById('summaryMonth').value = today.slice(0, 7);
+
+      initDataSync();
+    });
+
+    function initDataSync() {
+      const dot = document.getElementById('syncDot');
+      const text = document.getElementById('syncText');
+
+      // Listen for Connection State
+      db.ref('.info/connected').on('value', snap => {
+        if (snap.val() === true) {
+          dot.style.background = '#4ade80';
+          text.textContent = 'ਕਲਾਊਡ ਲਾਈਵ ਸਿੰਕ (ਦੋਵੇਂ ਫ਼ੋਨ ਕਨੈਕਟਡ)';
+        } else {
+          dot.style.background = '#f59e0b';
+          text.textContent = 'ਕਨੈਕਟਿੰਗ...';
+        }
+      });
+
+      // 1. Sales sync
+      db.ref('sales').on('value', snapshot => {
+        const val = snapshot.val();
+        sales = val ? Object.values(val) : [];
+        updateAllViews();
+      });
+
+      // 2. Purchases sync
+      db.ref('purchases').on('value', snapshot => {
+        const val = snapshot.val();
+        purchases = val ? Object.values(val) : [];
+        updateAllViews();
+      });
+
+      // 3. Knowledge/Suggestions sync
+      db.ref('knowledge').on('value', snapshot => {
+        const val = snapshot.val();
+        if (val) {
+          if (val.items) items = val.items;
+          if (val.parties) parties = val.parties;
+          refreshSuggestions();
+        }
+      });
+    }
+
+    function updateAllViews() {
+      renderSales();
+      renderPurchases();
+      renderMonthlySummary();
+      renderClientList();
+      refreshSuggestions();
+      if (selectedLedgerParty) showClientDetail(selectedLedgerParty);
+    }
+
+    function switchTab(tabId) {
+      document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
+      document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+
+      if (event && event.currentTarget) {
+        event.currentTarget.classList.add('active');
+      }
+      document.getElementById(`tab-${tabId}`).classList.add('active');
+
+      if (tabId === 'monthly') renderMonthlySummary();
+      if (tabId === 'clients') renderClientList();
+    }
+
+    function calcSaleTotal() {
+      const qty = parseFloat(document.getElementById('saleQty').value) || 0;
+      const rate = parseFloat(document.getElementById('saleRate').value) || 0;
+      const advance = parseFloat(document.getElementById('saleAdvance').value) || 0;
+      const total = qty * rate;
+      document.getElementById('saleTotal').value = total.toFixed(2);
+      document.getElementById('saleBalance').value = Math.max(0, total - advance).toFixed(2);
+    }
+
+    function calcPurTotal() {
+      const qty = parseFloat(document.getElementById('purQty').value) || 0;
+      const rate = parseFloat(document.getElementById('purRate').value) || 0;
+      const advance = parseFloat(document.getElementById('purAdvance').value) || 0;
+      const total = qty * rate;
+      document.getElementById('purTotal').value = total.toFixed(2);
+      document.getElementById('purBalance').value = Math.max(0, total - advance).toFixed(2);
+    }
+
+    function saveSale(e) {
+      e.preventDefault();
+      const client = document.getElementById('saleClient').value.trim();
+      const phone = document.getElementById('salePhone').value.trim();
+      const item = document.getElementById('saleItem').value.trim();
+      const qty = parseFloat(document.getElementById('saleQty').value);
+      const rate = parseFloat(document.getElementById('saleRate').value);
+      const total = qty * rate;
+      const advance = parseFloat(document.getElementById('saleAdvance').value) || 0;
+      const balance = Math.max(0, total - advance);
+      const date = document.getElementById('saleDate').value;
+      const id = 'S_' + Date.now();
+
+      const newRecord = {
+        id, client, phone, item, qty, rate, total,
+        paid: advance, balance, date,
+        payments: advance > 0 ? [{ amount: advance, date }] : []
+      };
+
+      db.ref('sales/' + id).set(newRecord);
+      saveKnowledge(item, client, phone);
+
+      document.getElementById('saleForm').reset();
+      document.getElementById('saleDate').value = new Date().toISOString().split('T')[0];
+      calcSaleTotal();
+      alert('ਸੇਲ ਐਂਟਰੀ ਸੇਵ ਹੋ ਗਈ ਹੈ (ਦੋਵੇਂ ਫ਼ੋਨਾਂ ਵਿੱਚ ਰੀਅਲ-ਟਾਈਮ ਅੱਪਡੇਟ ਹੋ ਚੁੱਕੀ ਹੈ)!');
+    }
+
+    function savePurchase(e) {
+      e.preventDefault();
+      const supplier = document.getElementById('purSupplier').value.trim();
+      const phone = document.getElementById('purPhone').value.trim();
+      const item = document.getElementById('purItem').value.trim();
+      const qty = parseFloat(document.getElementById('purQty').value);
+      const rate = parseFloat(document.getElementById('purRate').value);
+      const total = qty * rate;
+      const advance = parseFloat(document.getElementById('purAdvance').value) || 0;
+      const balance = Math.max(0, total - advance);
+      const date = document.getElementById('purDate').value;
+      const id = 'P_' + Date.now();
+
+      const newRecord = {
+        id, supplier, phone, item, qty, rate, total,
+        paid: advance, balance, date,
+        payments: advance > 0 ? [{ amount: advance, date }] : []
+      };
+
+      db.ref('purchases/' + id).set(newRecord);
+      saveKnowledge(item, supplier, phone);
+
+      document.getElementById('purchaseForm').reset();
+      document.getElementById('purDate').value = new Date().toISOString().split('T')[0];
+      calcPurTotal();
+      alert('ਖਰੀਦ ਐਂਟਰੀ ਸੇਵ ਹੋ ਗਈ ਹੈ!');
+    }
+
+    function saveKnowledge(item, party, phone) {
+      let changed = false;
+      if (item && !items.includes(item)) {
+        items.push(item);
+        changed = true;
+      }
+      if (party) {
+        const found = parties.find(p => p.name.toLowerCase() === party.toLowerCase());
+        if (!found) {
+          parties.push({ name: party, phone: phone || '' });
+          changed = true;
+        } else if (phone && !found.phone) {
+          found.phone = phone;
+          changed = true;
+        }
+      }
+
+      if (changed) {
+        db.ref('knowledge').set({ items, parties });
+      }
+    }
+
+    function refreshSuggestions() {
+      document.getElementById('itemList').innerHTML = items.map(i => `<option value="${i}">`).join('');
+      document.getElementById('clientList').innerHTML = parties.map(p => `<option value="${p.name}">`).join('');
+    }
+
+    function openPaymentModal(id, type) {
+      currentSettlement = { id, type };
+      let record = type === 'sale' ? sales.find(s => s.id === id) : purchases.find(p => p.id === id);
+      document.getElementById('modalSub').textContent = `${type === 'sale' ? 'ਕਲਾਇੰਟ: ' + record.client : 'ਸਪਲਾਇਰ: ' + record.supplier} (${record.item})`;
+      document.getElementById('modalCurrentDue').value = record.balance.toFixed(2);
+      document.getElementById('modalPayAmount').value = record.balance.toFixed(2);
+      document.getElementById('paymentModal').classList.add('show');
+    }
+
+    function closeModal() {
+      document.getElementById('paymentModal').classList.remove('show');
+      currentSettlement = null;
+    }
+
+    function handlePaymentSubmit(e) {
+      e.preventDefault();
+      if (!currentSettlement) return;
+
+      const payAmount = parseFloat(document.getElementById('modalPayAmount').value) || 0;
+      const payDate = document.getElementById('modalPayDate').value;
+      const { id, type } = currentSettlement;
+
+      const path = type === 'sale' ? `sales/${id}` : `purchases/${id}`;
+      const record = type === 'sale' ? sales.find(s => s.id === id) : purchases.find(p => p.id === id);
+
+      if (record) {
+        const actualPay = Math.min(payAmount, record.balance);
+        record.paid += actualPay;
+        record.balance = Math.max(0, record.balance - actualPay);
+        if (!record.payments) record.payments = [];
+        record.payments.push({ amount: actualPay, date: payDate });
+
+        db.ref(path).set(record);
+      }
+
+      closeModal();
+      alert('ਬਕਾਇਆ ਰਕਮ ਅੱਪਡੇਟ ਹੋ ਗਈ ਹੈ!');
+    }
+
+    function deleteRecord(id, type) {
+      if (!confirm('ਕੀ ਤੁਸੀਂ ਇਹ ਰਿਕਾਰਡ ਹਟਾਉਣਾ ਚਾਹੁੰਦੇ ਹੋ? ਇਹ ਦੂਜੇ ਫ਼ੋਨ ਵਿੱਚੋਂ ਵੀ ਹਟ ਜਾਵੇਗਾ।')) return;
+      db.ref(`${type === 'sale' ? 'sales' : 'purchases'}/${id}`).remove();
+    }
+
+    function renderSales() {
+      const tbody = document.querySelector('#salesTable tbody');
+      if (sales.length === 0) {
+        tbody.innerHTML = '<tr><td colspan="9" style="text-align:center;">ਕੋਈ ਸੇਲ ਰਿਕਾਰਡ ਨਹੀਂ ਹੈ</td></tr>';
+        return;
+      }
+      tbody.innerHTML = sales.slice().reverse().map(s => `
+        <tr>
+          <td>${s.date}</td>
+          <td><strong>${s.client}</strong>${s.phone ? `<br><small>${s.phone}</small>` : ''}</td>
+          <td>${s.item}</td>
+          <td>${s.qty}</td>
+          <td>₹${s.rate}</td>
+          <td>₹${s.total}</td>
+          <td style="color:var(--success); font-weight:700;">₹${s.paid}</td>
+          <td><span class="badge ${s.balance > 0 ? 'badge-pending' : 'badge-cleared'}">₹${s.balance}</span></td>
+          <td>
+            <div style="display:flex; gap:4px;">
+              ${s.balance > 0 ? `<button class="btn btn-success btn-sm" onclick="openPaymentModal('${s.id}', 'sale')">ਜਮ੍ਹਾਂ</button>` : ''}
+              ${s.phone ? `<button class="btn btn-whatsapp btn-sm" onclick="sendWhatsAppInvoice('${s.id}', 'sale')">💬 WA</button>` : ''}
+              <button class="btn btn-danger btn-sm" onclick="deleteRecord('${s.id}', 'sale')">🗑️</button>
+            </div>
+          </td>
+        </tr>
+      `).join('');
+    }
+
+    function renderPurchases() {
+      const tbody = document.querySelector('#purchaseTable tbody');
+      if (purchases.length === 0) {
+        tbody.innerHTML = '<tr><td colspan="9" style="text-align:center;">ਕੋਈ ਖਰੀਦ ਰਿਕਾਰਡ ਨਹੀਂ ਹੈ</td></tr>';
+        return;
+      }
+      tbody.innerHTML = purchases.slice().reverse().map(p => `
+        <tr>
+          <td>${p.date}</td>
+          <td><strong>${p.supplier}</strong>${p.phone ? `<br><small>${p.phone}</small>` : ''}</td>
+          <td>${p.item}</td>
+          <td>${p.qty}</td>
+          <td>₹${p.rate}</td>
+          <td>₹${p.total}</td>
+          <td style="color:var(--danger); font-weight:700;">₹${p.paid}</td>
+          <td><span class="badge ${p.balance > 0 ? 'badge-pending' : 'badge-cleared'}">₹${p.balance}</span></td>
+          <td>
+            <div style="display:flex; gap:4px;">
+              ${p.balance > 0 ? `<button class="btn btn-success btn-sm" onclick="openPaymentModal('${p.id}', 'purchase')">ਦਿਓ</button>` : ''}
+              ${p.phone ? `<button class="btn btn-whatsapp btn-sm" onclick="sendWhatsAppInvoice('${p.id}', 'purchase')">💬 WA</button>` : ''}
+              <button class="btn btn-danger btn-sm" onclick="deleteRecord('${p.id}', 'purchase')">🗑️</button>
+            </div>
+          </td>
+        </tr>
+      `).join('');
+    }
+
+    function renderMonthlySummary() {
+      const selectedMonth = document.getElementById('summaryMonth').value;
+      if (!selectedMonth) return;
+
+      document.getElementById('monthlyTableTitle').textContent = `${selectedMonth} ਮਹੀਨੇ ਦਾ ਹਿਸਾਬ`;
+      let totalCredit = 0, totalDebit = 0, marketReceivable = 0;
+
+      sales.forEach(s => marketReceivable += (s.balance || 0));
+
+      const txs = [];
+      sales.forEach(s => {
+        if (s.date && s.date.startsWith(selectedMonth)) {
+          const init = (s.payments && s.payments[0]) ? s.payments[0].amount : s.paid;
+          if (init > 0) {
+            totalCredit += init;
+            txs.push({ date: s.date, type: 'ਸੇਲ ਆਮਦਨ', name: s.client, desc: s.item, in: init, out: 0 });
+          }
+        }
+        if (s.payments && s.payments.length > 1) {
+          for (let i = 1; i < s.payments.length; i++) {
+            if (s.payments[i].date && s.payments[i].date.startsWith(selectedMonth)) {
+              totalCredit += s.payments[i].amount;
+              txs.push({ date: s.payments[i].date, type: 'ਬਕਾਇਆ ਵਸੂਲੀ', name: s.client, desc: s.item, in: s.payments[i].amount, out: 0 });
+            }
+          }
+        }
+      });
+
+      purchases.forEach(p => {
+        if (p.date && p.date.startsWith(selectedMonth)) {
+          const init = (p.payments && p.payments[0]) ? p.payments[0].amount : p.paid;
+          if (init > 0) {
+            totalDebit += init;
+            txs.push({ date: p.date, type: 'ਖਰੀਦ ਖਰਚਾ', name: p.supplier, desc: p.item, in: 0, out: init });
+          }
+        }
+        if (p.payments && p.payments.length > 1) {
+          for (let i = 1; i < p.payments.length; i++) {
+            if (p.payments[i].date && p.payments[i].date.startsWith(selectedMonth)) {
+              totalDebit += p.payments[i].amount;
+              txs.push({ date: p.payments[i].date, type: 'ਸਪਲਾਇਰ ਭੁਗਤਾਨ', name: p.supplier, desc: p.item, in: 0, out: p.payments[i].amount });
+            }
+          }
+        }
+      });
+
+      txs.sort((a, b) => new Date(b.date) - new Date(a.date));
+
+      document.getElementById('statCredit').textContent = `₹${totalCredit.toLocaleString('en-IN')}`;
+      document.getElementById('statDebit').textContent = `₹${totalDebit.toLocaleString('en-IN')}`;
+      document.getElementById('statNet').textContent = `₹${(totalCredit - totalDebit).toLocaleString('en-IN')}`;
+      document.getElementById('statMarketReceivable').textContent = `₹${marketReceivable.toLocaleString('en-IN')}`;
+
+      const tbody = document.querySelector('#monthlyStatementTable tbody');
+      if (txs.length === 0) {
+        tbody.innerHTML = '<tr><td colspan="6" style="text-align:center;">ਇਸ ਮਹੀਨੇ ਕੋਈ ਲੈਣ-ਦੇਣ ਨਹੀਂ ਹੈ</td></tr>';
+        return;
+      }
+
+      tbody.innerHTML = txs.map(t => `
+        <tr>
+          <td>${t.date}</td>
+          <td><span class="badge ${t.in > 0 ? 'badge-cleared' : 'badge-pending'}">${t.type}</span></td>
+          <td><strong>${t.name}</strong></td>
+          <td>${t.desc}</td>
+          <td style="color:var(--success); font-weight:700;">${t.in > 0 ? '+ ₹' + t.in : '-'}</td>
+          <td style="color:var(--danger); font-weight:700;">${t.out > 0 ? '- ₹' + t.out : '-'}</td>
+        </tr>
+      `).join('');
+    }
+
+    function renderClientList() {
+      const query = (document.getElementById('clientSearch').value || '').toLowerCase();
+      const map = {};
+
+      sales.forEach(s => {
+        const k = s.client.trim();
+        if (!map[k]) map[k] = { name: k, phone: s.phone || '', total: 0, balance: 0 };
+        map[k].total += s.total;
+        map[k].balance += s.balance;
+        if (!map[k].phone && s.phone) map[k].phone = s.phone;
+      });
+
+      purchases.forEach(p => {
+        const k = p.supplier.trim();
+        if (!map[k]) map[k] = { name: k, phone: p.phone || '', total: 0, balance: 0 };
+        map[k].total += p.total;
+        map[k].balance -= p.balance;
+        if (!map[k].phone && p.phone) map[k].phone = p.phone;
+      });
+
+      const list = Object.values(map).filter(p => p.name.toLowerCase().includes(query) || p.phone.includes(query));
+      const tbody = document.querySelector('#clientsOverviewTable tbody');
+
+      if (list.length === 0) {
+        tbody.innerHTML = '<tr><td colspan="5" style="text-align:center;">ਕੋਈ ਕਲਾਇੰਟ ਨਹੀਂ ਮਿਲਿਆ</td></tr>';
+        return;
+      }
+
+      tbody.innerHTML = list.map(p => `
+        <tr>
+          <td><strong>${p.name}</strong></td>
+          <td>${p.phone || '-'}</td>
+          <td>₹${p.total}</td>
+          <td>
+            <strong style="color: ${p.balance > 0 ? 'var(--danger)' : p.balance < 0 ? 'var(--warning)' : 'var(--success)'};">
+              ${p.balance > 0 ? `ਲੈਣਾ: ₹${p.balance}` : p.balance < 0 ? `ਦੇਣਾ: ₹${Math.abs(p.balance)}` : 'ਹਿਸਾਬ ਕਲੀਅਰ'}
+            </strong>
+          </td>
+          <td>
+            <button class="btn btn-outline btn-sm" onclick="showClientDetail('${p.name.replace(/'/g, "\\'")}')">ਪੂਰਾ ਖਾਤਾ ਵੇਖੋ</button>
+          </td>
+        </tr>
+      `).join('');
+    }
+
+    function showClientDetail(partyName) {
+      selectedLedgerParty = partyName;
+      document.getElementById('clientDetailCard').style.display = 'block';
+
+      const partySales = sales.filter(s => s.client.trim().toLowerCase() === partyName.trim().toLowerCase());
+      const partyPurchases = purchases.filter(p => p.supplier.trim().toLowerCase() === partyName.trim().toLowerCase());
+      const phone = (partySales[0] && partySales[0].phone) || (partyPurchases[0] && partyPurchases[0].phone) || '';
+
+      document.getElementById('detailClientName').textContent = `${partyName} ਦਾ ਖਾਤਾ`;
+      document.getElementById('detailClientPhone').textContent = phone ? `ਫ਼ੋਨ: ${phone}` : '';
+
+      const txs = [];
+      partySales.forEach(s => txs.push({ id: s.id, date: s.date, type: 'ਸੇਲ', desc: `${s.item} (${s.qty})`, total: s.total, paid: s.paid, balance: s.balance, raw: 'sale' }));
+      partyPurchases.forEach(p => txs.push({ id: p.id, date: p.date, type: 'ਖਰੀਦ', desc: `${p.item} (${p.qty})`, total: p.total, paid: p.paid, balance: p.balance, raw: 'purchase' }));
+
+      txs.sort((a, b) => new Date(b.date) - new Date(a.date));
+      const tbody = document.querySelector('#clientTransactionsTable tbody');
+
+      tbody.innerHTML = txs.map(t => `
+        <tr>
+          <td>${t.date}</td>
+          <td>${t.type}</td>
+          <td>${t.desc}</td>
+          <td>₹${t.total}</td>
+          <td>₹${t.paid}</td>
+          <td><span class="badge ${t.balance > 0 ? 'badge-pending' : 'badge-cleared'}">₹${t.balance}</span></td>
+          <td>
+            ${t.balance > 0 ? `<button class="btn btn-success btn-sm" onclick="openPaymentModal('${t.id}', '${t.raw}')">ਕਲੀਅਰ</button>` : 'ਕਲੀਅਰ'}
+          </td>
+        </tr>
+      `).join('');
+    }
+
+    function closeClientDetail() {
+      document.getElementById('clientDetailCard').style.display = 'none';
+      selectedLedgerParty = null;
+    }
+
+    function sendWhatsAppInvoice(id, type) {
+      const rec = type === 'sale' ? sales.find(s => s.id === id) : purchases.find(p => p.id === id);
+      if (!rec || !rec.phone) return alert('ਨੰਬਰ ਦਰਜ ਨਹੀਂ ਹੈ!');
+      const txt = type === 'sale' 
+        ? `ਸਤਿ ਸ਼੍ਰੀ ਅਕਾਲ ਜੀ ${rec.client},\n\nਬਿੱਲ ਵੇਰਵਾ:\nਆਈਟਮ: ${rec.item}\nਨਗ: ${rec.qty}\nਕੁੱਲ: ₹${rec.total}\nਜਮ੍ਹਾਂ: ₹${rec.paid}\nਬਾਕੀ ਬਕਾਇਆ: ₹${rec.balance}\n\nਧੰਨਵਾਦ!`
+        : `ਸਤਿ ਸ਼੍ਰੀ ਅਕਾਲ ਜੀ ${rec.supplier},\n\nਸਮਾਨ ਵੇਰਵਾ:\nਆਈਟਮ: ${rec.item}\nਕੁੱਲ: ₹${rec.total}\nਦਿੱਤੇ: ₹${rec.paid}\nਬਾਕੀ: ₹${rec.balance}\n\nਧੰਨਵਾਦ!`;
+
+      let num = rec.phone.replace(/[^0-9]/g, '');
+      if (num.length === 10) num = '91' + num;
+      window.open(`https://wa.me/${num}?text=${encodeURIComponent(txt)}`, '_blank');
+    }
+
+    function sendWhatsAppLedger() {
+      if (!selectedLedgerParty) return;
+      const partySales = sales.filter(s => s.client.trim().toLowerCase() === selectedLedgerParty.trim().toLowerCase());
+      const phone = partySales[0] && partySales[0].phone;
+      if (!phone) return alert('ਫ਼ੋਨ ਨੰਬਰ ਉਪਲਬਧ ਨਹੀਂ ਹੈ!');
+
+      let total = 0, bal = 0;
+      partySales.forEach(s => { total += s.total; bal += s.balance; });
+      const txt = `ਸਤਿ ਸ਼੍ਰੀ ਅਕਾਲ ਜੀ ${selectedLedgerParty},\n\nਤੁਹਾਡੇ ਖਾਤੇ ਦਾ ਕੁੱਲ ਬਕਾਇਆ ₹${bal} ਹੈ (ਕੁੱਲ ਕਾਰੋਬਾਰ: ₹${total})। ਕਿਰਪਾ ਕਰਕੇ ਬਕਾਇਆ ਰਕਮ ਕਲੀਅਰ ਕਰੋ ਜੀ।`;
+      let num = phone.replace(/[^0-9]/g, '');
+      if (num.length === 10) num = '91' + num;
+      window.open(`https://wa.me/${num}?text=${encodeURIComponent(txt)}`, '_blank');
+    }
+
+    function exportToCSV(type) {
+      let csv = 'data:text/csv;charset=utf-8,';
+      if (type === 'sales') {
+        csv += 'Date,Client,Phone,Item,Quantity,Rate,Total,Paid,Balance\n';
+        sales.forEach(s => { csv += `"${s.date}","${s.client}","${s.phone || ''}","${s.item}",${s.qty},${s.rate},${s.total},${s.paid},${s.balance}\n`; });
+      } else if (type === 'purchases') {
+        csv += 'Date,Supplier,Phone,Item,Quantity,Rate,Total,Paid,Balance\n';
+        purchases.forEach(p => { csv += `"${p.date}","${p.supplier}","${p.phone || ''}","${p.item}",${p.qty},${p.rate},${p.total},${p.paid},${p.balance}\n`; });
+      }
+      const uri = encodeURI(csv);
+      const link = document.createElement('a');
+      link.href = uri;
+      link.download = `${type}_data.csv`;
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+    }
+  </script>
+</body>
+</html>
