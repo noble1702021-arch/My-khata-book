@@ -73,7 +73,6 @@
       display: inline-block;
     }
 
-    /* Delivery Alert Banner */
     #deliveryReminderBanner {
       display: none;
       background: #fff1f2;
@@ -172,27 +171,54 @@
       padding-bottom: 8px;
     }
 
-    /* Standard Grid */
     .form-grid {
       display: grid;
       grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
       gap: 12px;
     }
 
-    /* Horizontal Layout specifically for Sale Page */
-    .sale-horizontal-form {
+    /* Horizontal layout helpers */
+    .horizontal-row {
       display: flex;
       flex-direction: row;
       flex-wrap: nowrap;
       gap: 12px;
       overflow-x: auto;
-      padding-bottom: 12px;
+      padding-bottom: 10px;
       align-items: flex-end;
     }
 
-    .sale-horizontal-form .form-group {
-      flex: 0 0 180px;
+    .horizontal-row .form-group {
+      flex: 0 0 190px;
       min-width: 170px;
+    }
+
+    .sale-items-box {
+      background: #f8fafc;
+      border: 1.5px dashed #cbd5e1;
+      border-radius: 10px;
+      padding: 14px;
+      margin: 14px 0;
+    }
+
+    .item-entry-row {
+      display: flex;
+      flex-direction: row;
+      flex-wrap: nowrap;
+      gap: 10px;
+      overflow-x: auto;
+      align-items: center;
+      padding: 8px 0;
+      border-bottom: 1px solid #e2e8f0;
+    }
+
+    .item-entry-row:last-child {
+      border-bottom: none;
+    }
+
+    .item-entry-row .field {
+      flex: 0 0 170px;
+      min-width: 150px;
     }
 
     .form-group {
@@ -296,7 +322,6 @@
     .stat-title { font-size: 0.8rem; color: var(--text-muted); font-weight: 600; }
     .stat-val { font-size: 1.3rem; font-weight: 800; margin-top: 4px; }
 
-    /* Modals */
     .modal {
       display: none;
       position: fixed;
@@ -339,7 +364,7 @@
     </div>
   </header>
 
-  <!-- PENDING DELIVERY ALERT POPUP / BANNER -->
+  <!-- PENDING DELIVERY REMINDER BANNER -->
   <div id="deliveryReminderBanner">
     <h4>🔔 ਅੱਜ ਦੇ ਮਾਲ ਡਿਲਿਵਰੀ ਰਿਮਾਈਂਡਰ (Delivery Alerts):</h4>
     <ul id="reminderList"></ul>
@@ -375,18 +400,18 @@
 
   <div class="container">
     
-    <!-- BLOCK 1: SALES (HORIZONTAL ROW LAYOUT) -->
+    <!-- BLOCK 1: SALES WITH MULTI-ITEM SUPPORT -->
     <section id="tab-sale" class="tab-content active">
       <div class="card">
         <div class="card-title">
-          <span id="saleFormTitle">ਨਵੀਂ ਸੇਲ ਆਰਡਰ ਐਂਟਰੀ (ਹੋਰੀਜ਼ੋਂਟਲ ਲਾਈਨ)</span>
+          <span id="saleFormTitle">ਨਵੀਂ ਸੇਲ ਆਰਡਰ ਐਂਟਰੀ (ਇੱਕ ਤੋਂ ਵੱਧ ਆਈਟਮਾਂ ਸ਼ਾਮਲ ਕਰੋ)</span>
           <button type="button" id="cancelSaleEditBtn" class="btn btn-outline btn-sm" style="display:none;" onclick="cancelSaleEdit()">ਰੱਦ ਕਰੋ ✖</button>
         </div>
         <form id="saleForm" onsubmit="saveSale(event)">
           <input type="hidden" id="editSaleId" value="">
           
-          <!-- Horizontal Row for all sale inputs -->
-          <div class="sale-horizontal-form">
+          <!-- Client & Date Details (Horizontal) -->
+          <div class="horizontal-row">
             <div class="form-group">
               <label>ਕਲਾਇੰਟ / ਪਾਰਟੀ</label>
               <input type="text" id="saleClient" list="clientList" placeholder="ਗਾਹਕ ਦਾ ਨਾਮ" required>
@@ -396,36 +421,40 @@
               <input type="tel" id="salePhone" placeholder="10 ਅੰਕਾਂ ਦਾ ਨੰਬਰ" pattern="[0-9]{10}">
             </div>
             <div class="form-group">
-              <label>ਸੇਲ ਆਈਟਮ</label>
-              <input type="text" id="saleItem" list="standardItemList" placeholder="ਚੁਣੋ / ਲਿਖੋ" required>
-            </div>
-            <div class="form-group">
-              <label>ਕੁੱਲ ਨਗ (Qty)</label>
-              <input type="number" id="saleQty" min="1" placeholder="ਮਾਤਰਾ" oninput="calcSaleTotal()" required>
-            </div>
-            <div class="form-group">
-              <label>ਰੇਟ (₹)</label>
-              <input type="number" step="0.01" id="saleRate" min="0" placeholder="ਰੇਟ" oninput="calcSaleTotal()" required>
-            </div>
-            <div class="form-group">
-              <label>ਕੁੱਲ ਰਕਮ (₹)</label>
-              <input type="number" id="saleTotal" readonly>
-            </div>
-            <div class="form-group">
-              <label>ਐਡਵਾਂਸ ਮਿਲੇ (₹)</label>
-              <input type="number" step="0.01" id="saleAdvance" min="0" value="0" oninput="calcSaleTotal()" required>
-            </div>
-            <div class="form-group">
-              <label>ਬਕਾਇਆ ਰਕਮ (₹)</label>
-              <input type="number" id="saleBalance" readonly>
-            </div>
-            <div class="form-group">
               <label>ਬੁਕਿੰਗ ਤਾਰੀਖ</label>
               <input type="date" id="saleDate" required>
             </div>
             <div class="form-group">
               <label>ਡਿਲਿਵਰੀ ਤਾਰੀਖ</label>
               <input type="date" id="saleDeliveryDate" required>
+            </div>
+          </div>
+
+          <!-- Dynamic Items Container -->
+          <div class="sale-items-box">
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;">
+              <strong style="color:var(--primary); font-size:0.95rem;">ਆਈਟਮਾਂ ਦੀ ਸੂਚੀ (Items & Rates)</strong>
+              <button type="button" class="btn btn-primary btn-sm" onclick="addSaleItemRow()">➕ ਹੋਰ ਆਈਟਮ ਜੋੜੋ</button>
+            </div>
+
+            <div id="saleItemsContainer">
+              <!-- Item rows injected here -->
+            </div>
+          </div>
+
+          <!-- Payment Details (Horizontal) -->
+          <div class="horizontal-row">
+            <div class="form-group">
+              <label>ਕੁੱਲ ਰਕਮ / Grand Total (₹)</label>
+              <input type="number" id="saleGrandTotal" readonly>
+            </div>
+            <div class="form-group">
+              <label>ਐਡਵਾਂਸ ਮਿਲੇ (₹)</label>
+              <input type="number" step="0.01" id="saleAdvance" min="0" value="0" oninput="calcSaleGrandTotal()" required>
+            </div>
+            <div class="form-group">
+              <label>ਬਕਾਇਆ ਰਕਮ (₹)</label>
+              <input type="number" id="saleBalance" readonly>
             </div>
           </div>
 
@@ -442,14 +471,14 @@
           <table id="salesTable">
             <thead>
               <tr>
-                <th>ਬੁਕਿੰਗ ਤਾਰੀਖ</th>
-                <th>ਡਿਲਿਵਰੀ ਤਾਰੀਖ</th>
+                <th>ਬੁਕਿੰਗ</th>
+                <th>ਡਿਲਿਵਰੀ</th>
                 <th>ਕਲਾਇੰਟ</th>
-                <th>ਆਈਟਮ</th>
-                <th>ਕੁੱਲ ਆਰਡਰ</th>
-                <th>ਭੇਜਿਆ ਮਾਲ (Dispatched)</th>
-                <th>ਬਾਕੀ ਭੇਜਣ ਵਾਲਾ</th>
-                <th>ਪੇਮੈਂਟ ਬਕਾਇਆ</th>
+                <th>ਆਈਟਮਾਂ ਤੇ ਵੇਰਵਾ</th>
+                <th>ਕੁੱਲ ਰਕਮ</th>
+                <th>ਮਿਲੇ</th>
+                <th>ਬਕਾਇਆ</th>
+                <th>ਡਿਸਪੈਚ ਸਥਿਤੀ</th>
                 <th>ਐਕਸ਼ਨ & ਡਿਸਪੈਚ</th>
               </tr>
             </thead>
@@ -670,8 +699,6 @@
 
     <!-- BLOCK 6: LABOUR PRODUCTION & WAGE LEDGER -->
     <section id="tab-labour" class="tab-content">
-      
-      <!-- Upper Section: Labour Production Entry (Includes Cement Consumption) -->
       <div class="card">
         <div class="card-title">
           <span id="labourFormTitle">1. ਲੇਬਰ ਉਤਪਾਦਨ ਐਂਟਰੀ (Material Made & Cement Used)</span>
@@ -702,7 +729,7 @@
             </div>
             <div class="form-group">
               <label>ਇਹ ਮਾਲ ਬਣਾਉਣ 'ਚ ਵਰਤੀਆਂ ਸੀਮੈਂਟ ਬੋਰੀਆਂ (Bags)</label>
-              <input type="number" id="labourCementBags" min="0" value="0" placeholder="ਸੀਮੈਂਟ ਬੋਰੀਆਂ (ਸਟੋਕ 'ਚੋਂ ਮਾਈਨਸ ਹੋਣਗੀਆਂ)">
+              <input type="number" id="labourCementBags" min="0" value="0" placeholder="ਸੀਮੈਂਟ ਬੋਰੀਆਂ">
             </div>
             <div class="form-group">
               <label>ਕਾਰੀਗਰ / ਲੇਬਰ ਟੀਮ ਦਾ ਨਾਮ</label>
@@ -797,7 +824,6 @@
           </table>
         </div>
       </div>
-
     </section>
 
   </div>
@@ -836,7 +862,7 @@
     </div>
   </div>
 
-  <!-- Dispatch Modal with Next Delivery Date Setting -->
+  <!-- Dispatch Modal with Item Selector and Next Delivery Date -->
   <div class="modal" id="dispatchModal">
     <div class="modal-box">
       <div class="modal-header">
@@ -846,12 +872,16 @@
       <p id="dispatchSub" style="margin-bottom: 12px; font-size: 0.85rem; color: var(--text-muted);"></p>
       <form onsubmit="handleDispatchSubmit(event)">
         <div class="form-group" style="margin-bottom: 12px;">
-          <label>ਬਾਕੀ ਰਹਿੰਦਾ ਮਾਲ (Pending Qty)</label>
+          <label>ਕਿਹੜੀ ਆਈਟਮ ਭੇਜਣੀ ਹੈ?</label>
+          <select id="dispatchItemSelect" onchange="updateDispatchItemPending()" required></select>
+        </div>
+        <div class="form-group" style="margin-bottom: 12px;">
+          <label>ਇਸ ਆਈਟਮ ਦਾ ਬਾਕੀ ਮਾਲ (Pending Qty)</label>
           <input type="number" id="dispatchPendingQty" readonly>
         </div>
         <div class="form-group" style="margin-bottom: 12px;">
           <label>ਹੁਣ ਭੇਜੀ ਜਾ ਰਹੀ ਕੁਆਂਟਿਟੀ (Sending Qty)</label>
-          <input type="number" id="dispatchSendQty" min="1" placeholder="ਜਿਵੇਂ 1500" oninput="checkRemainingForNextDate()" required>
+          <input type="number" id="dispatchSendQty" min="1" placeholder="ਜਿਵੇਂ 50 ਜਾਂ 1000" oninput="checkRemainingForNextDate()" required>
         </div>
         <div class="form-group" style="margin-bottom: 12px;">
           <label>ਮਾਲ ਭੇਜਣ ਦੀ ਤਾਰੀਖ</label>
@@ -938,6 +968,7 @@
       document.getElementById('summaryMonth').value = today.slice(0, 7);
 
       initItemSelectOptions();
+      addSaleItemRow(); // start with one default row
       initDataSync();
     });
 
@@ -952,6 +983,67 @@
 
       const rawList = document.getElementById('rawMaterialList');
       rawList.innerHTML = rawMaterials.map(m => `<option value="${m}">`).join('');
+    }
+
+    // MULTI-ITEM DYNAMIC ROW HANDLING
+    function addSaleItemRow(itemVal = '', qtyVal = '', rateVal = '', lineTotalVal = '') {
+      const container = document.getElementById('saleItemsContainer');
+      const rowId = 'itemRow_' + Date.now() + '_' + Math.random().toString(36).substring(2, 6);
+
+      const div = document.createElement('div');
+      div.className = 'item-entry-row';
+      div.id = rowId;
+      div.innerHTML = `
+        <div class="field form-group" style="flex:2; min-width:180px;">
+          <label>ਆਈਟਮ ਦਾ ਨਾਮ</label>
+          <input type="text" class="sale-item-name" list="standardItemList" placeholder="ਆਈਟਮ ਚੁਣੋ" value="${itemVal}" required>
+        </div>
+        <div class="field form-group" style="flex:1; min-width:100px;">
+          <label>ਕੁੱਲ ਨਗ (Qty)</label>
+          <input type="number" class="sale-item-qty" min="1" placeholder="ਮਾਤਰਾ" value="${qtyVal}" oninput="calcSaleGrandTotal()" required>
+        </div>
+        <div class="field form-group" style="flex:1; min-width:110px;">
+          <label>ਪ੍ਰਤੀ ਨਗ ਰੇਟ (₹)</label>
+          <input type="number" step="0.01" class="sale-item-rate" min="0" placeholder="ਰੇਟ" value="${rateVal}" oninput="calcSaleGrandTotal()" required>
+        </div>
+        <div class="field form-group" style="flex:1; min-width:120px;">
+          <label>ਰਕਮ (₹)</label>
+          <input type="number" class="sale-item-linetotal" value="${lineTotalVal}" readonly>
+        </div>
+        <div style="flex:0 0 50px; margin-top:20px;">
+          <button type="button" class="btn btn-danger btn-sm" onclick="removeSaleItemRow('${rowId}')" title="ਹਟਾਓ">✖</button>
+        </div>
+      `;
+      container.appendChild(div);
+      calcSaleGrandTotal();
+    }
+
+    function removeSaleItemRow(rowId) {
+      const rows = document.querySelectorAll('.item-entry-row');
+      if (rows.length <= 1) {
+        alert('ਘੱਟੋ-ਘੱਟ ਇੱਕ ਆਈਟਮ ਹੋਣੀ ਜ਼ਰੂਰੀ ਹੈ!');
+        return;
+      }
+      const el = document.getElementById(rowId);
+      if (el) el.remove();
+      calcSaleGrandTotal();
+    }
+
+    function calcSaleGrandTotal() {
+      let grandTotal = 0;
+      const rows = document.querySelectorAll('.item-entry-row');
+
+      rows.forEach(r => {
+        const qty = parseFloat(r.querySelector('.sale-item-qty').value) || 0;
+        const rate = parseFloat(r.querySelector('.sale-item-rate').value) || 0;
+        const lineTotal = qty * rate;
+        r.querySelector('.sale-item-linetotal').value = lineTotal.toFixed(2);
+        grandTotal += lineTotal;
+      });
+
+      const advance = parseFloat(document.getElementById('saleAdvance').value) || 0;
+      document.getElementById('saleGrandTotal').value = grandTotal.toFixed(2);
+      document.getElementById('saleBalance').value = Math.max(0, grandTotal - advance).toFixed(2);
     }
 
     function initDataSync() {
@@ -1027,15 +1119,6 @@
       if (tabId === 'labour') { renderLabourTable(); renderLabourPayoutLedger(); }
     }
 
-    function calcSaleTotal() {
-      const qty = parseFloat(document.getElementById('saleQty').value) || 0;
-      const rate = parseFloat(document.getElementById('saleRate').value) || 0;
-      const advance = parseFloat(document.getElementById('saleAdvance').value) || 0;
-      const total = qty * rate;
-      document.getElementById('saleTotal').value = total.toFixed(2);
-      document.getElementById('saleBalance').value = Math.max(0, total - advance).toFixed(2);
-    }
-
     function calcPurTotal() {
       const qty = parseFloat(document.getElementById('purQty').value) || 0;
       const rate = parseFloat(document.getElementById('purRate').value) || 0;
@@ -1052,24 +1135,37 @@
       document.getElementById('labourTotal').value = total.toFixed(2);
     }
 
+    // TOP POPUP / ALERT BANNER FOR DUE DELIVERY DATES
     function renderDeliveryDateAlerts() {
       const banner = document.getElementById('deliveryReminderBanner');
       const list = document.getElementById('reminderList');
       const today = new Date().toISOString().split('T')[0];
-
       const alerts = [];
 
       sales.forEach(s => {
-        const dispatched = (s.dispatches || []).reduce((acc, cur) => acc + (Number(cur.qty) || 0), 0);
-        const rem = s.qty - dispatched;
+        const items = s.items || [{ item: s.item, qty: s.qty }];
+        const dispatches = s.dispatches || [];
+        
+        let pendingTextList = [];
+        items.forEach(it => {
+          let itemDispatched = 0;
+          dispatches.forEach(d => {
+            if ((d.item || '').toLowerCase() === it.item.toLowerCase()) {
+              itemDispatched += Number(d.qty) || 0;
+            }
+          });
+          const rem = it.qty - itemDispatched;
+          if (rem > 0) {
+            pendingTextList.push(`${it.item} ਦੇ ${rem.toLocaleString('en-IN')} ਪੀਸ`);
+          }
+        });
 
-        if (rem > 0) {
+        if (pendingTextList.length > 0) {
           const targetDate = s.nextDeliveryDate || s.deliveryDate;
           if (targetDate && targetDate <= today) {
             alerts.push({
               client: s.client,
-              item: s.item,
-              rem: rem,
+              details: pendingTextList.join(', '),
               date: targetDate,
               isToday: targetDate === today
             });
@@ -1085,24 +1181,40 @@
       banner.style.display = 'block';
       list.innerHTML = alerts.map(a => `
         <li>
-          <strong>${a.client}</strong>: ${a.item} ਦੇ <strong>${a.rem.toLocaleString('en-IN')} ਪੀਸ</strong> ਡਿਲਿਵਰ ਕਰਨ ਦੀ ਤਾਰੀਖ <strong>${a.date}</strong> ${a.isToday ? '(ਅੱਜ ਦਾ ਦਿਨ ਹੈ!)' : '(ਤਾਰੀਖ ਲੰਘ ਚੁੱਕੀ ਹੈ!)'} ਕਿਰਪਾ ਕਰਕੇ ਗੱਡੀ ਰਵਾਨਾ ਕਰੋ।
+          <strong>${a.client}</strong>: ${a.details} ਡਿਲਿਵਰ ਕਰਨ ਦੀ ਤਾਰੀਖ <strong>${a.date}</strong> ${a.isToday ? '(ਅੱਜ ਦਾ ਦਿਨ ਹੈ!)' : '(ਤਾਰੀਖ ਲੰਘ ਚੁੱਕੀ ਹੈ!)'} ਕਿਰਪਾ ਕਰਕੇ ਗੱਡੀ ਰਵਾਨਾ ਕਰੋ।
         </li>
       `).join('');
     }
 
+    // BLOCK 1: Sales Save
     function saveSale(e) {
       e.preventDefault();
       const editId = document.getElementById('editSaleId').value;
       const client = document.getElementById('saleClient').value.trim();
       const phone = document.getElementById('salePhone').value.trim();
-      const item = document.getElementById('saleItem').value.trim();
-      const qty = parseFloat(document.getElementById('saleQty').value);
-      const rate = parseFloat(document.getElementById('saleRate').value);
-      const total = qty * rate;
-      const advance = parseFloat(document.getElementById('saleAdvance').value) || 0;
-      const balance = Math.max(0, total - advance);
       const date = document.getElementById('saleDate').value;
       const deliveryDate = document.getElementById('saleDeliveryDate').value;
+
+      // Collect multiple items
+      const rows = document.querySelectorAll('.item-entry-row');
+      const itemsList = [];
+      let grandTotal = 0;
+
+      rows.forEach(r => {
+        const item = r.querySelector('.sale-item-name').value.trim();
+        const qty = parseFloat(r.querySelector('.sale-item-qty').value) || 0;
+        const rate = parseFloat(r.querySelector('.sale-item-rate').value) || 0;
+        const lineTotal = qty * rate;
+        if (item && qty > 0) {
+          itemsList.push({ item, qty, rate, total: lineTotal });
+          grandTotal += lineTotal;
+        }
+      });
+
+      if (itemsList.length === 0) return alert('ਕਿਰਪਾ ਕਰਕੇ ਘੱਟੋ-ਘੱਟ ਇੱਕ ਆਈਟਮ ਭਰੋ!');
+
+      const advance = parseFloat(document.getElementById('saleAdvance').value) || 0;
+      const balance = Math.max(0, grandTotal - advance);
 
       const id = editId ? editId : ('S_' + Date.now());
       let existingPayments = [];
@@ -1119,8 +1231,10 @@
       }
 
       const record = {
-        id, client, phone, item, qty, rate, total,
-        paid: advance, balance, date, deliveryDate, nextDeliveryDate,
+        id, client, phone, date, deliveryDate, nextDeliveryDate,
+        items: itemsList,
+        total: grandTotal,
+        paid: advance, balance,
         payments: existingPayments,
         dispatches: existingDispatches
       };
@@ -1139,16 +1253,19 @@
       document.getElementById('editSaleId').value = s.id;
       document.getElementById('saleClient').value = s.client;
       document.getElementById('salePhone').value = s.phone || '';
-      document.getElementById('saleItem').value = s.item;
-      document.getElementById('saleQty').value = s.qty;
-      document.getElementById('saleRate').value = s.rate;
-      document.getElementById('saleTotal').value = s.total;
-      document.getElementById('saleAdvance').value = s.paid;
-      document.getElementById('saleBalance').value = s.balance;
       document.getElementById('saleDate').value = s.date;
       document.getElementById('saleDeliveryDate').value = s.deliveryDate || s.date;
+      document.getElementById('saleAdvance').value = s.paid;
 
-      document.getElementById('saleFormTitle').textContent = 'ਸੇਲ ਐਡਿਟ ਕਰੋ';
+      const container = document.getElementById('saleItemsContainer');
+      container.innerHTML = '';
+
+      const items = s.items || [{ item: s.item, qty: s.qty, rate: s.rate, total: s.total }];
+      items.forEach(it => {
+        addSaleItemRow(it.item, it.qty, it.rate, it.total);
+      });
+
+      document.getElementById('saleFormTitle').textContent = 'ਸੇਲ ਆਰਡਰ ਐਡਿਟ ਕਰੋ';
       document.getElementById('saleSubmitBtn').textContent = '💾 ਬਦਲਾਅ ਅੱਪਡੇਟ ਕਰੋ';
       document.getElementById('cancelSaleEditBtn').style.display = 'inline-block';
       window.scrollTo({ top: 0, behavior: 'smooth' });
@@ -1160,30 +1277,57 @@
       const today = new Date().toISOString().split('T')[0];
       document.getElementById('saleDate').value = today;
       document.getElementById('saleDeliveryDate').value = today;
-      document.getElementById('saleFormTitle').textContent = 'ਨਵੀਂ ਸੇਲ ਆਰਡਰ ਐਂਟਰੀ (ਹੋਰੀਜ਼ੋਂਟਲ ਲਾਈਨ)';
+      document.getElementById('saleFormTitle').textContent = 'ਨਵੀਂ ਸੇਲ ਆਰਡਰ ਐਂਟਰੀ (ਇੱਕ ਤੋਂ ਵੱਧ ਆਈਟਮਾਂ ਸ਼ਾਮਲ ਕਰੋ)';
       document.getElementById('saleSubmitBtn').textContent = '➕ ਸੇਲ ਸੇਵ ਕਰੋ';
       document.getElementById('cancelSaleEditBtn').style.display = 'none';
-      calcSaleTotal();
+
+      document.getElementById('saleItemsContainer').innerHTML = '';
+      addSaleItemRow();
     }
 
+    // Dispatch Modal Logic with Item Selector
     function openDispatchModal(saleId) {
       currentDispatchSaleId = saleId;
       const s = sales.find(item => item.id === saleId);
       if (!s) return;
 
-      const dispatched = (s.dispatches || []).reduce((acc, cur) => acc + (Number(cur.qty) || 0), 0);
-      const remaining = s.qty - dispatched;
+      document.getElementById('dispatchSub').textContent = `ਕਲਾਇੰਟ: ${s.client} | ਆਰਡਰ ਤਾਰੀਖ: ${s.date}`;
+      
+      const items = s.items || [{ item: s.item, qty: s.qty }];
+      const select = document.getElementById('dispatchItemSelect');
+      select.innerHTML = items.map((it, idx) => `<option value="${idx}">${it.item} (ਕੁੱਲ: ${it.qty})</option>`).join('');
 
-      document.getElementById('dispatchSub').textContent = `ਕਲਾਇੰਟ: ${s.client} | ਆਈਟਮ: ${s.item} (ਕੁੱਲ ਆਰਡਰ: ${s.qty})`;
-      document.getElementById('dispatchPendingQty').value = remaining;
-      document.getElementById('dispatchSendQty').value = remaining;
-      document.getElementById('dispatchSendQty').max = remaining;
       document.getElementById('dispatchLoaded').checked = false;
       document.getElementById('dispatchUnloaded').checked = false;
       document.getElementById('dispatchNextDate').value = '';
 
-      checkRemainingForNextDate();
+      updateDispatchItemPending();
       document.getElementById('dispatchModal').classList.add('show');
+    }
+
+    function updateDispatchItemPending() {
+      if (!currentDispatchSaleId) return;
+      const s = sales.find(item => item.id === currentDispatchSaleId);
+      if (!s) return;
+
+      const items = s.items || [{ item: s.item, qty: s.qty }];
+      const idx = parseInt(document.getElementById('dispatchItemSelect').value) || 0;
+      const selectedItem = items[idx];
+
+      const dispatches = s.dispatches || [];
+      let itemDispatched = 0;
+      dispatches.forEach(d => {
+        if ((d.item || '').toLowerCase() === (selectedItem.item || '').toLowerCase()) {
+          itemDispatched += Number(d.qty) || 0;
+        }
+      });
+
+      const remaining = selectedItem.qty - itemDispatched;
+      document.getElementById('dispatchPendingQty').value = remaining;
+      document.getElementById('dispatchSendQty').value = remaining;
+      document.getElementById('dispatchSendQty').max = remaining;
+
+      checkRemainingForNextDate();
     }
 
     function checkRemainingForNextDate() {
@@ -1212,6 +1356,10 @@
       const s = sales.find(item => item.id === currentDispatchSaleId);
       if (!s) return;
 
+      const items = s.items || [{ item: s.item, qty: s.qty }];
+      const idx = parseInt(document.getElementById('dispatchItemSelect').value) || 0;
+      const selectedItem = items[idx];
+
       const sendQty = parseFloat(document.getElementById('dispatchSendQty').value) || 0;
       const date = document.getElementById('dispatchDate').value;
       const nextDate = document.getElementById('dispatchNextDate').value;
@@ -1222,24 +1370,23 @@
 
       if (!s.dispatches) s.dispatches = [];
       s.dispatches.push({
+        item: selectedItem.item,
         qty: sendQty,
         date: date,
         loaded: loaded,
         unloaded: unloaded
       });
 
-      const totalDispatched = s.dispatches.reduce((acc, cur) => acc + (Number(cur.qty) || 0), 0);
-      if (totalDispatched < s.qty && nextDate) {
+      if (nextDate) {
         s.nextDeliveryDate = nextDate;
-      } else if (totalDispatched >= s.qty) {
-        s.nextDeliveryDate = '';
       }
 
       db.ref('sales/' + s.id).set(s);
       closeDispatchModal();
-      alert(`🚚 ${sendQty} ਪੀਸ ਡਿਸਪੈਚ ਹੋ ਗਏ ਹਨ ਅਤੇ ਫੈਕਟਰੀ ਸਟੋਕ ਵਿੱਚੋਂ ਘੱਟ ਗਏ ਹਨ!`);
+      alert(`🚚 ${selectedItem.item} ਦੇ ${sendQty} ਪੀਸ ਡਿਸਪੈਚ ਹੋ ਗਏ ਹਨ ਅਤੇ ਫੈਕਟਰੀ ਸਟੋਕ ਵਿੱਚੋਂ ਘੱਟ ਗਏ ਹਨ!`);
     }
 
+    // BLOCK 2: Purchases
     function savePurchase(e) {
       e.preventDefault();
       const editId = document.getElementById('editPurId').value;
@@ -1307,6 +1454,7 @@
       calcPurTotal();
     }
 
+    // BLOCK 6: Labour Production & Wage Ledger
     function saveLabour(e) {
       e.preventDefault();
       const editId = document.getElementById('editLabourId').value;
@@ -1326,7 +1474,7 @@
 
       db.ref('labourLogs/' + id).set(record);
       cancelLabourEdit();
-      alert(editId ? 'ਲੇਬਰ ਐਂਟਰੀ ਅੱਪਡੇਟ ਹੋ ਗਈ ਹੈ!' : 'ਲੇਬਰ ਉਤਪਾਦਨ ਸੇਵ ਹੋ ਗਿਆ ਹੈ (ਫੈਕਟਰੀ ਸਟੋਕ ਵਿੱਚ ਆਈਟਮ ਜੁੜੀ ਅਤੇ ਸੀਮੈਂਟ ਮਾਈਨਸ ਹੋ ਗਿਆ)!');
+      alert(editId ? 'ਲੇਬਰ ਐਂਟਰੀ ਅੱਪਡੇਟ ਹੋ ਗਈ ਹੈ!' : 'ਲੇਬਰ ਉਤਪਾਦਨ ਸੇਵ ਹੋ ਗਿਆ ਹੈ!');
     }
 
     function cancelLabourEdit() {
@@ -1419,6 +1567,7 @@
       `).join('');
     }
 
+    // BLOCK 5: FACTORY STOCK LIVE CALCULATION
     function renderFactoryStock() {
       const tbody = document.querySelector('#stockTable tbody');
       
@@ -1444,12 +1593,12 @@
           });
 
           sales.forEach(s => {
-            if (s.item && s.item.trim().toLowerCase() === itemName.trim().toLowerCase()) {
-              if (s.dispatches && s.dispatches.length > 0) {
-                s.dispatches.forEach(d => {
+            if (s.dispatches && s.dispatches.length > 0) {
+              s.dispatches.forEach(d => {
+                if ((d.item || '').toLowerCase() === itemName.toLowerCase()) {
                   totalSoldOrUsed += Number(d.qty) || 0;
-                });
-              }
+                }
+              });
             }
           });
         }
@@ -1504,7 +1653,7 @@
     function openPaymentModal(id, type) {
       currentSettlement = { id, type };
       let record = type === 'sale' ? sales.find(s => s.id === id) : purchases.find(p => p.id === id);
-      document.getElementById('modalSub').textContent = `${type === 'sale' ? 'ਕਲਾਇੰਟ: ' + record.client : 'ਸਪਲਾਇਰ: ' + record.supplier} (${record.item})`;
+      document.getElementById('modalSub').textContent = `${type === 'sale' ? 'ਕਲਾਇੰਟ: ' + record.client : 'ਸਪਲਾਇਰ: ' + record.supplier}`;
       document.getElementById('modalCurrentDue').value = record.balance.toFixed(2);
       document.getElementById('modalPayAmount').value = record.balance.toFixed(2);
       document.getElementById('paymentModal').classList.add('show');
@@ -1552,20 +1701,34 @@
         return;
       }
       tbody.innerHTML = sales.slice().reverse().map(s => {
-        const dispatched = (s.dispatches || []).reduce((acc, cur) => acc + (Number(cur.qty) || 0), 0);
-        const remaining = s.qty - dispatched;
-        const isCompleted = remaining <= 0;
+        const items = s.items || [{ item: s.item, qty: s.qty, rate: s.rate, total: s.total }];
+        const dispatches = s.dispatches || [];
+
+        // Format items details
+        const itemsHtml = items.map(it => `
+          <div style="font-size:0.82rem; margin-bottom:2px;">
+            <strong>${it.item}</strong>: ${it.qty} ਨਗ × ₹${it.rate} = <span style="color:var(--primary); font-weight:700;">₹${it.total}</span>
+          </div>
+        `).join('');
+
+        // Calculate dispatch status across all items
+        let totalItemsQty = 0;
+        let totalDispatchedQty = 0;
+        items.forEach(it => totalItemsQty += (Number(it.qty) || 0));
+        dispatches.forEach(d => totalDispatchedQty += (Number(d.qty) || 0));
+
+        const isCompleted = totalDispatchedQty >= totalItemsQty;
 
         let dispatchBadges = '';
-        if (s.dispatches && s.dispatches.length > 0) {
-          dispatchBadges = s.dispatches.map(d => 
+        if (dispatches.length > 0) {
+          dispatchBadges = dispatches.map(d => 
             `<small style="display:block; color:var(--text-muted); font-size:0.75rem;">
-              • ${d.qty} (${d.date}) ${d.loaded ? '☑️L' : ''} ${d.unloaded ? '☑️U' : ''}
+              • ${d.item}: ${d.qty} (${d.date}) ${d.loaded ? '☑️L' : ''} ${d.unloaded ? '☑️U' : ''}
             </small>`
           ).join('');
         }
 
-        const nextDateDisplay = (remaining > 0 && s.nextDeliveryDate) 
+        const nextDateDisplay = (!isCompleted && s.nextDeliveryDate) 
           ? `<br><small style="color:var(--danger); font-weight:700;">ਅਗਲੀ: ${s.nextDeliveryDate}</small>` 
           : '';
 
@@ -1577,21 +1740,15 @@
               ${nextDateDisplay}
             </td>
             <td><strong>${s.client}</strong>${s.phone ? `<br><small>${s.phone}</small>` : ''}</td>
-            <td>${s.item}</td>
-            <td>${s.qty.toLocaleString('en-IN')}</td>
+            <td>${itemsHtml}</td>
+            <td><strong>₹${s.total}</strong></td>
+            <td style="color:var(--success); font-weight:700;">₹${s.paid}</td>
+            <td><span class="badge ${s.balance > 0 ? 'badge-pending' : 'badge-cleared'}">₹${s.balance}</span></td>
             <td>
-              <span class="badge ${isCompleted ? 'badge-cleared' : dispatched > 0 ? 'badge-partial' : 'badge-pending'}">
-                ${dispatched.toLocaleString('en-IN')} ਭੇਜੇ
+              <span class="badge ${isCompleted ? 'badge-cleared' : totalDispatchedQty > 0 ? 'badge-partial' : 'badge-pending'}">
+                ${isCompleted ? 'ਪੂਰਾ ਡਿਲੀਵਰਡ' : `${totalDispatchedQty}/${totalItemsQty} ਭੇਜੇ`}
               </span>
               ${dispatchBadges}
-            </td>
-            <td>
-              <span class="badge ${isCompleted ? 'badge-cleared' : 'badge-pending'}">
-                ${isCompleted ? 'ਪੂਰਾ ਡਿਲੀਵਰਡ' : remaining.toLocaleString('en-IN') + ' ਪੈਂਡਿੰਗ'}
-              </span>
-            </td>
-            <td>
-              <span class="badge ${s.balance > 0 ? 'badge-pending' : 'badge-cleared'}">₹${s.balance}</span>
             </td>
             <td>
               <div style="display:flex; flex-wrap:wrap; gap:4px;">
@@ -1646,18 +1803,19 @@
 
       const txs = [];
       sales.forEach(s => {
+        const itemNames = (s.items || [{ item: s.item }]).map(i => i.item).join(', ');
         if (s.date && s.date.startsWith(selectedMonth)) {
           const init = (s.payments && s.payments[0]) ? s.payments[0].amount : s.paid;
           if (init > 0) {
             totalCredit += init;
-            txs.push({ date: s.date, type: 'ਸੇਲ ਆਮਦਨ', name: s.client, desc: s.item, in: init, out: 0 });
+            txs.push({ date: s.date, type: 'ਸੇਲ ਆਮਦਨ', name: s.client, desc: itemNames, in: init, out: 0 });
           }
         }
         if (s.payments && s.payments.length > 1) {
           for (let i = 1; i < s.payments.length; i++) {
             if (s.payments[i].date && s.payments[i].date.startsWith(selectedMonth)) {
               totalCredit += s.payments[i].amount;
-              txs.push({ date: s.payments[i].date, type: 'ਬਕਾਇਆ ਵਸੂਲੀ', name: s.client, desc: s.item, in: s.payments[i].amount, out: 0 });
+              txs.push({ date: s.payments[i].date, type: 'ਬਕਾਇਆ ਵਸੂਲੀ', name: s.client, desc: itemNames, in: s.payments[i].amount, out: 0 });
             }
           }
         }
@@ -1770,7 +1928,10 @@
       document.getElementById('detailClientPhone').textContent = phone ? `ਫ਼ੋਨ: ${phone}` : '';
 
       const txs = [];
-      partySales.forEach(s => txs.push({ id: s.id, date: s.date, type: 'ਸੇਲ', desc: `${s.item} (${s.qty})`, total: s.total, paid: s.paid, balance: s.balance, raw: 'sale' }));
+      partySales.forEach(s => {
+        const itemNames = (s.items || [{ item: s.item }]).map(i => i.item).join(', ');
+        txs.push({ id: s.id, date: s.date, type: 'ਸੇਲ', desc: itemNames, total: s.total, paid: s.paid, balance: s.balance, raw: 'sale' });
+      });
       partyPurchases.forEach(p => txs.push({ id: p.id, date: p.date, type: 'ਖਰੀਦ', desc: `${p.item} (${p.qty})`, total: p.total, paid: p.paid, balance: p.balance, raw: 'purchase' }));
 
       txs.sort((a, b) => new Date(b.date) - new Date(a.date));
@@ -1799,8 +1960,15 @@
     function sendWhatsAppInvoice(id, type) {
       const rec = type === 'sale' ? sales.find(s => s.id === id) : purchases.find(p => p.id === id);
       if (!rec || !rec.phone) return alert('ਨੰਬਰ ਦਰਜ ਨਹੀਂ ਹੈ!');
+      
+      let itemLines = '';
+      if (type === 'sale') {
+        const items = rec.items || [{ item: rec.item, qty: rec.qty, rate: rec.rate, total: rec.total }];
+        itemLines = items.map(i => `• ${i.item}: ${i.qty} ਨਗ @ ₹${i.rate} = ₹${i.total}`).join('\n');
+      }
+
       const txt = type === 'sale' 
-        ? `ਸਤਿ ਸ਼੍ਰੀ ਅਕਾਲ ਜੀ ${rec.client},\n\nਬਿੱਲ ਵੇਰਵਾ:\nਆਈਟਮ: ${rec.item}\nਆਰਡਰ ਨਗ: ${rec.qty}\nਡਿਲਿਵਰੀ ਤਾਰੀਖ: ${rec.deliveryDate || rec.date}\nਕੁੱਲ: ₹${rec.total}\nਜਮ੍ਹਾਂ: ₹${rec.paid}\nਬਾਕੀ ਬਕਾਇਆ: ₹${rec.balance}\n\nਧੰਨਵਾਦ!`
+        ? `ਸਤਿ ਸ਼੍ਰੀ ਅਕਾਲ ਜੀ ${rec.client},\n\nਬਿੱਲ ਵੇਰਵਾ:\n${itemLines}\n\nਕੁੱਲ ਰਕਮ: ₹${rec.total}\nਜਮ੍ਹਾਂ / ਐਡਵਾਂਸ: ₹${rec.paid}\nਬਾਕੀ ਬਕਾਇਆ: ₹${rec.balance}\nਡਿਲਿਵਰੀ ਤਾਰੀਖ: ${rec.deliveryDate || rec.date}\n\nਧੰਨਵਾਦ!`
         : `ਸਤਿ ਸ਼੍ਰੀ ਅਕਾਲ ਜੀ ${rec.supplier},\n\nਸਮਾਨ ਵੇਰਵਾ:\nਆਈਟਮ: ${rec.item}\nਕੁੱਲ: ₹${rec.total}\nਦਿੱਤੇ: ₹${rec.paid}\nਬਾਕੀ: ₹${rec.balance}\n\nਧੰਨਵਾਦ!`;
 
       let num = rec.phone.replace(/[^0-9]/g, '');
@@ -1825,8 +1993,11 @@
     function exportToCSV(type) {
       let csv = 'data:text/csv;charset=utf-8,';
       if (type === 'sales') {
-        csv += 'Date,DeliveryDate,Client,Phone,Item,Quantity,Rate,Total,Paid,Balance\n';
-        sales.forEach(s => { csv += `"${s.date}","${s.deliveryDate||''}","${s.client}","${s.phone || ''}","${s.item}",${s.qty},${s.rate},${s.total},${s.paid},${s.balance}\n`; });
+        csv += 'Date,DeliveryDate,Client,Phone,Items,Total,Paid,Balance\n';
+        sales.forEach(s => {
+          const itemSummary = (s.items || [{ item: s.item, qty: s.qty }]).map(i => `${i.item}(${i.qty})`).join('; ');
+          csv += `"${s.date}","${s.deliveryDate||''}","${s.client}","${s.phone || ''}","${itemSummary}",${s.total},${s.paid},${s.balance}\n`;
+        });
       } else if (type === 'purchases') {
         csv += 'Date,Supplier,Phone,Item,Quantity,Rate,Total,Paid,Balance\n';
         purchases.forEach(p => { csv += `"${p.date}","${p.supplier}","${p.phone || ''}","${p.item}",${p.qty},${p.rate},${p.total},${p.paid},${p.balance}\n`; });
@@ -1843,8 +2014,12 @@
           } else {
             labourLogs.forEach(l => { if (l.item.toLowerCase() === itemName.toLowerCase()) made += Number(l.qty) || 0; });
             sales.forEach(s => {
-              if (s.item.toLowerCase() === itemName.toLowerCase() && s.dispatches) {
-                s.dispatches.forEach(d => sold += Number(d.qty) || 0);
+              if (s.dispatches) {
+                s.dispatches.forEach(d => {
+                  if ((d.item || '').toLowerCase() === itemName.toLowerCase()) {
+                    sold += Number(d.qty) || 0;
+                  }
+                });
               }
             });
           }
