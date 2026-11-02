@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>ਖਾਤਾ ਬੁੱਕ (Khata Book Realtime Sync)</title>
+  <title>ਖਾਤਾ ਬੁੱਕ ਅਤੇ ਫੈਕਟਰੀ ਸਟੋਕ ਮੈਨੇਜਰ</title>
   <link href="https://fonts.googleapis.com/css2?family=Mukta+Mahee:wght@400;600;700;800&display=swap" rel="stylesheet">
   
   <!-- Firebase Scripts -->
@@ -17,6 +17,7 @@
       --success: #16a34a;
       --danger: #dc2626;
       --warning: #f59e0b;
+      --purple: #7c3aed;
       --bg: #f3f4f6;
       --surface: #ffffff;
       --text: #1f2937;
@@ -47,7 +48,7 @@
     }
 
     header h1 {
-      font-size: 1.5rem;
+      font-size: 1.45rem;
       font-weight: 800;
     }
 
@@ -72,19 +73,20 @@
 
     .nav-tabs {
       display: grid;
-      grid-template-columns: repeat(4, 1fr);
+      grid-template-columns: repeat(6, 1fr);
       background: var(--surface);
       position: sticky;
       top: 0;
       z-index: 50;
       border-bottom: 1px solid var(--border);
+      overflow-x: auto;
     }
 
     .tab-btn {
-      padding: 12px 4px;
+      padding: 12px 2px;
       border: none;
       background: none;
-      font-size: 0.85rem;
+      font-size: 0.78rem;
       font-weight: 700;
       color: var(--text-muted);
       cursor: pointer;
@@ -94,6 +96,7 @@
       gap: 3px;
       border-bottom: 3px solid transparent;
       transition: all 0.2s;
+      white-space: nowrap;
     }
 
     .tab-btn.active {
@@ -103,7 +106,7 @@
     }
 
     .container {
-      max-width: 900px;
+      max-width: 960px;
       margin: 16px auto;
       padding: 0 14px;
     }
@@ -157,7 +160,7 @@
       outline: none;
     }
 
-    .form-group input:focus { border-color: var(--primary-light); }
+    .form-group input:focus, .form-group select:focus { border-color: var(--primary-light); }
     .form-group input[readonly] { background: #f8fafc; font-weight: bold; color: var(--primary); }
 
     .btn {
@@ -177,6 +180,7 @@
     .btn-primary { background: var(--primary); color: white; }
     .btn-success { background: var(--success); color: white; }
     .btn-danger { background: var(--danger); color: white; }
+    .btn-purple { background: var(--purple); color: white; }
     .btn-edit { background: #0284c7; color: white; }
     .btn-outline { background: transparent; border: 1.5px solid var(--border); color: var(--text); }
     .btn-whatsapp { background: #25d366; color: white; }
@@ -196,6 +200,7 @@
     }
     .badge-pending { background: #fee2e2; color: var(--danger); }
     .badge-cleared { background: #dcfce7; color: var(--success); }
+    .badge-stock { background: #e0e7ff; color: #3730a3; font-size: 0.85rem; }
 
     .stats-grid {
       display: grid;
@@ -214,6 +219,7 @@
     .stat-card.credit { border-left-color: var(--success); }
     .stat-card.debit { border-left-color: var(--danger); }
     .stat-card.pending { border-left-color: var(--warning); }
+    .stat-card.purple { border-left-color: var(--purple); }
     .stat-title { font-size: 0.8rem; color: var(--text-muted); font-weight: 600; }
     .stat-val { font-size: 1.3rem; font-weight: 800; margin-top: 4px; }
 
@@ -245,7 +251,7 @@
     .close-modal { font-size: 1.4rem; border: none; background: none; cursor: pointer; }
 
     @media (max-width: 600px) {
-      .tab-btn { font-size: 0.75rem; }
+      .tab-btn { font-size: 0.7rem; padding: 10px 1px; }
       .form-grid { grid-template-columns: 1fr; }
     }
   </style>
@@ -253,17 +259,18 @@
 <body>
 
   <header>
-    <h1>ਖਾਤਾ ਬੁੱਕ (Live Sync)</h1>
+    <h1>ਖਾਤਾ ਬੁੱਕ & ਫੈਕਟਰੀ ਮੈਨੇਜਰ</h1>
     <div class="sync-status">
       <span class="dot" id="syncDot"></span>
       <span id="syncText">ਕਨੈਕਟ ਹੋ ਰਿਹਾ ਹੈ...</span>
     </div>
   </header>
 
+  <!-- 6 MAIN BLOCKS NAVIGATION -->
   <nav class="nav-tabs">
     <button class="tab-btn active" onclick="switchTab('sale')">
       <span>📦</span>
-      <span>1. ਸੇਲ ਆਈਟਮਸ</span>
+      <span>1. ਸੇਲ</span>
     </button>
     <button class="tab-btn" onclick="switchTab('purchase')">
       <span>🛒</span>
@@ -275,7 +282,15 @@
     </button>
     <button class="tab-btn" onclick="switchTab('clients')">
       <span>👥</span>
-      <span>4. ਸਾਰੇ ਕਲਾਇੰਟਸ</span>
+      <span>4. ਕਲਾਇੰਟਸ</span>
+    </button>
+    <button class="tab-btn" onclick="switchTab('stock')">
+      <span>🏭</span>
+      <span>5. ਫੈਕਟਰੀ ਸਟੋਕ</span>
+    </button>
+    <button class="tab-btn" onclick="switchTab('labour')">
+      <span>👷</span>
+      <span>6. ਲੇਬਰ ਪੇ-ਰੇਟ</span>
     </button>
   </nav>
 
@@ -285,7 +300,7 @@
     <section id="tab-sale" class="tab-content active">
       <div class="card">
         <div class="card-title">
-          <span id="saleFormTitle">ਨਵੀਂ ਸੇਲ ਐਂਟਰੀ</span>
+          <span id="saleFormTitle">ਨਵੀਂ ਸੇਲ ਐਂਟਰੀ (ਸਟੋਕ ਵਿੱਚੋਂ ਆਟੋ-ਮਾਈਨਸ ਹੋਵੇਗੀ)</span>
           <button type="button" id="cancelSaleEditBtn" class="btn btn-outline btn-sm" style="display:none;" onclick="cancelSaleEdit()">ਰੱਦ ਕਰੋ ✖</button>
         </div>
         <form id="saleForm" onsubmit="saveSale(event)">
@@ -300,11 +315,11 @@
               <input type="tel" id="salePhone" placeholder="10 ਅੰਕਾਂ ਦਾ ਨੰਬਰ" pattern="[0-9]{10}">
             </div>
             <div class="form-group">
-              <label>ਆਈਟਮ ਦਾ ਨਾਮ</label>
-              <input type="text" id="saleItem" list="itemList" placeholder="ਜਿਵੇਂ 60 mm ਬਲੌਕ ਇੱਟ" required>
+              <label>ਸੇਲ ਆਈਟਮ (17 ਸਟੈਂਡਰਡ ਆਈਟਮਾਂ ਵਿੱਚੋਂ)</label>
+              <input type="text" id="saleItem" list="standardItemList" placeholder="ਚੁਣੋ ਜਾਂ ਟਾਈਪ ਕਰੋ" required>
             </div>
             <div class="form-group">
-              <label>ਕੁੱਲ ਨਗ / ਕੁਆਂਟਿਟੀ</label>
+              <label>ਕੁੱਲ ਨਗ / ਕੁਆਂਟਿਟੀ (Qty)</label>
               <input type="number" id="saleQty" min="1" placeholder="ਮਾਤਰਾ" oninput="calcSaleTotal()" required>
             </div>
             <div class="form-group">
@@ -378,7 +393,7 @@
             </div>
             <div class="form-group">
               <label>ਸਮਾਨ ਦਾ ਨਾਮ</label>
-              <input type="text" id="purItem" list="itemList" placeholder="ਸੀਮਿੰਟ, ਡਸਟ..." required>
+              <input type="text" id="purItem" list="rawMaterialList" placeholder="ਸੀਮਿੰਟ, ਡਸਟ, ਫਲਾਈ ਐਸ਼..." required>
             </div>
             <div class="form-group">
               <label>ਕੁਆਂਟਿਟੀ / ਮਾਤਰਾ</label>
@@ -540,9 +555,105 @@
       </div>
     </section>
 
+    <!-- BLOCK 5: FACTORY STOCK (17 ITEMS AUTO-CALCULATED) -->
+    <section id="tab-stock" class="tab-content">
+      <div class="card">
+        <div class="card-title">
+          <span>ਫੈਕਟਰੀ ਸਟੋਕ ਰਜਿਸਟਰ (17 ਆਈਟਮਾਂ ਦਾ ਲਾਈਵ ਸਟੋਕ)</span>
+          <button class="btn btn-outline btn-sm" onclick="exportToCSV('stock')">📥 Stock Export</button>
+        </div>
+        <p style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 12px;">
+          ℹ️ ਲੇਬਰ ਬਲੌਕ ਵਿੱਚ ਬਣਿਆ ਮਾਲ ਇੱਥੇ ਜੁੜਦਾ ਹੈ (+) ਅਤੇ ਸੇਲ ਵਿੱਚ ਵੇਚਿਆ ਮਾਲ ਆਟੋਮੈਟਿਕ ਮਾਈਨਸ (-) ਹੁੰਦਾ ਹੈ।
+        </p>
+        <div class="table-responsive">
+          <table id="stockTable">
+            <thead>
+              <tr>
+                <th>ਸੀਰੀਅਲ ਨੰ.</th>
+                <th>ਆਈਟਮ ਦਾ ਨਾਮ</th>
+                <th>ਕੁੱਲ ਬਣਿਆ ਮਾਲ (Made +)</th>
+                <th>ਕੁੱਲ ਵੇਚਿਆ ਮਾਲ (Sold -)</th>
+                <th>ਮੌਜੂਦਾ ਸਟੋਕ (Available Balance)</th>
+              </tr>
+            </thead>
+            <tbody></tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+    <!-- BLOCK 6: LABOUR PAY RATE & PRODUCTION -->
+    <section id="tab-labour" class="tab-content">
+      <div class="card">
+        <div class="card-title">
+          <span id="labourFormTitle">ਨਵੀਂ ਲੇਬਰ ਪ੍ਰੋਡਕਸ਼ਨ ਐਂਟਰੀ (Material Made)</span>
+          <button type="button" id="cancelLabourEditBtn" class="btn btn-outline btn-sm" style="display:none;" onclick="cancelLabourEdit()">ਰੱਦ ਕਰੋ ✖</button>
+        </div>
+        <form id="labourForm" onsubmit="saveLabour(event)">
+          <input type="hidden" id="editLabourId" value="">
+          <div class="form-grid">
+            <div class="form-group">
+              <label>ਤਾਰੀਖ (Date)</label>
+              <input type="date" id="labourDate" required>
+            </div>
+            <div class="form-group">
+              <label>ਆਈਟਮ (17 ਆਈਟਮਾਂ ਦੀ ਸੂਚੀ)</label>
+              <select id="labourItem" required>
+                <!-- 17 Fixed items options injected automatically -->
+              </select>
+            </div>
+            <div class="form-group">
+              <label>ਕੁੱਲ ਬਣੇ ਪੀਸ (Material Made / Qty)</label>
+              <input type="number" id="labourQty" min="1" placeholder="ਜਿਵੇਂ 5000" oninput="calcLabourTotal()" required>
+            </div>
+            <div class="form-group">
+              <label>ਲੇਬਰ ਪ੍ਰਤੀ ਪੀਸ ਰੇਟ (Rate ₹)</label>
+              <input type="number" step="0.01" id="labourRate" min="0" placeholder="ਜਿਵੇਂ 1.50" oninput="calcLabourTotal()" required>
+            </div>
+            <div class="form-group">
+              <label>ਕੁੱਲ ਲੇਬਰ ਪੇਮੈਂਟ (Payable ₹)</label>
+              <input type="number" id="labourTotal" readonly>
+            </div>
+            <div class="form-group">
+              <label>ਕਾਰੀਗਰ / ਲੇਬਰ ਟੀਮ ਦਾ ਨਾਮ</label>
+              <input type="text" id="labourTeam" placeholder="ਮਿਸਤਰੀ ਜਾਂ ਟੀਮ ਨਾਮ (ਵਿਕਲਪਿਕ)">
+            </div>
+          </div>
+          <div style="margin-top: 14px; display: flex; gap: 10px;">
+            <button type="submit" id="labourSubmitBtn" class="btn btn-purple">➕ ਲੇਬਰ ਐਂਟਰੀ ਸੇਵ ਕਰੋ</button>
+            <button type="button" class="btn btn-outline" onclick="exportToCSV('labour')">📥 ਲੇਬਰ ਰਿਕਾਰਡ Export</button>
+          </div>
+        </form>
+      </div>
+
+      <div class="card">
+        <div class="card-title">
+          <span>ਲੇਬਰ ਉਤਪਾਦਨ ਅਤੇ ਮਜ਼ਦੂਰੀ ਰਿਕਾਰਡ (Production Logs)</span>
+        </div>
+        <div class="table-responsive">
+          <table id="labourTable">
+            <thead>
+              <tr>
+                <th>ਤਾਰੀਖ</th>
+                <th>ਆਈਟਮ</th>
+                <th>ਬਣੇ ਪੀਸ</th>
+                <th>ਰੇਟ (₹)</th>
+                <th>ਕੁੱਲ ਮਜ਼ਦੂਰੀ (₹)</th>
+                <th>ਲੇਬਰ ਟੀਮ</th>
+                <th>ਐਕਸ਼ਨ</th>
+              </tr>
+            </thead>
+            <tbody></tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
   </div>
 
-  <datalist id="itemList"></datalist>
+  <!-- Reusable Datalists -->
+  <datalist id="standardItemList"></datalist>
+  <datalist id="rawMaterialList"></datalist>
   <datalist id="clientList"></datalist>
 
   <!-- Quick Balance Settlement Modal -->
@@ -575,6 +686,29 @@
   </div>
 
   <script>
+    // -------------------------------------------------------------
+    // 17 FIXED ITEMS FROM USER LIST (IMAGE)
+    // -------------------------------------------------------------
+    const STANDARD_17_ITEMS = [
+      "BARFI 60 MM",
+      "ZABRA 60 MM",
+      "ZABRA 40 MM",
+      "DUMBLE 80 MM",
+      "DUMBLE 60 MM",
+      "DUMBLE 40 MM",
+      "MALINO 60 MM",
+      "V SHAPE 60 MM",
+      "BRICK 60 MM",
+      "PATHER 60 MM",
+      "CRAVE",
+      "CHOKET",
+      "CHANNEL",
+      "BANCH",
+      "TABLE",
+      "4*4 dabi",
+      "Stone 80mm"
+    ];
+
     const firebaseConfig = {
       apiKey: "AIzaSyAZdQ-7cmL5PmKY7X5tTGCjYy1JCbilleE",
       authDomain: "my-khatabook-b2732.firebaseapp.com",
@@ -590,8 +724,9 @@
 
     let sales = [];
     let purchases = [];
-    let items = ['60 mm ਬਲੌਕ ਇੱਟ', '80 mm ਇੰਟਰਲਾਕ', 'ਕਵਰ ਬਲਾਕ', 'ਫਲਾਈ ਐਸ਼ ਇੱਟ', 'ਸੀਮਿੰਟ'];
+    let labourLogs = [];
     let parties = [];
+    let rawMaterials = ['ਸੀਮਿੰਟ', 'ਰੇਤ / ਡਸਟ', 'ਫਲਾਈ ਐਸ਼', 'ਕੈਮੀਕਲ'];
 
     let currentSettlement = null;
     let selectedLedgerParty = null;
@@ -600,11 +735,26 @@
       const today = new Date().toISOString().split('T')[0];
       document.getElementById('saleDate').value = today;
       document.getElementById('purDate').value = today;
+      document.getElementById('labourDate').value = today;
       document.getElementById('modalPayDate').value = today;
       document.getElementById('summaryMonth').value = today.slice(0, 7);
 
+      initItemSelectOptions();
       initDataSync();
     });
+
+    function initItemSelectOptions() {
+      const select = document.getElementById('labourItem');
+      select.innerHTML = STANDARD_17_ITEMS.map((item, idx) => 
+        `<option value="${item}">${idx + 1}) ${item}</option>`
+      ).join('');
+
+      const datalist = document.getElementById('standardItemList');
+      datalist.innerHTML = STANDARD_17_ITEMS.map(item => `<option value="${item}">`).join('');
+
+      const rawList = document.getElementById('rawMaterialList');
+      rawList.innerHTML = rawMaterials.map(m => `<option value="${m}">`).join('');
+    }
 
     function initDataSync() {
       const dot = document.getElementById('syncDot');
@@ -620,25 +770,32 @@
         }
       });
 
+      // 1. Sales sync
       db.ref('sales').on('value', snapshot => {
         const val = snapshot.val();
         sales = val ? Object.values(val) : [];
         updateAllViews();
       });
 
+      // 2. Purchases sync
       db.ref('purchases').on('value', snapshot => {
         const val = snapshot.val();
         purchases = val ? Object.values(val) : [];
         updateAllViews();
       });
 
-      db.ref('knowledge').on('value', snapshot => {
+      // 3. Labour Logs sync
+      db.ref('labourLogs').on('value', snapshot => {
         const val = snapshot.val();
-        if (val) {
-          if (val.items) items = val.items;
-          if (val.parties) parties = val.parties;
-          refreshSuggestions();
-        }
+        labourLogs = val ? Object.values(val) : [];
+        updateAllViews();
+      });
+
+      // 4. Parties sync
+      db.ref('knowledge/parties').on('value', snapshot => {
+        const val = snapshot.val();
+        parties = val ? val : [];
+        refreshPartiesDropdown();
       });
     }
 
@@ -647,7 +804,9 @@
       renderPurchases();
       renderMonthlySummary();
       renderClientList();
-      refreshSuggestions();
+      renderFactoryStock();
+      renderLabourTable();
+      refreshPartiesDropdown();
       if (selectedLedgerParty) showClientDetail(selectedLedgerParty);
     }
 
@@ -662,8 +821,11 @@
 
       if (tabId === 'monthly') renderMonthlySummary();
       if (tabId === 'clients') renderClientList();
+      if (tabId === 'stock') renderFactoryStock();
+      if (tabId === 'labour') renderLabourTable();
     }
 
+    // Calculations
     function calcSaleTotal() {
       const qty = parseFloat(document.getElementById('saleQty').value) || 0;
       const rate = parseFloat(document.getElementById('saleRate').value) || 0;
@@ -682,7 +844,14 @@
       document.getElementById('purBalance').value = Math.max(0, total - advance).toFixed(2);
     }
 
-    // Save or Edit Sales
+    function calcLabourTotal() {
+      const qty = parseFloat(document.getElementById('labourQty').value) || 0;
+      const rate = parseFloat(document.getElementById('labourRate').value) || 0;
+      const total = qty * rate;
+      document.getElementById('labourTotal').value = total.toFixed(2);
+    }
+
+    // BLOCK 1: Save or Edit Sales
     function saveSale(e) {
       e.preventDefault();
       const editId = document.getElementById('editSaleId').value;
@@ -713,10 +882,10 @@
       };
 
       db.ref('sales/' + id).set(record);
-      saveKnowledge(item, client, phone);
+      saveParty(client, phone);
 
       cancelSaleEdit();
-      alert(editId ? 'ਸੇਲ ਐਂਟਰੀ ਸਫਲਤਾਪੂਰਵਕ ਅੱਪਡੇਟ ਹੋ ਗਈ ਹੈ!' : 'ਸੇਲ ਐਂਟਰੀ ਸੇਵ ਹੋ ਗਈ ਹੈ!');
+      alert(editId ? 'ਸੇਲ ਅੱਪਡੇਟ ਹੋ ਗਈ ਹੈ!' : 'ਸੇਲ ਸੇਵ ਹੋ ਗਈ ਹੈ (ਸਟੋਕ ਵਿੱਚੋਂ ਘਟਾ ਦਿੱਤੀ ਗਈ ਹੈ)!');
     }
 
     function editSale(id) {
@@ -734,10 +903,9 @@
       document.getElementById('saleBalance').value = s.balance;
       document.getElementById('saleDate').value = s.date;
 
-      document.getElementById('saleFormTitle').textContent = 'ਐਂਟਰੀ ਐਡਿਟ ਕਰੋ (Editing)';
+      document.getElementById('saleFormTitle').textContent = 'ਸੇਲ ਐਡਿਟ ਕਰੋ';
       document.getElementById('saleSubmitBtn').textContent = '💾 ਬਦਲਾਅ ਅੱਪਡੇਟ ਕਰੋ';
       document.getElementById('cancelSaleEditBtn').style.display = 'inline-block';
-
       window.scrollTo({ top: 0, behavior: 'smooth' });
     }
 
@@ -751,7 +919,7 @@
       calcSaleTotal();
     }
 
-    // Save or Edit Purchases
+    // BLOCK 2: Purchases
     function savePurchase(e) {
       e.preventDefault();
       const editId = document.getElementById('editPurId').value;
@@ -782,10 +950,10 @@
       };
 
       db.ref('purchases/' + id).set(record);
-      saveKnowledge(item, supplier, phone);
+      saveParty(supplier, phone);
 
       cancelPurEdit();
-      alert(editId ? 'ਖਰੀਦ ਐਂਟਰੀ ਸਫਲਤਾਪੂਰਵਕ ਅੱਪਡੇਟ ਹੋ ਗਈ ਹੈ!' : 'ਖਰੀਦ ਐਂਟਰੀ ਸੇਵ ਹੋ ਗਈ ਹੈ!');
+      alert(editId ? 'ਖਰੀਦ ਅੱਪਡੇਟ ਹੋ ਗਈ ਹੈ!' : 'ਖਰੀਦ ਐਂਟਰੀ ਸੇਵ ਹੋ ਗਈ ਹੈ!');
     }
 
     function editPurchase(id) {
@@ -803,10 +971,9 @@
       document.getElementById('purBalance').value = p.balance;
       document.getElementById('purDate').value = p.date;
 
-      document.getElementById('purFormTitle').textContent = 'ਖਰੀਦ ਐਡਿਟ ਕਰੋ (Editing)';
+      document.getElementById('purFormTitle').textContent = 'ਖਰੀਦ ਐਡਿਟ ਕਰੋ';
       document.getElementById('purSubmitBtn').textContent = '💾 ਬਦਲਾਅ ਅੱਪਡੇਟ ਕਰੋ';
       document.getElementById('cancelPurEditBtn').style.display = 'inline-block';
-
       window.scrollTo({ top: 0, behavior: 'smooth' });
     }
 
@@ -820,30 +987,149 @@
       calcPurTotal();
     }
 
-    function saveKnowledge(item, party, phone) {
+    // BLOCK 6: LABOUR / PRODUCTION LOGIC
+    function saveLabour(e) {
+      e.preventDefault();
+      const editId = document.getElementById('editLabourId').value;
+      const date = document.getElementById('labourDate').value;
+      const item = document.getElementById('labourItem').value;
+      const qty = parseFloat(document.getElementById('labourQty').value) || 0;
+      const rate = parseFloat(document.getElementById('labourRate').value) || 0;
+      const total = qty * rate;
+      const team = document.getElementById('labourTeam').value.trim();
+
+      const id = editId ? editId : ('L_' + Date.now());
+
+      const record = {
+        id, date, item, qty, rate, total, team
+      };
+
+      db.ref('labourLogs/' + id).set(record);
+      cancelLabourEdit();
+      alert(editId ? 'ਲੇਬਰ ਐਂਟਰੀ ਅੱਪਡੇਟ ਹੋ ਗਈ ਹੈ!' : 'ਲੇਬਰ ਪ੍ਰੋਡਕਸ਼ਨ ਐਂਟਰੀ ਸੇਵ ਹੋ ਗਈ ਹੈ (ਫੈਕਟਰੀ ਸਟੋਕ ਵਿੱਚ ਜੁੜ ਗਈ ਹੈ)!');
+    }
+
+    function editLabour(id) {
+      const l = labourLogs.find(item => item.id === id);
+      if (!l) return;
+
+      document.getElementById('editLabourId').value = l.id;
+      document.getElementById('labourDate').value = l.date;
+      document.getElementById('labourItem').value = l.item;
+      document.getElementById('labourQty').value = l.qty;
+      document.getElementById('labourRate').value = l.rate;
+      document.getElementById('labourTotal').value = l.total;
+      document.getElementById('labourTeam').value = l.team || '';
+
+      document.getElementById('labourFormTitle').textContent = 'ਲੇਬਰ ਐਂਟਰੀ ਐਡਿਟ ਕਰੋ';
+      document.getElementById('labourSubmitBtn').textContent = '💾 ਬਦਲਾਅ ਅੱਪਡੇਟ ਕਰੋ';
+      document.getElementById('cancelLabourEditBtn').style.display = 'inline-block';
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    function cancelLabourEdit() {
+      document.getElementById('editLabourId').value = '';
+      document.getElementById('labourForm').reset();
+      document.getElementById('labourDate').value = new Date().toISOString().split('T')[0];
+      document.getElementById('labourFormTitle').textContent = 'ਨਵੀਂ ਲੇਬਰ ਪ੍ਰੋਡਕਸ਼ਨ ਐਂਟਰੀ';
+      document.getElementById('labourSubmitBtn').textContent = '➕ ਲੇਬਰ ਐਂਟਰੀ ਸੇਵ ਕਰੋ';
+      document.getElementById('cancelLabourEditBtn').style.display = 'none';
+      calcLabourTotal();
+    }
+
+    function deleteLabour(id) {
+      if (!confirm('ਕੀ ਤੁਸੀਂ ਇਹ ਲੇਬਰ ਰਿਕਾਰਡ ਹਟਾਉਣਾ ਚਾਹੁੰਦੇ ਹੋ? ਇਹ ਸਟੋਕ ਵਿੱਚੋਂ ਵੀ ਘੱਟ ਜਾਵੇਗਾ।')) return;
+      db.ref('labourLogs/' + id).remove();
+    }
+
+    function renderLabourTable() {
+      const tbody = document.querySelector('#labourTable tbody');
+      if (labourLogs.length === 0) {
+        tbody.innerHTML = '<tr><td colspan="7" style="text-align:center;">ਕੋਈ ਲੇਬਰ ਰਿਕਾਰਡ ਨਹੀਂ ਹੈ</td></tr>';
+        return;
+      }
+      tbody.innerHTML = labourLogs.slice().reverse().map(l => `
+        <tr>
+          <td>${l.date}</td>
+          <td><strong>${l.item}</strong></td>
+          <td>${l.qty.toLocaleString('en-IN')}</td>
+          <td>₹${l.rate.toFixed(2)}</td>
+          <td style="color:var(--purple); font-weight:700;">₹${l.total.toLocaleString('en-IN')}</td>
+          <td>${l.team || '-'}</td>
+          <td>
+            <div style="display:flex; gap:4px;">
+              <button class="btn btn-edit btn-sm" onclick="editLabour('${l.id}')">✏️</button>
+              <button class="btn btn-danger btn-sm" onclick="deleteLabour('${l.id}')">🗑️</button>
+            </div>
+          </td>
+        </tr>
+      `).join('');
+    }
+
+    // BLOCK 5: FACTORY STOCK LIVE CALCULATION
+    function renderFactoryStock() {
+      const tbody = document.querySelector('#stockTable tbody');
+      
+      const stockSummary = STANDARD_17_ITEMS.map((itemName, index) => {
+        // 1. Calculate Total Made from Block 6
+        let totalMade = 0;
+        labourLogs.forEach(log => {
+          if (log.item && log.item.trim().toLowerCase() === itemName.trim().toLowerCase()) {
+            totalMade += Number(log.qty) || 0;
+          }
+        });
+
+        // 2. Calculate Total Sold from Block 1
+        let totalSold = 0;
+        sales.forEach(s => {
+          if (s.item && s.item.trim().toLowerCase() === itemName.trim().toLowerCase()) {
+            totalSold += Number(s.qty) || 0;
+          }
+        });
+
+        const available = totalMade - totalSold;
+
+        return {
+          sr: index + 1,
+          name: itemName,
+          made: totalMade,
+          sold: totalSold,
+          balance: available
+        };
+      });
+
+      tbody.innerHTML = stockSummary.map(row => `
+        <tr>
+          <td><strong>${row.sr})</strong></td>
+          <td><strong>${row.name}</strong></td>
+          <td style="color:var(--success); font-weight:700;">+ ${row.made.toLocaleString('en-IN')}</td>
+          <td style="color:var(--danger); font-weight:700;">- ${row.sold.toLocaleString('en-IN')}</td>
+          <td>
+            <span class="badge ${row.balance < 0 ? 'badge-pending' : 'badge-stock'}">
+              ${row.balance.toLocaleString('en-IN')} ਪੀਸ
+            </span>
+          </td>
+        </tr>
+      `).join('');
+    }
+
+    function saveParty(name, phone) {
+      if (!name) return;
+      const found = parties.find(p => p.name.toLowerCase() === name.toLowerCase());
       let changed = false;
-      if (item && !items.includes(item)) {
-        items.push(item);
+      if (!found) {
+        parties.push({ name, phone: phone || '' });
+        changed = true;
+      } else if (phone && !found.phone) {
+        found.phone = phone;
         changed = true;
       }
-      if (party) {
-        const found = parties.find(p => p.name.toLowerCase() === party.toLowerCase());
-        if (!found) {
-          parties.push({ name: party, phone: phone || '' });
-          changed = true;
-        } else if (phone && !found.phone) {
-          found.phone = phone;
-          changed = true;
-        }
-      }
-
       if (changed) {
-        db.ref('knowledge').set({ items, parties });
+        db.ref('knowledge/parties').set(parties);
       }
     }
 
-    function refreshSuggestions() {
-      document.getElementById('itemList').innerHTML = items.map(i => `<option value="${i}">`).join('');
+    function refreshPartiesDropdown() {
       document.getElementById('clientList').innerHTML = parties.map(p => `<option value="${p.name}">`).join('');
     }
 
@@ -1091,10 +1377,7 @@
           <td>₹${t.paid}</td>
           <td><span class="badge ${t.balance > 0 ? 'badge-pending' : 'badge-cleared'}">₹${t.balance}</span></td>
           <td>
-            <div style="display:flex; gap:4px;">
-              ${t.balance > 0 ? `<button class="btn btn-success btn-sm" onclick="openPaymentModal('${t.id}', '${t.raw}')">ਕਲੀਅਰ</button>` : 'ਕਲੀਅਰ'}
-              <button class="btn btn-edit btn-sm" onclick="${t.raw === 'sale' ? `editSale('${t.id}')` : `editPurchase('${t.id}')`}">✏️</button>
-            </div>
+            ${t.balance > 0 ? `<button class="btn btn-success btn-sm" onclick="openPaymentModal('${t.id}', '${t.raw}')">ਕਲੀਅਰ</button>` : 'ਕਲੀਅਰ'}
           </td>
         </tr>
       `).join('');
@@ -1139,6 +1422,17 @@
       } else if (type === 'purchases') {
         csv += 'Date,Supplier,Phone,Item,Quantity,Rate,Total,Paid,Balance\n';
         purchases.forEach(p => { csv += `"${p.date}","${p.supplier}","${p.phone || ''}","${p.item}",${p.qty},${p.rate},${p.total},${p.paid},${p.balance}\n`; });
+      } else if (type === 'labour') {
+        csv += 'Date,Item,Material Made,Labour Rate,Total Wage,Labour Team\n';
+        labourLogs.forEach(l => { csv += `"${l.date}","${l.item}",${l.qty},${l.rate},${l.total},"${l.team || ''}"\n`; });
+      } else if (type === 'stock') {
+        csv += 'Sr No,Item Name,Total Made,Total Sold,Available Stock\n';
+        STANDARD_17_ITEMS.forEach((itemName, i) => {
+          let made = 0, sold = 0;
+          labourLogs.forEach(l => { if (l.item.toLowerCase() === itemName.toLowerCase()) made += Number(l.qty) || 0; });
+          sales.forEach(s => { if (s.item.toLowerCase() === itemName.toLowerCase()) sold += Number(s.qty) || 0; });
+          csv += `${i + 1},"${itemName}",${made},${sold},${made - sold}\n`;
+        });
       }
       const uri = encodeURI(csv);
       const link = document.createElement('a');
