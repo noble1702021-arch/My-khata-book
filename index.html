@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>ਖਾਤਾ ਬੁੱਕ, ਫੈਕਟਰੀ ਸਟੋਕ & ਲੇਬਰ ਮੈਨੇਜਰ</title>
+  <title>ਖਾਤਾ ਬੁੱਕ & ਫੈਕਟਰੀ ਮੈਨੇਜਰ</title>
   <link href="https://fonts.googleapis.com/css2?family=Mukta+Mahee:wght@400;600;700;800&display=swap" rel="stylesheet">
   
   <!-- Firebase Scripts -->
@@ -71,30 +71,39 @@
       display: inline-block;
     }
 
-    /* Pending Delivery Banner */
+    /* Delivery Alert Banner */
     #deliveryReminderBanner {
       display: none;
-      background: #fffbeb;
-      border-left: 5px solid var(--warning);
-      padding: 12px 16px;
-      margin: 12px auto;
+      background: #fff1f2;
+      border-left: 6px solid var(--danger);
+      padding: 14px 18px;
+      margin: 14px auto;
       max-width: 960px;
       border-radius: 8px;
       box-shadow: var(--shadow);
+      animation: pulseAlert 2s infinite ease-in-out;
     }
+
+    @keyframes pulseAlert {
+      0%, 100% { border-left-color: var(--danger); }
+      50% { border-left-color: var(--warning); }
+    }
+
     #deliveryReminderBanner h4 {
-      color: #b45309;
-      font-size: 0.95rem;
+      color: #9f1239;
+      font-size: 1rem;
       font-weight: 800;
       display: flex;
       align-items: center;
       gap: 6px;
     }
+
     #deliveryReminderBanner ul {
-      margin-top: 6px;
+      margin-top: 8px;
       padding-left: 20px;
-      font-size: 0.85rem;
-      color: #92400e;
+      font-size: 0.88rem;
+      color: #881337;
+      line-height: 1.5;
     }
 
     .nav-tabs {
@@ -262,6 +271,7 @@
     .stat-card.credit { border-left-color: var(--success); }
     .stat-card.debit { border-left-color: var(--danger); }
     .stat-card.pending { border-left-color: var(--warning); }
+    .stat-card.purple { border-left-color: var(--purple); }
     .stat-title { font-size: 0.8rem; color: var(--text-muted); font-weight: 600; }
     .stat-val { font-size: 1.3rem; font-weight: 800; margin-top: 4px; }
 
@@ -309,9 +319,9 @@
     </div>
   </header>
 
-  <!-- PENDING DELIVERY REMINDER BANNER -->
+  <!-- PENDING DELIVERY ALERT POPUP / BANNER -->
   <div id="deliveryReminderBanner">
-    <h4>⚠️ ਡਿਲਿਵਰੀ ਬਕਾਇਆ ਚੇਤਾਵਨੀ (Pending Dispatches):</h4>
+    <h4>🔔 ਅੱਜ ਦੇ ਮਾਲ ਡਿਲਿਵਰੀ ਰਿਮਾਈਂਡਰ (Delivery Alerts):</h4>
     <ul id="reminderList"></ul>
   </div>
 
@@ -339,7 +349,7 @@
     </button>
     <button class="tab-btn" onclick="switchTab('labour')">
       <span>👷</span>
-      <span>6. ਲੇਬਰ & ਸੀਮੈਂਟ</span>
+      <span>6. ਲੇਬਰ ਖਾਤਾ</span>
     </button>
   </nav>
 
@@ -388,8 +398,12 @@
               <input type="number" id="saleBalance" readonly>
             </div>
             <div class="form-group">
-              <label>ਆਰਡਰ ਤਾਰੀਖ</label>
+              <label>ਬੁਕਿੰਗ ਤਾਰੀਖ</label>
               <input type="date" id="saleDate" required>
+            </div>
+            <div class="form-group">
+              <label>ਨਿਯਤ ਡਿਲਿਵਰੀ ਤਾਰੀਖ (Delivery Date)</label>
+              <input type="date" id="saleDeliveryDate" required>
             </div>
           </div>
 
@@ -406,14 +420,15 @@
           <table id="salesTable">
             <thead>
               <tr>
-                <th>ਤਾਰੀਖ</th>
+                <th>ਬੁਕਿੰਗ ਤਾਰੀਖ</th>
+                <th>ਡਿਲਿਵਰੀ ਤਾਰੀਖ</th>
                 <th>ਕਲਾਇੰਟ</th>
                 <th>ਆਈਟਮ</th>
                 <th>ਕੁੱਲ ਆਰਡਰ</th>
                 <th>ਭੇਜਿਆ ਮਾਲ (Dispatched)</th>
                 <th>ਬਾਕੀ ਭੇਜਣ ਵਾਲਾ</th>
                 <th>ਪੇਮੈਂਟ ਬਕਾਇਆ</th>
-                <th>ਐਕਸ਼ਨ & ਡਿਲਿਵਰੀ</th>
+                <th>ਐਕਸ਼ਨ & ਡਿਸਪੈਚ</th>
               </tr>
             </thead>
             <tbody></tbody>
@@ -604,7 +619,7 @@
       </div>
     </section>
 
-    <!-- BLOCK 5: FACTORY STOCK (18 ITEMS LIVE CALCULATION) -->
+    <!-- BLOCK 5: FACTORY STOCK (18 ITEMS LIVE) -->
     <section id="tab-stock" class="tab-content">
       <div class="card">
         <div class="card-title">
@@ -612,7 +627,7 @@
           <button class="btn btn-outline btn-sm" onclick="exportToCSV('stock')">📥 Stock Export</button>
         </div>
         <p style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 12px;">
-          ℹ️ ਲੇਬਰ ਬਲੌਕ ਵਿੱਚ ਬਣਿਆ ਮਾਲ ਜੁੜਦਾ ਹੈ (+), ਸੇਲ ਵਿੱਚ ਡਿਸਪੈਚ ਕੀਤਾ ਮਾਲ ਘਟਦਾ ਹੈ (-), ਅਤੇ ਸੀਮੈਂਟ ਖਰੀਦ/ਵਰਤੋਂ ਆਟੋਮੈਟਿਕ 18ਵੇਂ ਨੰਬਰ 'ਤੇ ਅੱਪਡੇਟ ਹੁੰਦੀ ਹੈ।
+          ℹ️ ਲੇਬਰ ਬਲੌਕ ਵਿੱਚ ਬਣਿਆ ਮਾਲ ਜੁੜਦਾ ਹੈ (+), ਸੇਲ ਵਿੱਚ ਡਿਸਪੈਚ ਕੀਤਾ ਮਾਲ ਘਟਦਾ ਹੈ (-), ਅਤੇ ਸੀਮੈਂਟ ਵਰਤੋਂ ਸਿੱਧੀ 18ਵੇਂ ਨੰਬਰ 'ਤੇ ਮਾਈਨਸ ਹੁੰਦੀ ਹੈ।
         </p>
         <div class="table-responsive">
           <table id="stockTable">
@@ -631,13 +646,13 @@
       </div>
     </section>
 
-    <!-- BLOCK 6: LABOUR PAY & CEMENT CONSUMPTION -->
+    <!-- BLOCK 6: LABOUR PRODUCTION & WAGE LEDGER -->
     <section id="tab-labour" class="tab-content">
       
-      <!-- Upper Section: Labour Production -->
+      <!-- Upper Section: Labour Production Entry (Includes Cement Consumption) -->
       <div class="card">
         <div class="card-title">
-          <span id="labourFormTitle">1. ਲੇਬਰ ਉਤਪਾਦਨ ਐਂਟਰੀ (Material Made)</span>
+          <span id="labourFormTitle">1. ਲੇਬਰ ਉਤਪਾਦਨ ਐਂਟਰੀ (Material Made & Cement Used)</span>
           <button type="button" id="cancelLabourEditBtn" class="btn btn-outline btn-sm" style="display:none;" onclick="cancelLabourEdit()">ਰੱਦ ਕਰੋ ✖</button>
         </div>
         <form id="labourForm" onsubmit="saveLabour(event)">
@@ -660,12 +675,16 @@
               <input type="number" step="0.01" id="labourRate" min="0" placeholder="ਜਿਵੇਂ 1.50" oninput="calcLabourTotal()" required>
             </div>
             <div class="form-group">
-              <label>ਕੁੱਲ ਮਜ਼ਦੂਰੀ (₹)</label>
+              <label>ਕੁੱਲ ਮਜ਼ਦੂਰੀ (Total ₹)</label>
               <input type="number" id="labourTotal" readonly>
             </div>
             <div class="form-group">
+              <label>ਇਹ ਮਾਲ ਬਣਾਉਣ 'ਚ ਵਰਤੀਆਂ ਸੀਮੈਂਟ ਬੋਰੀਆਂ (Bags)</label>
+              <input type="number" id="labourCementBags" min="0" value="0" placeholder="ਸੀਮੈਂਟ ਬੋਰੀਆਂ (ਸਟੋਕ 'ਚੋਂ ਮਾਈਨਸ ਹੋਣਗੀਆਂ)">
+            </div>
+            <div class="form-group">
               <label>ਕਾਰੀਗਰ / ਲੇਬਰ ਟੀਮ ਦਾ ਨਾਮ</label>
-              <input type="text" id="labourTeam" placeholder="ਮਿਸਤਰੀ / ਟੀਮ (ਆਪਸ਼ਨਲ)">
+              <input type="text" id="labourTeam" placeholder="ਮਿਸਤਰੀ / ਟੀਮ ਦਾ ਨਾਮ" required>
             </div>
           </div>
           <div style="margin-top: 14px; display: flex; gap: 10px;">
@@ -676,7 +695,7 @@
       </div>
 
       <div class="card">
-        <div class="card-title"><span>ਲੇਬਰ ਉਤਪਾਦਨ ਰਿਕਾਰਡ</span></div>
+        <div class="card-title"><span>ਲੇਬਰ ਉਤਪਾਦਨ ਰਿਕਾਰਡ (Production Logs)</span></div>
         <div class="table-responsive">
           <table id="labourTable">
             <thead>
@@ -686,6 +705,7 @@
                 <th>ਬਣੇ ਪੀਸ</th>
                 <th>ਰੇਟ (₹)</th>
                 <th>ਕੁੱਲ ਮਜ਼ਦੂਰੀ (₹)</th>
+                <th>ਵਰਤਿਆ ਸੀਮੈਂਟ</th>
                 <th>ਟੀਮ</th>
                 <th>ਐਕਸ਼ਨ</th>
               </tr>
@@ -695,40 +715,58 @@
         </div>
       </div>
 
-      <!-- Lower Section: Separate Cement Consumption Block -->
-      <div class="card" style="border-top: 4px solid var(--primary);">
+      <!-- Lower Section: Labour Wage Payout Ledger (Replacement for cement block) -->
+      <div class="card" style="border-top: 4px solid var(--purple);">
         <div class="card-title">
-          <span>2. ਸੀਮੈਂਟ ਰੋਜ਼ਾਨਾ ਖਪਤ ਰਜਿਸਟਰ (Daily Cement Bags Used)</span>
+          <span>2. ਲੇਬਰ ਭੁਗਤਾਨ & ਖਾਤਾ ਰਜਿਸਟਰ (Labour Wages & Payout Ledger)</span>
         </div>
-        <p style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 12px;">
-          ਇੱਥੇ ਦਰਜ ਕੀਤੀਆਂ ਸੀਮੈਂਟ ਬੋਰੀਆਂ ਫੈਕਟਰੀ ਸਟੋਕ (18ਵੇਂ ਨੰਬਰ) ਵਿੱਚੋਂ ਆਟੋਮੈਟਿਕ ਮਾਈਨਸ ਹੋਣਗੀਆਂ।
-        </p>
-        <form id="cementForm" onsubmit="saveCementUsage(event)">
+
+        <div class="stats-grid">
+          <div class="stat-card purple">
+            <div class="stat-title">ਕੁੱਲ ਬਣੀ ਮਜ਼ਦੂਰੀ (Total Earned)</div>
+            <div class="stat-val" id="statLabourEarned">₹0</div>
+          </div>
+          <div class="stat-card debit">
+            <div class="stat-title">ਕੁੱਲ ਦਿੱਤੀ ਮਜ਼ਦੂਰੀ (Total Paid)</div>
+            <div class="stat-val" id="statLabourPaid">₹0</div>
+          </div>
+          <div class="stat-card pending">
+            <div class="stat-title">ਬਾਕੀ ਦੇਣ ਯੋਗ ਬਕਾਇਆ (Balance Due)</div>
+            <div class="stat-val" id="statLabourDue">₹0</div>
+          </div>
+        </div>
+
+        <form id="labourPaymentForm" onsubmit="saveLabourPayment(event)">
           <div class="form-grid">
             <div class="form-group">
-              <label>ਤਾਰੀਖ</label>
-              <input type="date" id="cementDate" required>
+              <label>ਭੁਗਤਾਨ ਤਾਰੀਖ (Date)</label>
+              <input type="date" id="lpayDate" required>
             </div>
             <div class="form-group">
-              <label>ਵਰਤੀਆਂ ਸੀਮੈਂਟ ਬੋਰੀਆਂ (Bags Used)</label>
-              <input type="number" id="cementBags" min="1" placeholder="ਜਿਵੇਂ 10, 25, 50" required>
+              <label>ਲੇਬਰ ਟੀਮ / ਮਿਸਤਰੀ</label>
+              <input type="text" id="lpayTeam" placeholder="ਕਿਸ ਟੀਮ ਨੂੰ ਪੈਸੇ ਦਿੱਤੇ" required>
             </div>
             <div class="form-group">
-              <label>ਕੰਮ / ਰਿਮਾਰਕ (Remark)</label>
-              <input type="text" id="cementRemark" placeholder="ਜਿਵੇਂ 60mm ਬਲੌਕ ਬਣਾਉਣ 'ਚ">
+              <label>ਦਿੱਤੀ ਗਈ ਰਕਮ (Amount Paid ₹)</label>
+              <input type="number" step="0.01" id="lpayAmount" min="1" placeholder="ਜਿਵੇਂ 5000" required>
+            </div>
+            <div class="form-group">
+              <label>ਵੇਰਵਾ / ਨੋਟ (Remarks)</label>
+              <input type="text" id="lpayRemarks" placeholder="ਨਕਦ, UPI ਜਾਂ ਕਿਸ਼ਤ">
             </div>
           </div>
           <div style="margin-top: 14px;">
-            <button type="submit" class="btn btn-primary">➕ ਸੀਮੈਂਟ ਖਪਤ ਸੇਵ ਕਰੋ</button>
+            <button type="submit" class="btn btn-success">💵 ਲੇਬਰ ਪੇਮੈਂਟ ਦਰਜ ਕਰੋ</button>
           </div>
         </form>
 
         <div class="table-responsive" style="margin-top: 16px;">
-          <table id="cementTable">
+          <table id="labourPayoutTable">
             <thead>
               <tr>
                 <th>ਤਾਰੀਖ</th>
-                <th>ਵਰਤੀਆਂ ਬੋਰੀਆਂ</th>
+                <th>ਲੇਬਰ ਟੀਮ</th>
+                <th>ਦਿੱਤੀ ਰਕਮ (₹)</th>
                 <th>ਵੇਰਵਾ</th>
                 <th>ਐਕਸ਼ਨ</th>
               </tr>
@@ -776,11 +814,11 @@
     </div>
   </div>
 
-  <!-- Dispatch / Delivery Modal with Optional Load/Unload Checkboxes -->
+  <!-- Dispatch Modal with Next Delivery Date Setting -->
   <div class="modal" id="dispatchModal">
     <div class="modal-box">
       <div class="modal-header">
-        <h3 style="font-size:1.1rem; font-weight:800;">ਮਾਲ ਡਿਸਪੈਚ / ਗੱਡੀ ਭੇਜੋ</h3>
+        <h3 style="font-size:1.1rem; font-weight:800;">ਮਾਲ ਡਿਸਪੈਚ & ਅਗਲੀ ਡਿਲਿਵਰੀ</h3>
         <button class="close-modal" onclick="closeDispatchModal()">×</button>
       </div>
       <p id="dispatchSub" style="margin-bottom: 12px; font-size: 0.85rem; color: var(--text-muted);"></p>
@@ -791,20 +829,24 @@
         </div>
         <div class="form-group" style="margin-bottom: 12px;">
           <label>ਹੁਣ ਭੇਜੀ ਜਾ ਰਹੀ ਕੁਆਂਟਿਟੀ (Sending Qty)</label>
-          <input type="number" id="dispatchSendQty" min="1" placeholder="ਨਗ ਭਰੋ (ਜਿਵੇਂ 1000 ਜਾਂ 5000)" required>
+          <input type="number" id="dispatchSendQty" min="1" placeholder="ਜਿਵੇਂ 1500" oninput="checkRemainingForNextDate()" required>
         </div>
         <div class="form-group" style="margin-bottom: 12px;">
-          <label>ਤਾਰੀਖ</label>
+          <label>ਮਾਲ ਭੇਜਣ ਦੀ ਤਾਰੀਖ</label>
           <input type="date" id="dispatchDate" required>
+        </div>
+        <div class="form-group" style="margin-bottom: 12px;" id="nextDeliveryDateGroup">
+          <label style="color:var(--danger);">ਬਾਕੀ ਮਾਲ ਲਈ ਅਗਲੀ ਡਿਲਿਵਰੀ ਤਾਰੀਖ (Next Delivery Date)</label>
+          <input type="date" id="dispatchNextDate">
         </div>
         <div class="form-group" style="margin-bottom: 14px;">
           <label>ਲੋਡਿੰਗ / ਅਨਲੋਡਿੰਗ (ਆਪਸ਼ਨਲ ਟਿੱਕ):</label>
           <div class="checkbox-row">
             <label class="checkbox-label">
-              <input type="checkbox" id="dispatchLoaded"> 📦 Loaded (ਲੋਡ ਹੋਇਆ)
+              <input type="checkbox" id="dispatchLoaded"> 📦 Loaded
             </label>
             <label class="checkbox-label">
-              <input type="checkbox" id="dispatchUnloaded"> 🚛 Unloaded (ਅਨਲੋਡ ਹੋਇਆ)
+              <input type="checkbox" id="dispatchUnloaded"> 🚛 Unloaded
             </label>
           </div>
         </div>
@@ -817,7 +859,6 @@
   </div>
 
   <script>
-    // 17 FIXED ITEMS + 18TH CEMENT BAGS
     const STANDARD_18_ITEMS = [
       "BARFI 60 MM",
       "ZABRA 60 MM",
@@ -855,7 +896,7 @@
     let sales = [];
     let purchases = [];
     let labourLogs = [];
-    let cementUsage = [];
+    let labourPayouts = [];
     let parties = [];
     let rawMaterials = ['Cement Bags', 'ਸੀਮੈਂਟ', 'ਰੇਤ / ਡਸਟ', 'ਫਲਾਈ ਐਸ਼', 'ਕੈਮੀਕਲ'];
 
@@ -866,9 +907,10 @@
     window.addEventListener('DOMContentLoaded', () => {
       const today = new Date().toISOString().split('T')[0];
       document.getElementById('saleDate').value = today;
+      document.getElementById('saleDeliveryDate').value = today;
       document.getElementById('purDate').value = today;
       document.getElementById('labourDate').value = today;
-      document.getElementById('cementDate').value = today;
+      document.getElementById('lpayDate').value = today;
       document.getElementById('modalPayDate').value = today;
       document.getElementById('dispatchDate').value = today;
       document.getElementById('summaryMonth').value = today.slice(0, 7);
@@ -878,13 +920,11 @@
     });
 
     function initItemSelectOptions() {
-      // First 17 items for Labour
       const select = document.getElementById('labourItem');
       select.innerHTML = STANDARD_18_ITEMS.slice(0, 17).map((item, idx) => 
         `<option value="${item}">${idx + 1}) ${item}</option>`
       ).join('');
 
-      // All for sales
       const datalist = document.getElementById('standardItemList');
       datalist.innerHTML = STANDARD_18_ITEMS.map(item => `<option value="${item}">`).join('');
 
@@ -924,9 +964,9 @@
         updateAllViews();
       });
 
-      db.ref('cementUsage').on('value', snapshot => {
+      db.ref('labourPayouts').on('value', snapshot => {
         const val = snapshot.val();
-        cementUsage = val ? Object.values(val) : [];
+        labourPayouts = val ? Object.values(val) : [];
         updateAllViews();
       });
 
@@ -944,8 +984,8 @@
       renderClientList();
       renderFactoryStock();
       renderLabourTable();
-      renderCementTable();
-      renderPendingDeliveryReminders();
+      renderLabourPayoutLedger();
+      renderDeliveryDateAlerts();
       refreshPartiesDropdown();
       if (selectedLedgerParty) showClientDetail(selectedLedgerParty);
     }
@@ -962,10 +1002,9 @@
       if (tabId === 'monthly') renderMonthlySummary();
       if (tabId === 'clients') renderClientList();
       if (tabId === 'stock') renderFactoryStock();
-      if (tabId === 'labour') { renderLabourTable(); renderCementTable(); }
+      if (tabId === 'labour') { renderLabourTable(); renderLabourPayoutLedger(); }
     }
 
-    // Calculations
     function calcSaleTotal() {
       const qty = parseFloat(document.getElementById('saleQty').value) || 0;
       const rate = parseFloat(document.getElementById('saleRate').value) || 0;
@@ -991,26 +1030,43 @@
       document.getElementById('labourTotal').value = total.toFixed(2);
     }
 
-    // Pending Delivery Top Reminder Banner
-    function renderPendingDeliveryReminders() {
+    // TOP POPUP / ALERT BANNER FOR DUE DELIVERY DATES
+    function renderDeliveryDateAlerts() {
       const banner = document.getElementById('deliveryReminderBanner');
       const list = document.getElementById('reminderList');
-      const pendingSales = sales.filter(s => {
+      const today = new Date().toISOString().split('T')[0];
+
+      const alerts = [];
+
+      sales.forEach(s => {
         const dispatched = (s.dispatches || []).reduce((acc, cur) => acc + (Number(cur.qty) || 0), 0);
-        return dispatched < s.qty;
+        const rem = s.qty - dispatched;
+
+        if (rem > 0) {
+          const targetDate = s.nextDeliveryDate || s.deliveryDate;
+          if (targetDate && targetDate <= today) {
+            alerts.push({
+              client: s.client,
+              item: s.item,
+              rem: rem,
+              date: targetDate,
+              isToday: targetDate === today
+            });
+          }
+        }
       });
 
-      if (pendingSales.length === 0) {
+      if (alerts.length === 0) {
         banner.style.display = 'none';
         return;
       }
 
       banner.style.display = 'block';
-      list.innerHTML = pendingSales.map(s => {
-        const dispatched = (s.dispatches || []).reduce((acc, cur) => acc + (Number(cur.qty) || 0), 0);
-        const rem = s.qty - dispatched;
-        return `<li><strong>${s.client}</strong>: ${s.item} ਦੇ <strong>${rem.toLocaleString('en-IN')} ਪੀਸ</strong> ਭੇਜਣ ਵਾਲੇ ਪੈਂਡਿੰਗ ਹਨ (ਆਰਡਰ ਤਾਰੀਖ: ${s.date})।</li>`;
-      }).join('');
+      list.innerHTML = alerts.map(a => `
+        <li>
+          <strong>${a.client}</strong>: ${a.item} ਦੇ <strong>${a.rem.toLocaleString('en-IN')} ਪੀਸ</strong> ਡਿਲਿਵਰ ਕਰਨ ਦੀ ਤਾਰੀਖ <strong>${a.date}</strong> ${a.isToday ? '(ਅੱਜ ਦਾ ਦਿਨ ਹੈ!)' : '(ਤਾਰੀਖ ਲੰਘ ਚੁੱਕੀ ਹੈ!)'} ਕਿਰਪਾ ਕਰਕੇ ਗੱਡੀ ਰਵਾਨਾ ਕਰੋ।
+        </li>
+      `).join('');
     }
 
     // BLOCK 1: Sales
@@ -1026,22 +1082,25 @@
       const advance = parseFloat(document.getElementById('saleAdvance').value) || 0;
       const balance = Math.max(0, total - advance);
       const date = document.getElementById('saleDate').value;
+      const deliveryDate = document.getElementById('saleDeliveryDate').value;
 
       const id = editId ? editId : ('S_' + Date.now());
       let existingPayments = [];
       let existingDispatches = [];
+      let nextDeliveryDate = deliveryDate;
 
       if (editId) {
         const prev = sales.find(s => s.id === editId);
         if (prev && prev.payments) existingPayments = prev.payments;
         if (prev && prev.dispatches) existingDispatches = prev.dispatches;
+        if (prev && prev.nextDeliveryDate) nextDeliveryDate = prev.nextDeliveryDate;
       } else {
         if (advance > 0) existingPayments = [{ amount: advance, date }];
       }
 
       const record = {
         id, client, phone, item, qty, rate, total,
-        paid: advance, balance, date,
+        paid: advance, balance, date, deliveryDate, nextDeliveryDate,
         payments: existingPayments,
         dispatches: existingDispatches
       };
@@ -1067,6 +1126,7 @@
       document.getElementById('saleAdvance').value = s.paid;
       document.getElementById('saleBalance').value = s.balance;
       document.getElementById('saleDate').value = s.date;
+      document.getElementById('saleDeliveryDate').value = s.deliveryDate || s.date;
 
       document.getElementById('saleFormTitle').textContent = 'ਸੇਲ ਐਡਿਟ ਕਰੋ';
       document.getElementById('saleSubmitBtn').textContent = '💾 ਬਦਲਾਅ ਅੱਪਡੇਟ ਕਰੋ';
@@ -1077,7 +1137,9 @@
     function cancelSaleEdit() {
       document.getElementById('editSaleId').value = '';
       document.getElementById('saleForm').reset();
-      document.getElementById('saleDate').value = new Date().toISOString().split('T')[0];
+      const today = new Date().toISOString().split('T')[0];
+      document.getElementById('saleDate').value = today;
+      document.getElementById('saleDeliveryDate').value = today;
       document.getElementById('saleFormTitle').textContent = 'ਨਵੀਂ ਸੇਲ ਆਰਡਰ ਐਂਟਰੀ';
       document.getElementById('saleSubmitBtn').textContent = '➕ ਸੇਲ ਸੇਵ ਕਰੋ';
       document.getElementById('cancelSaleEditBtn').style.display = 'none';
@@ -1099,8 +1161,24 @@
       document.getElementById('dispatchSendQty').max = remaining;
       document.getElementById('dispatchLoaded').checked = false;
       document.getElementById('dispatchUnloaded').checked = false;
+      document.getElementById('dispatchNextDate').value = '';
 
+      checkRemainingForNextDate();
       document.getElementById('dispatchModal').classList.add('show');
+    }
+
+    function checkRemainingForNextDate() {
+      const pending = parseFloat(document.getElementById('dispatchPendingQty').value) || 0;
+      const sending = parseFloat(document.getElementById('dispatchSendQty').value) || 0;
+      const remGroup = document.getElementById('nextDeliveryDateGroup');
+
+      if (sending < pending) {
+        remGroup.style.display = 'block';
+        document.getElementById('dispatchNextDate').required = true;
+      } else {
+        remGroup.style.display = 'none';
+        document.getElementById('dispatchNextDate').required = false;
+      }
     }
 
     function closeDispatchModal() {
@@ -1117,6 +1195,7 @@
 
       const sendQty = parseFloat(document.getElementById('dispatchSendQty').value) || 0;
       const date = document.getElementById('dispatchDate').value;
+      const nextDate = document.getElementById('dispatchNextDate').value;
       const loaded = document.getElementById('dispatchLoaded').checked;
       const unloaded = document.getElementById('dispatchUnloaded').checked;
 
@@ -1129,6 +1208,13 @@
         loaded: loaded,
         unloaded: unloaded
       });
+
+      const totalDispatched = s.dispatches.reduce((acc, cur) => acc + (Number(cur.qty) || 0), 0);
+      if (totalDispatched < s.qty && nextDate) {
+        s.nextDeliveryDate = nextDate;
+      } else if (totalDispatched >= s.qty) {
+        s.nextDeliveryDate = '';
+      }
 
       db.ref('sales/' + s.id).set(s);
       closeDispatchModal();
@@ -1203,7 +1289,7 @@
       calcPurTotal();
     }
 
-    // BLOCK 6: Labour & Cement
+    // BLOCK 6: Labour Production & Wage Ledger
     function saveLabour(e) {
       e.preventDefault();
       const editId = document.getElementById('editLabourId').value;
@@ -1212,24 +1298,26 @@
       const qty = parseFloat(document.getElementById('labourQty').value) || 0;
       const rate = parseFloat(document.getElementById('labourRate').value) || 0;
       const total = qty * rate;
+      const cementBags = parseFloat(document.getElementById('labourCementBags').value) || 0;
       const team = document.getElementById('labourTeam').value.trim();
 
       const id = editId ? editId : ('L_' + Date.now());
 
       const record = {
-        id, date, item, qty, rate, total, team
+        id, date, item, qty, rate, total, cementBags, team
       };
 
       db.ref('labourLogs/' + id).set(record);
       cancelLabourEdit();
-      alert(editId ? 'ਲੇਬਰ ਐਂਟਰੀ ਅੱਪਡੇਟ ਹੋ ਗਈ ਹੈ!' : 'ਲੇਬਰ ਉਤਪਾਦਨ ਸੇਵ ਹੋ ਗਿਆ ਹੈ (ਸਟੋਕ ਵਿੱਚ ਜੁੜ ਗਿਆ ਹੈ)!');
+      alert(editId ? 'ਲੇਬਰ ਐਂਟਰੀ ਅੱਪਡੇਟ ਹੋ ਗਈ ਹੈ!' : 'ਲੇਬਰ ਉਤਪਾਦਨ ਸੇਵ ਹੋ ਗਿਆ ਹੈ (ਫੈਕਟਰੀ ਸਟੋਕ ਵਿੱਚ ਆਈਟਮ ਜੁੜੀ ਅਤੇ ਸੀਮੈਂਟ ਮਾਈਨਸ ਹੋ ਗਿਆ)!');
     }
 
     function cancelLabourEdit() {
       document.getElementById('editLabourId').value = '';
       document.getElementById('labourForm').reset();
       document.getElementById('labourDate').value = new Date().toISOString().split('T')[0];
-      document.getElementById('labourFormTitle').textContent = '1. ਲੇਬਰ ਉਤਪਾਦਨ ਐਂਟਰੀ (Material Made)';
+      document.getElementById('labourCementBags').value = '0';
+      document.getElementById('labourFormTitle').textContent = '1. ਲੇਬਰ ਉਤਪਾਦਨ ਐਂਟਰੀ (Material Made & Cement Used)';
       document.getElementById('labourSubmitBtn').textContent = '➕ ਲੇਬਰ ਐਂਟਰੀ ਸੇਵ ਕਰੋ';
       document.getElementById('cancelLabourEditBtn').style.display = 'none';
       calcLabourTotal();
@@ -1243,7 +1331,7 @@
     function renderLabourTable() {
       const tbody = document.querySelector('#labourTable tbody');
       if (labourLogs.length === 0) {
-        tbody.innerHTML = '<tr><td colspan="7" style="text-align:center;">ਕੋਈ ਲੇਬਰ ਰਿਕਾਰਡ ਨਹੀਂ ਹੈ</td></tr>';
+        tbody.innerHTML = '<tr><td colspan="8" style="text-align:center;">ਕੋਈ ਲੇਬਰ ਰਿਕਾਰਡ ਨਹੀਂ ਹੈ</td></tr>';
         return;
       }
       tbody.innerHTML = labourLogs.slice().reverse().map(l => `
@@ -1253,6 +1341,7 @@
           <td>${l.qty.toLocaleString('en-IN')}</td>
           <td>₹${l.rate.toFixed(2)}</td>
           <td style="color:var(--purple); font-weight:700;">₹${l.total.toLocaleString('en-IN')}</td>
+          <td style="color:var(--danger); font-weight:700;">${l.cementBags || 0} ਬੋਰੀਆਂ</td>
           <td>${l.team || '-'}</td>
           <td>
             <button class="btn btn-danger btn-sm" onclick="deleteLabour('${l.id}')">🗑️</button>
@@ -1261,46 +1350,60 @@
       `).join('');
     }
 
-    // Separate Cement Usage Logic
-    function saveCementUsage(e) {
+    // Labour Wage Payout Ledger (Replacement for cement block)
+    function saveLabourPayment(e) {
       e.preventDefault();
-      const date = document.getElementById('cementDate').value;
-      const bags = parseFloat(document.getElementById('cementBags').value) || 0;
-      const remark = document.getElementById('cementRemark').value.trim();
-      const id = 'C_' + Date.now();
+      const date = document.getElementById('lpayDate').value;
+      const team = document.getElementById('lpayTeam').value.trim();
+      const amount = parseFloat(document.getElementById('lpayAmount').value) || 0;
+      const remarks = document.getElementById('lpayRemarks').value.trim();
 
-      const record = { id, date, bags, remark };
-      db.ref('cementUsage/' + id).set(record);
+      const id = 'LP_' + Date.now();
+      const record = { id, date, team, amount, remarks };
 
-      document.getElementById('cementForm').reset();
-      document.getElementById('cementDate').value = new Date().toISOString().split('T')[0];
-      alert(`✅ ${bags} ਸੀਮੈਂਟ ਬੋਰੀਆਂ ਦੀ ਖਪਤ ਸੇਵ ਹੋ ਗਈ ਹੈ (ਸਟੋਕ 'ਚੋਂ ਮਾਈਨਸ ਹੋ ਚੁੱਕੀ ਹੈ)!`);
+      db.ref('labourPayouts/' + id).set(record);
+      document.getElementById('labourPaymentForm').reset();
+      document.getElementById('lpayDate').value = new Date().toISOString().split('T')[0];
+      alert(`✅ ₹${amount} ਲੇਬਰ ਭੁਗਤਾਨ ਦਰਜ ਹੋ ਗਿਆ ਹੈ!`);
     }
 
-    function deleteCementUsage(id) {
-      if (!confirm('ਕੀ ਤੁਸੀਂ ਇਹ ਸੀਮੈਂਟ ਖਪਤ ਰਿਕਾਰਡ ਹਟਾਉਣਾ ਚਾਹੁੰਦੇ ਹੋ?')) return;
-      db.ref('cementUsage/' + id).remove();
+    function deleteLabourPayout(id) {
+      if (!confirm('ਕੀ ਤੁਸੀਂ ਇਹ ਭੁਗਤਾਨ ਰਿਕਾਰਡ ਹਟਾਉਣਾ ਚਾਹੁੰਦੇ ਹੋ?')) return;
+      db.ref('labourPayouts/' + id).remove();
     }
 
-    function renderCementTable() {
-      const tbody = document.querySelector('#cementTable tbody');
-      if (cementUsage.length === 0) {
-        tbody.innerHTML = '<tr><td colspan="4" style="text-align:center;">ਕੋਈ ਸੀਮੈਂਟ ਖਪਤ ਰਿਕਾਰਡ ਨਹੀਂ ਹੈ</td></tr>';
+    function renderLabourPayoutLedger() {
+      let totalEarned = 0;
+      labourLogs.forEach(l => totalEarned += (Number(l.total) || 0));
+
+      let totalPaid = 0;
+      labourPayouts.forEach(p => totalPaid += (Number(p.amount) || 0));
+
+      const balanceDue = totalEarned - totalPaid;
+
+      document.getElementById('statLabourEarned').textContent = `₹${totalEarned.toLocaleString('en-IN')}`;
+      document.getElementById('statLabourPaid').textContent = `₹${totalPaid.toLocaleString('en-IN')}`;
+      document.getElementById('statLabourDue').textContent = `₹${balanceDue.toLocaleString('en-IN')}`;
+
+      const tbody = document.querySelector('#labourPayoutTable tbody');
+      if (labourPayouts.length === 0) {
+        tbody.innerHTML = '<tr><td colspan="5" style="text-align:center;">ਕੋਈ ਭੁਗਤਾਨ ਰਿਕਾਰਡ ਨਹੀਂ ਹੈ</td></tr>';
         return;
       }
-      tbody.innerHTML = cementUsage.slice().reverse().map(c => `
+      tbody.innerHTML = labourPayouts.slice().reverse().map(p => `
         <tr>
-          <td>${c.date}</td>
-          <td><strong style="color:var(--danger);">${c.bags} ਬੋਰੀਆਂ</strong></td>
-          <td>${c.remark || '-'}</td>
+          <td>${p.date}</td>
+          <td><strong>${p.team}</strong></td>
+          <td style="color:var(--danger); font-weight:700;">₹${p.amount.toLocaleString('en-IN')}</td>
+          <td>${p.remarks || '-'}</td>
           <td>
-            <button class="btn btn-danger btn-sm" onclick="deleteCementUsage('${c.id}')">🗑️</button>
+            <button class="btn btn-danger btn-sm" onclick="deleteLabourPayout('${p.id}')">🗑️</button>
           </td>
         </tr>
       `).join('');
     }
 
-    // BLOCK 5: FACTORY STOCK (18 Items Auto Live Calculation)
+    // BLOCK 5: FACTORY STOCK LIVE CALCULATION
     function renderFactoryStock() {
       const tbody = document.querySelector('#stockTable tbody');
       
@@ -1310,27 +1413,23 @@
 
         if (index === 17) {
           // 18th ITEM: Cement Bags
-          // IN: From Purchases (Block 2)
           purchases.forEach(p => {
             const pi = (p.item || '').toLowerCase();
             if (pi.includes('cement') || pi.includes('ਸੀਮੈਂਟ')) {
               totalMadeOrIn += Number(p.qty) || 0;
             }
           });
-          // OUT: From Cement Daily Usage (Block 6)
-          cementUsage.forEach(c => {
-            totalSoldOrUsed += Number(c.bags) || 0;
+          labourLogs.forEach(l => {
+            totalSoldOrUsed += Number(l.cementBags) || 0;
           });
         } else {
           // 1 to 17 ITEMS: Concrete Blocks / Bricks
-          // IN: Material Made from Labour (Block 6)
           labourLogs.forEach(log => {
             if (log.item && log.item.trim().toLowerCase() === itemName.trim().toLowerCase()) {
               totalMadeOrIn += Number(log.qty) || 0;
             }
           });
 
-          // OUT: Dispatched Sales (Only what actually left the factory)
           sales.forEach(s => {
             if (s.item && s.item.trim().toLowerCase() === itemName.trim().toLowerCase()) {
               if (s.dispatches && s.dispatches.length > 0) {
@@ -1437,7 +1536,7 @@
     function renderSales() {
       const tbody = document.querySelector('#salesTable tbody');
       if (sales.length === 0) {
-        tbody.innerHTML = '<tr><td colspan="8" style="text-align:center;">ਕੋਈ ਸੇਲ ਰਿਕਾਰਡ ਨਹੀਂ ਹੈ</td></tr>';
+        tbody.innerHTML = '<tr><td colspan="9" style="text-align:center;">ਕੋਈ ਸੇਲ ਰਿਕਾਰਡ ਨਹੀਂ ਹੈ</td></tr>';
         return;
       }
       tbody.innerHTML = sales.slice().reverse().map(s => {
@@ -1454,9 +1553,17 @@
           ).join('');
         }
 
+        const nextDateDisplay = (remaining > 0 && s.nextDeliveryDate) 
+          ? `<br><small style="color:var(--danger); font-weight:700;">ਅਗਲੀ: ${s.nextDeliveryDate}</small>` 
+          : '';
+
         return `
           <tr>
             <td>${s.date}</td>
+            <td>
+              <strong>${s.deliveryDate || s.date}</strong>
+              ${nextDateDisplay}
+            </td>
             <td><strong>${s.client}</strong>${s.phone ? `<br><small>${s.phone}</small>` : ''}</td>
             <td>${s.item}</td>
             <td>${s.qty.toLocaleString('en-IN')}</td>
@@ -1559,6 +1666,14 @@
               txs.push({ date: p.payments[i].date, type: 'ਸਪਲਾਇਰ ਭੁਗਤਾਨ', name: p.supplier, desc: p.item, in: 0, out: p.payments[i].amount });
             }
           }
+        }
+      });
+
+      // Include Labour Payouts in Monthly Debit
+      labourPayouts.forEach(lp => {
+        if (lp.date && lp.date.startsWith(selectedMonth)) {
+          totalDebit += Number(lp.amount) || 0;
+          txs.push({ date: lp.date, type: 'ਲੇਬਰ ਮਜ਼ਦੂਰੀ', name: lp.team, desc: lp.remarks || 'ਮਜ਼ਦੂਰੀ ਭੁਗਤਾਨ', in: 0, out: Number(lp.amount) || 0 });
         }
       });
 
@@ -1674,7 +1789,7 @@
       const rec = type === 'sale' ? sales.find(s => s.id === id) : purchases.find(p => p.id === id);
       if (!rec || !rec.phone) return alert('ਨੰਬਰ ਦਰਜ ਨਹੀਂ ਹੈ!');
       const txt = type === 'sale' 
-        ? `ਸਤਿ ਸ਼੍ਰੀ ਅਕਾਲ ਜੀ ${rec.client},\n\nਬਿੱਲ ਵੇਰਵਾ:\nਆਈਟਮ: ${rec.item}\nਆਰਡਰ ਨਗ: ${rec.qty}\nਕੁੱਲ: ₹${rec.total}\nਜਮ੍ਹਾਂ: ₹${rec.paid}\nਬਾਕੀ ਬਕਾਇਆ: ₹${rec.balance}\n\nਧੰਨਵਾਦ!`
+        ? `ਸਤਿ ਸ਼੍ਰੀ ਅਕਾਲ ਜੀ ${rec.client},\n\nਬਿੱਲ ਵੇਰਵਾ:\nਆਈਟਮ: ${rec.item}\nਆਰਡਰ ਨਗ: ${rec.qty}\nਡਿਲਿਵਰੀ ਤਾਰੀਖ: ${rec.deliveryDate || rec.date}\nਕੁੱਲ: ₹${rec.total}\nਜਮ੍ਹਾਂ: ₹${rec.paid}\nਬਾਕੀ ਬਕਾਇਆ: ₹${rec.balance}\n\nਧੰਨਵਾਦ!`
         : `ਸਤਿ ਸ਼੍ਰੀ ਅਕਾਲ ਜੀ ${rec.supplier},\n\nਸਮਾਨ ਵੇਰਵਾ:\nਆਈਟਮ: ${rec.item}\nਕੁੱਲ: ₹${rec.total}\nਦਿੱਤੇ: ₹${rec.paid}\nਬਾਕੀ: ₹${rec.balance}\n\nਧੰਨਵਾਦ!`;
 
       let num = rec.phone.replace(/[^0-9]/g, '');
@@ -1699,21 +1814,21 @@
     function exportToCSV(type) {
       let csv = 'data:text/csv;charset=utf-8,';
       if (type === 'sales') {
-        csv += 'Date,Client,Phone,Item,Quantity,Rate,Total,Paid,Balance\n';
-        sales.forEach(s => { csv += `"${s.date}","${s.client}","${s.phone || ''}","${s.item}",${s.qty},${s.rate},${s.total},${s.paid},${s.balance}\n`; });
+        csv += 'Date,DeliveryDate,Client,Phone,Item,Quantity,Rate,Total,Paid,Balance\n';
+        sales.forEach(s => { csv += `"${s.date}","${s.deliveryDate||''}","${s.client}","${s.phone || ''}","${s.item}",${s.qty},${s.rate},${s.total},${s.paid},${s.balance}\n`; });
       } else if (type === 'purchases') {
         csv += 'Date,Supplier,Phone,Item,Quantity,Rate,Total,Paid,Balance\n';
         purchases.forEach(p => { csv += `"${p.date}","${p.supplier}","${p.phone || ''}","${p.item}",${p.qty},${p.rate},${p.total},${p.paid},${p.balance}\n`; });
       } else if (type === 'labour') {
-        csv += 'Date,Item,Material Made,Labour Rate,Total Wage,Labour Team\n';
-        labourLogs.forEach(l => { csv += `"${l.date}","${l.item}",${l.qty},${l.rate},${l.total},"${l.team || ''}"\n`; });
+        csv += 'Date,Item,Material Made,Labour Rate,Total Wage,Cement Bags,Labour Team\n';
+        labourLogs.forEach(l => { csv += `"${l.date}","${l.item}",${l.qty},${l.rate},${l.total},${l.cementBags||0},"${l.team || ''}"\n`; });
       } else if (type === 'stock') {
         csv += 'Sr No,Item Name,Total In/Made,Total Out/Sold,Available Stock\n';
         STANDARD_18_ITEMS.forEach((itemName, i) => {
           let made = 0, sold = 0;
           if (i === 17) {
             purchases.forEach(p => { if ((p.item||'').toLowerCase().includes('cement') || (p.item||'').includes('ਸੀਮੈਂਟ')) made += Number(p.qty)||0; });
-            cementUsage.forEach(c => { sold += Number(c.bags)||0; });
+            labourLogs.forEach(l => { sold += Number(l.cementBags)||0; });
           } else {
             labourLogs.forEach(l => { if (l.item.toLowerCase() === itemName.toLowerCase()) made += Number(l.qty) || 0; });
             sales.forEach(s => {
