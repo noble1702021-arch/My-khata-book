@@ -177,6 +177,7 @@
     .btn-primary { background: var(--primary); color: white; }
     .btn-success { background: var(--success); color: white; }
     .btn-danger { background: var(--danger); color: white; }
+    .btn-edit { background: #0284c7; color: white; }
     .btn-outline { background: transparent; border: 1.5px solid var(--border); color: var(--text); }
     .btn-whatsapp { background: #25d366; color: white; }
     .btn-sm { padding: 5px 9px; font-size: 0.8rem; border-radius: 6px; }
@@ -284,9 +285,11 @@
     <section id="tab-sale" class="tab-content active">
       <div class="card">
         <div class="card-title">
-          <span>ਨਵੀਂ ਸੇਲ ਐਂਟਰੀ</span>
+          <span id="saleFormTitle">ਨਵੀਂ ਸੇਲ ਐਂਟਰੀ</span>
+          <button type="button" id="cancelSaleEditBtn" class="btn btn-outline btn-sm" style="display:none;" onclick="cancelSaleEdit()">ਰੱਦ ਕਰੋ ✖</button>
         </div>
         <form id="saleForm" onsubmit="saveSale(event)">
+          <input type="hidden" id="editSaleId" value="">
           <div class="form-grid">
             <div class="form-group">
               <label>ਕਲਾਇੰਟ / ਪਾਰਟੀ ਦਾ ਨਾਮ</label>
@@ -326,7 +329,7 @@
             </div>
           </div>
           <div style="margin-top: 14px; display: flex; gap: 10px;">
-            <button type="submit" class="btn btn-primary">➕ ਸੇਲ ਸੇਵ ਕਰੋ</button>
+            <button type="submit" id="saleSubmitBtn" class="btn btn-primary">➕ ਸੇਲ ਸੇਵ ਕਰੋ</button>
             <button type="button" class="btn btn-outline" onclick="exportToCSV('sales')">📥 Excel Export</button>
           </div>
         </form>
@@ -358,8 +361,12 @@
     <!-- BLOCK 2: PURCHASE -->
     <section id="tab-purchase" class="tab-content">
       <div class="card">
-        <div class="card-title"><span>ਨਵੀਂ ਖਰੀਦ ਐਂਟਰੀ</span></div>
+        <div class="card-title">
+          <span id="purFormTitle">ਨਵੀਂ ਖਰੀਦ ਐਂਟਰੀ</span>
+          <button type="button" id="cancelPurEditBtn" class="btn btn-outline btn-sm" style="display:none;" onclick="cancelPurEdit()">ਰੱਦ ਕਰੋ ✖</button>
+        </div>
         <form id="purchaseForm" onsubmit="savePurchase(event)">
+          <input type="hidden" id="editPurId" value="">
           <div class="form-grid">
             <div class="form-group">
               <label>ਸਪਲਾਇਰ / ਡੀਲਰ ਦਾ ਨਾਮ</label>
@@ -399,7 +406,7 @@
             </div>
           </div>
           <div style="margin-top: 14px; display: flex; gap: 10px;">
-            <button type="submit" class="btn btn-primary">➕ ਖਰੀਦ ਸੇਵ ਕਰੋ</button>
+            <button type="submit" id="purSubmitBtn" class="btn btn-primary">➕ ਖਰੀਦ ਸੇਵ ਕਰੋ</button>
             <button type="button" class="btn btn-outline" onclick="exportToCSV('purchases')">📥 Excel Export</button>
           </div>
         </form>
@@ -538,7 +545,7 @@
   <datalist id="itemList"></datalist>
   <datalist id="clientList"></datalist>
 
-  <!-- Payment Modal -->
+  <!-- Quick Balance Settlement Modal -->
   <div class="modal" id="paymentModal">
     <div class="modal-box">
       <div class="modal-header">
@@ -553,7 +560,7 @@
         </div>
         <div class="form-group" style="margin-bottom: 12px;">
           <label>ਹੁਣ ਅਦਾ ਕੀਤੀ ਰਕਮ (₹)</label>
-          <input type="number" step="0.01" id="modalPayAmount" min="1" placeholder="ਰਕਮ ਭਰੋ" required>
+          <input type="number" step="0.01" id="modalPayAmount" min="0.01" placeholder="ਰਕਮ ਭਰੋ" required>
         </div>
         <div class="form-group" style="margin-bottom: 14px;">
           <label>ਭੁਗਤਾਨ ਦੀ ਤਾਰੀਖ</label>
@@ -568,9 +575,6 @@
   </div>
 
   <script>
-    // -------------------------------------------------------------
-    // ਤੁਹਾਡੀ ਪ੍ਰੋਜੈਕਟ ਜਾਣਕਾਰੀ ਆਟੋਮੈਟਿਕ ਅੱਪਡੇਟ ਕਰ ਦਿੱਤੀ ਗਈ ਹੈ
-    // -------------------------------------------------------------
     const firebaseConfig = {
       apiKey: "AIzaSyAZdQ-7cmL5PmKY7X5tTGCjYy1JCbilleE",
       authDomain: "my-khatabook-b2732.firebaseapp.com",
@@ -606,7 +610,6 @@
       const dot = document.getElementById('syncDot');
       const text = document.getElementById('syncText');
 
-      // Listen for Connection State
       db.ref('.info/connected').on('value', snap => {
         if (snap.val() === true) {
           dot.style.background = '#4ade80';
@@ -617,21 +620,18 @@
         }
       });
 
-      // 1. Sales sync
       db.ref('sales').on('value', snapshot => {
         const val = snapshot.val();
         sales = val ? Object.values(val) : [];
         updateAllViews();
       });
 
-      // 2. Purchases sync
       db.ref('purchases').on('value', snapshot => {
         const val = snapshot.val();
         purchases = val ? Object.values(val) : [];
         updateAllViews();
       });
 
-      // 3. Knowledge/Suggestions sync
       db.ref('knowledge').on('value', snapshot => {
         const val = snapshot.val();
         if (val) {
@@ -682,8 +682,10 @@
       document.getElementById('purBalance').value = Math.max(0, total - advance).toFixed(2);
     }
 
+    // Save or Edit Sales
     function saveSale(e) {
       e.preventDefault();
+      const editId = document.getElementById('editSaleId').value;
       const client = document.getElementById('saleClient').value.trim();
       const phone = document.getElementById('salePhone').value.trim();
       const item = document.getElementById('saleItem').value.trim();
@@ -693,25 +695,66 @@
       const advance = parseFloat(document.getElementById('saleAdvance').value) || 0;
       const balance = Math.max(0, total - advance);
       const date = document.getElementById('saleDate').value;
-      const id = 'S_' + Date.now();
 
-      const newRecord = {
+      const id = editId ? editId : ('S_' + Date.now());
+      let existingPayments = [];
+
+      if (editId) {
+        const prev = sales.find(s => s.id === editId);
+        if (prev && prev.payments) existingPayments = prev.payments;
+      } else {
+        if (advance > 0) existingPayments = [{ amount: advance, date }];
+      }
+
+      const record = {
         id, client, phone, item, qty, rate, total,
         paid: advance, balance, date,
-        payments: advance > 0 ? [{ amount: advance, date }] : []
+        payments: existingPayments
       };
 
-      db.ref('sales/' + id).set(newRecord);
+      db.ref('sales/' + id).set(record);
       saveKnowledge(item, client, phone);
 
-      document.getElementById('saleForm').reset();
-      document.getElementById('saleDate').value = new Date().toISOString().split('T')[0];
-      calcSaleTotal();
-      alert('ਸੇਲ ਐਂਟਰੀ ਸੇਵ ਹੋ ਗਈ ਹੈ (ਦੋਵੇਂ ਫ਼ੋਨਾਂ ਵਿੱਚ ਰੀਅਲ-ਟਾਈਮ ਅੱਪਡੇਟ ਹੋ ਚੁੱਕੀ ਹੈ)!');
+      cancelSaleEdit();
+      alert(editId ? 'ਸੇਲ ਐਂਟਰੀ ਸਫਲਤਾਪੂਰਵਕ ਅੱਪਡੇਟ ਹੋ ਗਈ ਹੈ!' : 'ਸੇਲ ਐਂਟਰੀ ਸੇਵ ਹੋ ਗਈ ਹੈ!');
     }
 
+    function editSale(id) {
+      const s = sales.find(item => item.id === id);
+      if (!s) return;
+
+      document.getElementById('editSaleId').value = s.id;
+      document.getElementById('saleClient').value = s.client;
+      document.getElementById('salePhone').value = s.phone || '';
+      document.getElementById('saleItem').value = s.item;
+      document.getElementById('saleQty').value = s.qty;
+      document.getElementById('saleRate').value = s.rate;
+      document.getElementById('saleTotal').value = s.total;
+      document.getElementById('saleAdvance').value = s.paid;
+      document.getElementById('saleBalance').value = s.balance;
+      document.getElementById('saleDate').value = s.date;
+
+      document.getElementById('saleFormTitle').textContent = 'ਐਂਟਰੀ ਐਡਿਟ ਕਰੋ (Editing)';
+      document.getElementById('saleSubmitBtn').textContent = '💾 ਬਦਲਾਅ ਅੱਪਡੇਟ ਕਰੋ';
+      document.getElementById('cancelSaleEditBtn').style.display = 'inline-block';
+
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    function cancelSaleEdit() {
+      document.getElementById('editSaleId').value = '';
+      document.getElementById('saleForm').reset();
+      document.getElementById('saleDate').value = new Date().toISOString().split('T')[0];
+      document.getElementById('saleFormTitle').textContent = 'ਨਵੀਂ ਸੇਲ ਐਂਟਰੀ';
+      document.getElementById('saleSubmitBtn').textContent = '➕ ਸੇਲ ਸੇਵ ਕਰੋ';
+      document.getElementById('cancelSaleEditBtn').style.display = 'none';
+      calcSaleTotal();
+    }
+
+    // Save or Edit Purchases
     function savePurchase(e) {
       e.preventDefault();
+      const editId = document.getElementById('editPurId').value;
       const supplier = document.getElementById('purSupplier').value.trim();
       const phone = document.getElementById('purPhone').value.trim();
       const item = document.getElementById('purItem').value.trim();
@@ -721,21 +764,60 @@
       const advance = parseFloat(document.getElementById('purAdvance').value) || 0;
       const balance = Math.max(0, total - advance);
       const date = document.getElementById('purDate').value;
-      const id = 'P_' + Date.now();
 
-      const newRecord = {
+      const id = editId ? editId : ('P_' + Date.now());
+      let existingPayments = [];
+
+      if (editId) {
+        const prev = purchases.find(p => p.id === editId);
+        if (prev && prev.payments) existingPayments = prev.payments;
+      } else {
+        if (advance > 0) existingPayments = [{ amount: advance, date }];
+      }
+
+      const record = {
         id, supplier, phone, item, qty, rate, total,
         paid: advance, balance, date,
-        payments: advance > 0 ? [{ amount: advance, date }] : []
+        payments: existingPayments
       };
 
-      db.ref('purchases/' + id).set(newRecord);
+      db.ref('purchases/' + id).set(record);
       saveKnowledge(item, supplier, phone);
 
+      cancelPurEdit();
+      alert(editId ? 'ਖਰੀਦ ਐਂਟਰੀ ਸਫਲਤਾਪੂਰਵਕ ਅੱਪਡੇਟ ਹੋ ਗਈ ਹੈ!' : 'ਖਰੀਦ ਐਂਟਰੀ ਸੇਵ ਹੋ ਗਈ ਹੈ!');
+    }
+
+    function editPurchase(id) {
+      const p = purchases.find(item => item.id === id);
+      if (!p) return;
+
+      document.getElementById('editPurId').value = p.id;
+      document.getElementById('purSupplier').value = p.supplier;
+      document.getElementById('purPhone').value = p.phone || '';
+      document.getElementById('purItem').value = p.item;
+      document.getElementById('purQty').value = p.qty;
+      document.getElementById('purRate').value = p.rate;
+      document.getElementById('purTotal').value = p.total;
+      document.getElementById('purAdvance').value = p.paid;
+      document.getElementById('purBalance').value = p.balance;
+      document.getElementById('purDate').value = p.date;
+
+      document.getElementById('purFormTitle').textContent = 'ਖਰੀਦ ਐਡਿਟ ਕਰੋ (Editing)';
+      document.getElementById('purSubmitBtn').textContent = '💾 ਬਦਲਾਅ ਅੱਪਡੇਟ ਕਰੋ';
+      document.getElementById('cancelPurEditBtn').style.display = 'inline-block';
+
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    function cancelPurEdit() {
+      document.getElementById('editPurId').value = '';
       document.getElementById('purchaseForm').reset();
       document.getElementById('purDate').value = new Date().toISOString().split('T')[0];
+      document.getElementById('purFormTitle').textContent = 'ਨਵੀਂ ਖਰੀਦ ਐਂਟਰੀ';
+      document.getElementById('purSubmitBtn').textContent = '➕ ਖਰੀਦ ਸੇਵ ਕਰੋ';
+      document.getElementById('cancelPurEditBtn').style.display = 'none';
       calcPurTotal();
-      alert('ਖਰੀਦ ਐਂਟਰੀ ਸੇਵ ਹੋ ਗਈ ਹੈ!');
     }
 
     function saveKnowledge(item, party, phone) {
@@ -765,6 +847,7 @@
       document.getElementById('clientList').innerHTML = parties.map(p => `<option value="${p.name}">`).join('');
     }
 
+    // Modal Payment Settlement
     function openPaymentModal(id, type) {
       currentSettlement = { id, type };
       let record = type === 'sale' ? sales.find(s => s.id === id) : purchases.find(p => p.id === id);
@@ -828,6 +911,7 @@
           <td>
             <div style="display:flex; gap:4px;">
               ${s.balance > 0 ? `<button class="btn btn-success btn-sm" onclick="openPaymentModal('${s.id}', 'sale')">ਜਮ੍ਹਾਂ</button>` : ''}
+              <button class="btn btn-edit btn-sm" onclick="editSale('${s.id}')">✏️</button>
               ${s.phone ? `<button class="btn btn-whatsapp btn-sm" onclick="sendWhatsAppInvoice('${s.id}', 'sale')">💬 WA</button>` : ''}
               <button class="btn btn-danger btn-sm" onclick="deleteRecord('${s.id}', 'sale')">🗑️</button>
             </div>
@@ -855,6 +939,7 @@
           <td>
             <div style="display:flex; gap:4px;">
               ${p.balance > 0 ? `<button class="btn btn-success btn-sm" onclick="openPaymentModal('${p.id}', 'purchase')">ਦਿਓ</button>` : ''}
+              <button class="btn btn-edit btn-sm" onclick="editPurchase('${p.id}')">✏️</button>
               ${p.phone ? `<button class="btn btn-whatsapp btn-sm" onclick="sendWhatsAppInvoice('${p.id}', 'purchase')">💬 WA</button>` : ''}
               <button class="btn btn-danger btn-sm" onclick="deleteRecord('${p.id}', 'purchase')">🗑️</button>
             </div>
@@ -1006,7 +1091,10 @@
           <td>₹${t.paid}</td>
           <td><span class="badge ${t.balance > 0 ? 'badge-pending' : 'badge-cleared'}">₹${t.balance}</span></td>
           <td>
-            ${t.balance > 0 ? `<button class="btn btn-success btn-sm" onclick="openPaymentModal('${t.id}', '${t.raw}')">ਕਲੀਅਰ</button>` : 'ਕਲੀਅਰ'}
+            <div style="display:flex; gap:4px;">
+              ${t.balance > 0 ? `<button class="btn btn-success btn-sm" onclick="openPaymentModal('${t.id}', '${t.raw}')">ਕਲੀਅਰ</button>` : 'ਕਲੀਅਰ'}
+              <button class="btn btn-edit btn-sm" onclick="${t.raw === 'sale' ? `editSale('${t.id}')` : `editPurchase('${t.id}')`}">✏️</button>
+            </div>
           </td>
         </tr>
       `).join('');
