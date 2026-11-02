@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>ਖਾਤਾ ਬੁੱਕ & ਫੈਕਟਰੀ ਮੈਨੇਜਰ</title>
   <link rel="icon" type="image/png" href="logo.png">
-<link rel="apple-touch-icon" href="logo.png">
+  <link rel="apple-touch-icon" href="logo.png">
   <link href="https://fonts.googleapis.com/css2?family=Mukta+Mahee:wght@400;600;700;800&display=swap" rel="stylesheet">
   
   <!-- Firebase Scripts -->
@@ -172,10 +172,27 @@
       padding-bottom: 8px;
     }
 
+    /* Standard Grid */
     .form-grid {
       display: grid;
       grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
       gap: 12px;
+    }
+
+    /* Horizontal Layout specifically for Sale Page */
+    .sale-horizontal-form {
+      display: flex;
+      flex-direction: row;
+      flex-wrap: nowrap;
+      gap: 12px;
+      overflow-x: auto;
+      padding-bottom: 12px;
+      align-items: flex-end;
+    }
+
+    .sale-horizontal-form .form-group {
+      flex: 0 0 180px;
+      min-width: 170px;
     }
 
     .form-group {
@@ -187,6 +204,7 @@
     .form-group label {
       font-size: 0.85rem;
       font-weight: 700;
+      white-space: nowrap;
     }
 
     .form-group input, .form-group select {
@@ -195,6 +213,7 @@
       border-radius: 8px;
       font-size: 0.95rem;
       outline: none;
+      width: 100%;
     }
 
     .form-group input:focus, .form-group select:focus { border-color: var(--primary-light); }
@@ -307,7 +326,6 @@
 
     @media (max-width: 600px) {
       .tab-btn { font-size: 0.7rem; padding: 10px 1px; }
-      .form-grid { grid-template-columns: 1fr; }
     }
   </style>
 </head>
@@ -357,34 +375,36 @@
 
   <div class="container">
     
-    <!-- BLOCK 1: SALES -->
+    <!-- BLOCK 1: SALES (HORIZONTAL ROW LAYOUT) -->
     <section id="tab-sale" class="tab-content active">
       <div class="card">
         <div class="card-title">
-          <span id="saleFormTitle">ਨਵੀਂ ਸੇਲ ਆਰਡਰ ਐਂਟਰੀ</span>
+          <span id="saleFormTitle">ਨਵੀਂ ਸੇਲ ਆਰਡਰ ਐਂਟਰੀ (ਹੋਰੀਜ਼ੋਂਟਲ ਲਾਈਨ)</span>
           <button type="button" id="cancelSaleEditBtn" class="btn btn-outline btn-sm" style="display:none;" onclick="cancelSaleEdit()">ਰੱਦ ਕਰੋ ✖</button>
         </div>
         <form id="saleForm" onsubmit="saveSale(event)">
           <input type="hidden" id="editSaleId" value="">
-          <div class="form-grid">
+          
+          <!-- Horizontal Row for all sale inputs -->
+          <div class="sale-horizontal-form">
             <div class="form-group">
-              <label>ਕਲਾਇੰਟ / ਪਾਰਟੀ ਦਾ ਨਾਮ</label>
+              <label>ਕਲਾਇੰਟ / ਪਾਰਟੀ</label>
               <input type="text" id="saleClient" list="clientList" placeholder="ਗਾਹਕ ਦਾ ਨਾਮ" required>
             </div>
             <div class="form-group">
-              <label>ਮੋਬਾਈਲ / WhatsApp ਨੰਬਰ</label>
+              <label>ਮੋਬਾਈਲ / WhatsApp</label>
               <input type="tel" id="salePhone" placeholder="10 ਅੰਕਾਂ ਦਾ ਨੰਬਰ" pattern="[0-9]{10}">
             </div>
             <div class="form-group">
-              <label>ਸੇਲ ਆਈਟਮ (ਸਟੈਂਡਰਡ ਆਈਟਮਾਂ ਵਿੱਚੋਂ)</label>
-              <input type="text" id="saleItem" list="standardItemList" placeholder="ਚੁਣੋ ਜਾਂ ਟਾਈਪ ਕਰੋ" required>
+              <label>ਸੇਲ ਆਈਟਮ</label>
+              <input type="text" id="saleItem" list="standardItemList" placeholder="ਚੁਣੋ / ਲਿਖੋ" required>
             </div>
             <div class="form-group">
-              <label>ਕੁੱਲ ਬੁੱਕ ਕੀਤੇ ਨਗ (Total Qty)</label>
-              <input type="number" id="saleQty" min="1" placeholder="ਜਿਵੇਂ 3000 ਜਾਂ 10000" oninput="calcSaleTotal()" required>
+              <label>ਕੁੱਲ ਨਗ (Qty)</label>
+              <input type="number" id="saleQty" min="1" placeholder="ਮਾਤਰਾ" oninput="calcSaleTotal()" required>
             </div>
             <div class="form-group">
-              <label>ਪ੍ਰਤੀ ਨਗ ਰੇਟ (₹)</label>
+              <label>ਰੇਟ (₹)</label>
               <input type="number" step="0.01" id="saleRate" min="0" placeholder="ਰੇਟ" oninput="calcSaleTotal()" required>
             </div>
             <div class="form-group">
@@ -392,7 +412,7 @@
               <input type="number" id="saleTotal" readonly>
             </div>
             <div class="form-group">
-              <label>ਐਡਵਾਂਸ / ਮਿਲੀ ਰਕਮ (₹)</label>
+              <label>ਐਡਵਾਂਸ ਮਿਲੇ (₹)</label>
               <input type="number" step="0.01" id="saleAdvance" min="0" value="0" oninput="calcSaleTotal()" required>
             </div>
             <div class="form-group">
@@ -404,7 +424,7 @@
               <input type="date" id="saleDate" required>
             </div>
             <div class="form-group">
-              <label>ਨਿਯਤ ਡਿਲਿਵਰੀ ਤਾਰੀਖ (Delivery Date)</label>
+              <label>ਡਿਲਿਵਰੀ ਤਾਰੀਖ</label>
               <input type="date" id="saleDeliveryDate" required>
             </div>
           </div>
@@ -717,7 +737,7 @@
         </div>
       </div>
 
-      <!-- Lower Section: Labour Wage Payout Ledger (Replacement for cement block) -->
+      <!-- Lower Section: Labour Wage Payout Ledger -->
       <div class="card" style="border-top: 4px solid var(--purple);">
         <div class="card-title">
           <span>2. ਲੇਬਰ ਭੁਗਤਾਨ & ਖਾਤਾ ਰਜਿਸਟਰ (Labour Wages & Payout Ledger)</span>
@@ -1032,7 +1052,6 @@
       document.getElementById('labourTotal').value = total.toFixed(2);
     }
 
-    // TOP POPUP / ALERT BANNER FOR DUE DELIVERY DATES
     function renderDeliveryDateAlerts() {
       const banner = document.getElementById('deliveryReminderBanner');
       const list = document.getElementById('reminderList');
@@ -1071,7 +1090,6 @@
       `).join('');
     }
 
-    // BLOCK 1: Sales
     function saveSale(e) {
       e.preventDefault();
       const editId = document.getElementById('editSaleId').value;
@@ -1142,13 +1160,12 @@
       const today = new Date().toISOString().split('T')[0];
       document.getElementById('saleDate').value = today;
       document.getElementById('saleDeliveryDate').value = today;
-      document.getElementById('saleFormTitle').textContent = 'ਨਵੀਂ ਸੇਲ ਆਰਡਰ ਐਂਟਰੀ';
+      document.getElementById('saleFormTitle').textContent = 'ਨਵੀਂ ਸੇਲ ਆਰਡਰ ਐਂਟਰੀ (ਹੋਰੀਜ਼ੋਂਟਲ ਲਾਈਨ)';
       document.getElementById('saleSubmitBtn').textContent = '➕ ਸੇਲ ਸੇਵ ਕਰੋ';
       document.getElementById('cancelSaleEditBtn').style.display = 'none';
       calcSaleTotal();
     }
 
-    // Dispatch Modal Logic
     function openDispatchModal(saleId) {
       currentDispatchSaleId = saleId;
       const s = sales.find(item => item.id === saleId);
@@ -1223,7 +1240,6 @@
       alert(`🚚 ${sendQty} ਪੀਸ ਡਿਸਪੈਚ ਹੋ ਗਏ ਹਨ ਅਤੇ ਫੈਕਟਰੀ ਸਟੋਕ ਵਿੱਚੋਂ ਘੱਟ ਗਏ ਹਨ!`);
     }
 
-    // BLOCK 2: Purchases
     function savePurchase(e) {
       e.preventDefault();
       const editId = document.getElementById('editPurId').value;
@@ -1291,7 +1307,6 @@
       calcPurTotal();
     }
 
-    // BLOCK 6: Labour Production & Wage Ledger
     function saveLabour(e) {
       e.preventDefault();
       const editId = document.getElementById('editLabourId').value;
@@ -1352,7 +1367,6 @@
       `).join('');
     }
 
-    // Labour Wage Payout Ledger (Replacement for cement block)
     function saveLabourPayment(e) {
       e.preventDefault();
       const date = document.getElementById('lpayDate').value;
@@ -1405,7 +1419,6 @@
       `).join('');
     }
 
-    // BLOCK 5: FACTORY STOCK LIVE CALCULATION
     function renderFactoryStock() {
       const tbody = document.querySelector('#stockTable tbody');
       
@@ -1414,7 +1427,6 @@
         let totalSoldOrUsed = 0;
 
         if (index === 17) {
-          // 18th ITEM: Cement Bags
           purchases.forEach(p => {
             const pi = (p.item || '').toLowerCase();
             if (pi.includes('cement') || pi.includes('ਸੀਮੈਂਟ')) {
@@ -1425,7 +1437,6 @@
             totalSoldOrUsed += Number(l.cementBags) || 0;
           });
         } else {
-          // 1 to 17 ITEMS: Concrete Blocks / Bricks
           labourLogs.forEach(log => {
             if (log.item && log.item.trim().toLowerCase() === itemName.trim().toLowerCase()) {
               totalMadeOrIn += Number(log.qty) || 0;
@@ -1490,7 +1501,6 @@
       document.getElementById('clientList').innerHTML = parties.map(p => `<option value="${p.name}">`).join('');
     }
 
-    // Modal Payment Settlement
     function openPaymentModal(id, type) {
       currentSettlement = { id, type };
       let record = type === 'sale' ? sales.find(s => s.id === id) : purchases.find(p => p.id === id);
@@ -1671,7 +1681,6 @@
         }
       });
 
-      // Include Labour Payouts in Monthly Debit
       labourPayouts.forEach(lp => {
         if (lp.date && lp.date.startsWith(selectedMonth)) {
           totalDebit += Number(lp.amount) || 0;
