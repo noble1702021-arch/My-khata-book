@@ -353,6 +353,11 @@
       background: #f1f5f9;
     }
 
+    .hold-hint {
+      user-select: none;
+      -webkit-user-select: none;
+    }
+
     @media (max-width: 600px) {
       .tab-btn { font-size: 0.7rem; padding: 10px 1px; }
     }
@@ -695,13 +700,13 @@
       </div>
     </section>
 
-    <!-- BLOCK 6: LABOUR PRODUCTION (ALL ITEMS GRID) & PAYOUT LEDGER -->
+    <!-- BLOCK 6: LABOUR PRODUCTION & PAYOUT LEDGER -->
     <section id="tab-labour" class="tab-content">
       
       <!-- Upper Section: Fixed Items Grid Form -->
       <div class="card">
         <div class="card-title">
-          <span id="labourFormTitle">1. ਲੇਬਰ ਰੋਜ਼ਾਨਾ ਉਤਪਾਦਨ ਐਂਟਰੀ (ਆਈਟਮਾਂ ਗਰਿੱਡ)</span>
+          <span id="labourFormTitle">1. ਲੇਬਰ ਰੋਜ਼ਾਨਾ ਉਤਪਾਦਨ ਐਂਟਰੀ</span>
           <button type="button" id="cancelLabourEditBtn" class="btn btn-outline btn-sm" style="display:none;" onclick="cancelLabourEdit()">ਰੱਦ ਕਰੋ ✖</button>
         </div>
         <form id="labourForm" onsubmit="saveLabour(event)">
@@ -722,10 +727,9 @@
           <div class="items-box">
             <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px; flex-wrap:wrap; gap:8px;">
               <strong style="color:var(--purple); font-size:0.95rem;">
-                ਆਈਟਮਾਂ ਦੀ ਸੂਚੀ (ਜਿਹੜੀ ਆਈਟਮ ਬਣੀ ਹੈ ਸਿਰਫ਼ ਉਸਦੇ ਅੱਗੇ ਨਗ, ਰੇਟ ਅਤੇ ਸੀਮੈਂਟ ਭਰੋ):
+                ਆਈਟਮਾਂ ਦੀ ਸੂਚੀ (ਜਿਹੜੀ ਆਈਟਮ ਬਣੀ ਹੈ ਸਿਰਫ਼ ਉਸਦੇ ਅੱਗੇ ਨਗ ਭਰੋ; Delete ਕਰਨ ਲਈ ਨਾਮ 'ਤੇ Hold/Long Press ਕਰੋ):
               </strong>
-              <!-- Add New Custom Item Button -->
-              <button type="button" class="btn btn-purple btn-sm" onclick="promptAddNewItem()">➕ ਨਵੀਂ ਆਈਟਮ ਐਡ ਕਰੋ (18, 19, 20...)</button>
+              <button type="button" class="btn btn-purple btn-sm" onclick="promptAddNewItem()">➕ ਨਵੀਂ ਆਈਟਮ ਐਡ ਕਰੋ</button>
             </div>
             
             <div class="table-responsive">
@@ -733,7 +737,7 @@
                 <thead>
                   <tr>
                     <th>ਲੜੀ</th>
-                    <th>ਆਈਟਮ ਦਾ ਨਾਮ</th>
+                    <th>ਆਈਟਮ ਦਾ ਨਾਮ (Hold to Delete)</th>
                     <th style="min-width:110px;">ਬਣੇ ਪੀਸ (Qty)</th>
                     <th style="min-width:110px;">ਲੇਬਰ ਰੇਟ (₹)</th>
                     <th style="min-width:120px;">ਵਰਤਿਆ ਸੀਮੈਂਟ (Bags)</th>
@@ -972,28 +976,28 @@
   </div>
 
   <script>
-    // BASE ITEMS LIST: 'BANCH' and 'TABLE' replaced with '10*10'
-    const DEFAULT_ITEMS = [
-      "BARFI 60 MM",
-      "ZABRA 60 MM",
-      "ZABRA 40 MM",
-      "DUMBLE 80 MM",
-      "DUMBLE 60 MM",
-      "DUMBLE 40 MM",
-      "MALINO 60 MM",
-      "V SHAPE 60 MM",
-      "BRICK 60 MM",
-      "PATHER 60 MM",
-      "CRAVE",
-      "CHOKET",
-      "CHANNEL",
-      "10*10",
-      "4*4 dabi",
-      "Stone 80mm",
-      "ਸੀਮੈਂਟ (Cement Bags)"
+    // BASE ITEMS WITH YOUR SPECIFIED FIXED LABOUR RATES
+    const DEFAULT_ITEMS_DATA = [
+      { name: "BARFI 60 MM", rate: 1.6 },
+      { name: "ZABRA 60 MM", rate: 1.5 },
+      { name: "ZABRA 40 MM", rate: 1.5 },
+      { name: "DUMBLE 80 MM", rate: 1.6 },
+      { name: "DUMBLE 60 MM", rate: 1.5 },
+      { name: "DUMBLE 40 MM", rate: 1.5 },
+      { name: "MALINO 60 MM", rate: 1.5 },
+      { name: "V SHAPE 60 MM", rate: 1.5 },
+      { name: "BRICK 60 MM", rate: 1.5 },
+      { name: "PATHER 60 MM", rate: 1.6 },
+      { name: "CRAVE", rate: 5.0 },
+      { name: "CHOKET", rate: 2.0 },
+      { name: "CHANNEL", rate: 3.0 },
+      { name: "10*10", rate: 1.8 },
+      { name: "4*4 dabi", rate: 1.4 },
+      { name: "Stone 80mm", rate: 1.7 },
+      { name: "ਸੀਮੈਂਟ (Cement Bags)", rate: 0.0 }
     ];
 
-    let currentItemsList = [...DEFAULT_ITEMS];
+    let currentItemsData = [...DEFAULT_ITEMS_DATA];
 
     const firebaseConfig = {
       apiKey: "AIzaSyAZdQ-7cmL5PmKY7X5tTGCjYy1JCbilleE",
@@ -1038,38 +1042,55 @@
 
     function initItemSelectOptions() {
       const datalist = document.getElementById('standardItemList');
-      datalist.innerHTML = currentItemsList.map(item => `<option value="${item}">`).join('');
+      datalist.innerHTML = currentItemsData.map(item => `<option value="${item.name}">`).join('');
 
       const rawList = document.getElementById('rawMaterialList');
       rawList.innerHTML = rawMaterials.map(m => `<option value="${m}">`).join('');
     }
 
-    // PROMPT TO ADD NEW ITEMS TO SYSTEM DYNAMICALLY (18, 19, 20...)
+    // ADD NEW ITEM TO 6TH & 5TH PAGE
     function promptAddNewItem() {
-      const newItem = prompt("ਨਵੀਂ ਆਈਟਮ ਦਾ ਨਾਮ ਲਿਖੋ (ਜਿਵੇਂ: 10*12, ਨਵਾਂ ਡੰਬਲ ਆਦਿ):");
+      const newItem = prompt("ਨਵੀਂ ਆਈਟਮ ਦਾ ਨਾਮ ਲਿਖੋ:");
       if (!newItem || !newItem.trim()) return;
 
       const trimmed = newItem.trim();
-      if (currentItemsList.some(i => i.toLowerCase() === trimmed.toLowerCase())) {
+      if (currentItemsData.some(i => i.name.toLowerCase() === trimmed.toLowerCase())) {
         alert("ਇਹ ਆਈਟਮ ਪਹਿਲਾਂ ਤੋਂ ਹੀ ਲਿਸਟ ਵਿੱਚ ਮੌਜੂਦ ਹੈ!");
         return;
       }
 
-      // Add before cement bags
-      const cementIdx = currentItemsList.findIndex(i => i.includes("ਸੀਮੈਂਟ") || i.includes("Cement"));
+      const rateInput = prompt(`ਇਸ ਆਈਟਮ ("${trimmed}") ਦਾ ਲੇਬਰ ਰੇਟ (₹) ਲਿਖੋ:`, "1.5");
+      const rateVal = parseFloat(rateInput) || 0;
+
+      // Insert before cement
+      const cementIdx = currentItemsData.findIndex(i => i.name.includes("ਸੀਮੈਂਟ") || i.name.includes("Cement"));
       if (cementIdx !== -1) {
-        currentItemsList.splice(cementIdx, 0, trimmed);
+        currentItemsData.splice(cementIdx, 0, { name: trimmed, rate: rateVal });
       } else {
-        currentItemsList.push(trimmed);
+        currentItemsData.push({ name: trimmed, rate: rateVal });
       }
 
-      // Sync custom items list to firebase
-      db.ref('customItems').set(currentItemsList);
+      db.ref('customItemsData').set(currentItemsData);
 
       initItemSelectOptions();
       buildLabour18ItemsGrid();
       renderFactoryStock();
-      alert(`✅ ਨਵੀਂ ਆਈਟਮ "${trimmed}" ਸਿਸਟਮ ਵਿੱਚ ਐਡ ਹੋ ਗਈ ਹੈ!`);
+      alert(`✅ ਨਵੀਂ ਆਈਟਮ "${trimmed}" ਸਿਸਟਮ ਅਤੇ ਸਟੋਕ ਵਿੱਚ ਜੁੜ ਗਈ ਹੈ!`);
+    }
+
+    // DELETE ITEM WITH CONFIRMATION
+    function deleteCustomItem(itemName) {
+      if (itemName.includes("ਸੀਮੈਂਟ") || itemName.includes("Cement")) {
+        alert("ਸੀਮੈਂਟ ਨੂੰ ਡਿਲੀਟ ਨਹੀਂ ਕੀਤਾ ਜਾ ਸਕਦਾ!");
+        return;
+      }
+      if (confirm(`ਕੀ ਤੁਸੀਂ "${itemName}" ਨੂੰ ਲਿਸਟ ਵਿੱਚੋਂ ਹਟਾਉਣਾ ਚਾਹੁੰਦੇ ਹੋ?`)) {
+        currentItemsData = currentItemsData.filter(i => i.name.toLowerCase() !== itemName.toLowerCase());
+        db.ref('customItemsData').set(currentItemsData);
+        initItemSelectOptions();
+        buildLabour18ItemsGrid();
+        renderFactoryStock();
+      }
     }
 
     // BUILD FIXED ITEMS GRID TABLE IN BLOCK 6
@@ -1077,19 +1098,26 @@
       const tbody = document.getElementById('labour18ItemsBody');
       tbody.innerHTML = '';
 
-      currentItemsList.forEach((itemName, index) => {
+      currentItemsData.forEach((itemObj, index) => {
+        const itemName = itemObj.name;
+        const defaultRate = itemObj.rate !== undefined ? itemObj.rate : 0;
+
         const found = prefillData.find(d => (d.item || '').toLowerCase() === itemName.toLowerCase());
         const qtyVal = found ? found.qty : '';
-        const rateVal = found ? found.rate : '';
+        const rateVal = found ? found.rate : (defaultRate > 0 ? defaultRate : '');
         const cementVal = found ? found.cementBags : '';
         const wageVal = found ? (found.qty * found.rate).toFixed(2) : '';
 
         const tr = document.createElement('tr');
         tr.className = 'labour-grid-row';
         tr.dataset.item = itemName;
+
         tr.innerHTML = `
           <td><strong>${index + 1})</strong></td>
-          <td><strong>${itemName}</strong></td>
+          <td class="hold-hint" title="Hold to delete" style="cursor:pointer;">
+            <strong class="item-name-label">${itemName}</strong>
+            <small style="display:block; font-size:0.7rem; color:var(--text-muted);">(Hold to delete)</small>
+          </td>
           <td>
             <input type="number" class="grid-labour-qty" min="0" placeholder="0" value="${qtyVal}" oninput="calcLabour18GridTotal()" style="padding:6px 8px; font-size:0.88rem;">
           </td>
@@ -1103,6 +1131,27 @@
             <input type="number" class="grid-labour-wage" value="${wageVal}" readonly style="padding:6px 8px; font-size:0.88rem; background:#f8fafc; font-weight:700; color:var(--purple);">
           </td>
         `;
+
+        // LONG PRESS / HOLD DETECTION TO DELETE ITEM
+        let holdTimer = null;
+        const nameCell = tr.querySelector('.hold-hint');
+
+        const startHold = () => {
+          holdTimer = setTimeout(() => {
+            deleteCustomItem(itemName);
+          }, 800);
+        };
+
+        const cancelHold = () => {
+          if (holdTimer) clearTimeout(holdTimer);
+        };
+
+        nameCell.addEventListener('mousedown', startHold);
+        nameCell.addEventListener('touchstart', startHold);
+        nameCell.addEventListener('mouseup', cancelHold);
+        nameCell.addEventListener('mouseleave', cancelHold);
+        nameCell.addEventListener('touchend', cancelHold);
+
         tbody.appendChild(tr);
       });
 
@@ -1204,11 +1253,11 @@
         }
       });
 
-      // Sync custom dynamic items
-      db.ref('customItems').on('value', snapshot => {
+      // Sync custom items with default rates
+      db.ref('customItemsData').on('value', snapshot => {
         const val = snapshot.val();
         if (val && Array.isArray(val) && val.length > 0) {
-          currentItemsList = val;
+          currentItemsData = val;
           initItemSelectOptions();
           buildLabour18ItemsGrid();
           renderFactoryStock();
@@ -1431,7 +1480,7 @@
       addSaleItemRow();
     }
 
-    // BLOCK 6: Save Labour
+    // BLOCK 6: Save Labour (Reads from Fixed Items Grid Table)
     function saveLabour(e) {
       e.preventDefault();
       const editId = document.getElementById('editLabourId').value;
@@ -1496,7 +1545,7 @@
       document.getElementById('editLabourId').value = '';
       document.getElementById('labourForm').reset();
       document.getElementById('labourDate').value = new Date().toISOString().split('T')[0];
-      document.getElementById('labourFormTitle').textContent = '1. ਲੇਬਰ ਰੋਜ਼ਾਨਾ ਉਤਪਾਦਨ ਐਂਟਰੀ (ਆਈਟਮਾਂ ਗਰਿੱਡ)';
+      document.getElementById('labourFormTitle').textContent = '1. ਲੇਬਰ ਰੋਜ਼ਾਨਾ ਉਤਪਾਦਨ ਐਂਟਰੀ';
       document.getElementById('labourSubmitBtn').textContent = '➕ ਲੇਬਰ ਐਂਟਰੀ ਸੇਵ ਕਰੋ';
       document.getElementById('cancelLabourEditBtn').style.display = 'none';
 
@@ -1798,11 +1847,12 @@
       `).join('');
     }
 
-    // BLOCK 5: FACTORY STOCK LIVE CALCULATION (SUPPORT DYNAMIC ITEMS)
+    // BLOCK 5: FACTORY STOCK LIVE CALCULATION (SUPPORTS DYNAMIC ITEMS)
     function renderFactoryStock() {
       const tbody = document.querySelector('#stockTable tbody');
       
-      const stockSummary = currentItemsList.map((itemName, index) => {
+      const stockSummary = currentItemsData.map((itemObj, index) => {
+        const itemName = itemObj.name;
         let totalMadeOrIn = 0;
         let totalSoldOrUsed = 0;
 
@@ -2107,7 +2157,7 @@
           <td><strong>${t.name}</strong></td>
           <td>${t.desc}</td>
           <td style="color:var(--success); font-weight:700;">${t.in > 0 ? '+ ₹' + t.in : '-'}</td>
-          <td style="color:var(--danger); font-weight:700;">${t.out > 0 ? '- ₹' + t.out : '-'}</td>
+          <td style="color:var(--danger); font-weight:700;">- ₹' + t.out : '-'}</td>
         </tr>
       `).join('');
     }
@@ -2250,7 +2300,8 @@
         });
       } else if (type === 'stock') {
         csv += 'Sr No,Item Name,Total In/Made,Total Out/Sold,Available Stock\n';
-        currentItemsList.forEach((itemName, i) => {
+        currentItemsData.forEach((itemObj, i) => {
+          const itemName = itemObj.name;
           let made = 0, sold = 0;
           const isCement = itemName.includes("ਸੀਮੈਂਟ") || itemName.includes("Cement");
 
