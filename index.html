@@ -409,7 +409,7 @@
 
   <div class="container">
     
-    <!-- BLOCK 1: SALES -->
+    <!-- BLOCK 1: SALES WITH CLIENT ADDRESS -->
     <section id="tab-sale" class="tab-content active">
       <div class="card">
         <div class="card-title">
@@ -421,12 +421,17 @@
           
           <div class="horizontal-row">
             <div class="form-group">
-              <label>ਕਲਾਇੰਟ / ਪਾਰਟੀ</label>
+              <label>ਕਲਾਇੰਟ / ਪਾਰਟੀ ਦਾ ਨਾਮ</label>
               <input type="text" id="saleClient" list="clientList" placeholder="ਗਾਹਕ ਦਾ ਨਾਮ" required>
             </div>
             <div class="form-group">
               <label>ਮੋਬਾਈਲ / WhatsApp</label>
               <input type="tel" id="salePhone" placeholder="10 ਅੰਕਾਂ ਦਾ ਨੰਬਰ" pattern="[0-9]{10}">
+            </div>
+            <!-- CLIENT ADDRESS BLOCK ADDED -->
+            <div class="form-group" style="flex:0 0 240px; min-width:210px;">
+              <label>ਪਤਾ / ਸਾਈਟ ਲੋਕੇਸ਼ਨ (Address)</label>
+              <input type="text" id="saleAddress" placeholder="ਪਿੰਡ/ਸ਼ਹਿਰ/ਸਾਈਟ ਦਾ ਪਤਾ">
             </div>
             <div class="form-group">
               <label>ਬੁਕਿੰਗ ਤਾਰੀਖ</label>
@@ -976,7 +981,7 @@
   </div>
 
   <script>
-    // BASE ITEMS WITH YOUR SPECIFIED FIXED LABOUR RATES
+    // BASE ITEMS WITH FIXED LABOUR RATES
     const DEFAULT_ITEMS_DATA = [
       { name: "BARFI 60 MM", rate: 1.6 },
       { name: "ZABRA 60 MM", rate: 1.5 },
@@ -1048,7 +1053,6 @@
       rawList.innerHTML = rawMaterials.map(m => `<option value="${m}">`).join('');
     }
 
-    // ADD NEW ITEM TO 6TH & 5TH PAGE
     function promptAddNewItem() {
       const newItem = prompt("ਨਵੀਂ ਆਈਟਮ ਦਾ ਨਾਮ ਲਿਖੋ:");
       if (!newItem || !newItem.trim()) return;
@@ -1062,7 +1066,6 @@
       const rateInput = prompt(`ਇਸ ਆਈਟਮ ("${trimmed}") ਦਾ ਲੇਬਰ ਰੇਟ (₹) ਲਿਖੋ:`, "1.5");
       const rateVal = parseFloat(rateInput) || 0;
 
-      // Insert before cement
       const cementIdx = currentItemsData.findIndex(i => i.name.includes("ਸੀਮੈਂਟ") || i.name.includes("Cement"));
       if (cementIdx !== -1) {
         currentItemsData.splice(cementIdx, 0, { name: trimmed, rate: rateVal });
@@ -1078,7 +1081,6 @@
       alert(`✅ ਨਵੀਂ ਆਈਟਮ "${trimmed}" ਸਿਸਟਮ ਅਤੇ ਸਟੋਕ ਵਿੱਚ ਜੁੜ ਗਈ ਹੈ!`);
     }
 
-    // DELETE ITEM WITH CONFIRMATION
     function deleteCustomItem(itemName) {
       if (itemName.includes("ਸੀਮੈਂਟ") || itemName.includes("Cement")) {
         alert("ਸੀਮੈਂਟ ਨੂੰ ਡਿਲੀਟ ਨਹੀਂ ਕੀਤਾ ਜਾ ਸਕਦਾ!");
@@ -1093,7 +1095,6 @@
       }
     }
 
-    // BUILD FIXED ITEMS GRID TABLE IN BLOCK 6
     function buildLabour18ItemsGrid(prefillData = []) {
       const tbody = document.getElementById('labour18ItemsBody');
       tbody.innerHTML = '';
@@ -1132,7 +1133,6 @@
           </td>
         `;
 
-        // LONG PRESS / HOLD DETECTION TO DELETE ITEM
         let holdTimer = null;
         const nameCell = tr.querySelector('.hold-hint');
 
@@ -1178,7 +1178,6 @@
       document.getElementById('labourGrandCement').value = grandCement;
     }
 
-    // MULTI-ITEM SALE LOGIC
     function addSaleItemRow(itemVal = '', qtyVal = '', rateVal = '', lineTotalVal = '') {
       const container = document.getElementById('saleItemsContainer');
       const rowId = 'itemRow_' + Date.now() + '_' + Math.random().toString(36).substring(2, 6);
@@ -1253,7 +1252,6 @@
         }
       });
 
-      // Sync custom items with default rates
       db.ref('customItemsData').on('value', snapshot => {
         const val = snapshot.val();
         if (val && Array.isArray(val) && val.length > 0) {
@@ -1346,7 +1344,7 @@
         items.forEach(it => {
           let itemDispatched = 0;
           dispatches.forEach(d => {
-            if ((d.item || '').toLowerCase() === it.item.toLowerCase()) {
+            if ((d.item || '').toLowerCase() === (it.item || '').toLowerCase()) {
               itemDispatched += Number(d.qty) || 0;
             }
           });
@@ -1382,12 +1380,13 @@
       `).join('');
     }
 
-    // BLOCK 1: Save Sales
+    // BLOCK 1: Save Sales (WITH CLIENT ADDRESS)
     function saveSale(e) {
       e.preventDefault();
       const editId = document.getElementById('editSaleId').value;
       const client = document.getElementById('saleClient').value.trim();
       const phone = document.getElementById('salePhone').value.trim();
+      const address = document.getElementById('saleAddress').value.trim();
       const date = document.getElementById('saleDate').value;
       const deliveryDate = document.getElementById('saleDeliveryDate').value;
 
@@ -1426,7 +1425,7 @@
       }
 
       const record = {
-        id, client, phone, date, deliveryDate, nextDeliveryDate,
+        id, client, phone, address, date, deliveryDate, nextDeliveryDate,
         items: itemsList,
         total: grandTotal,
         paid: advance, balance,
@@ -1448,6 +1447,7 @@
       document.getElementById('editSaleId').value = s.id;
       document.getElementById('saleClient').value = s.client;
       document.getElementById('salePhone').value = s.phone || '';
+      document.getElementById('saleAddress').value = s.address || '';
       document.getElementById('saleDate').value = s.date;
       document.getElementById('saleDeliveryDate').value = s.deliveryDate || s.date;
       document.getElementById('saleAdvance').value = s.paid;
@@ -1472,6 +1472,7 @@
       const today = new Date().toISOString().split('T')[0];
       document.getElementById('saleDate').value = today;
       document.getElementById('saleDeliveryDate').value = today;
+      document.getElementById('saleAddress').value = '';
       document.getElementById('saleFormTitle').textContent = 'ਨਵੀਂ ਸੇਲ ਆਰਡਰ ਐਂਟਰੀ';
       document.getElementById('saleSubmitBtn').textContent = '➕ ਸੇਲ ਸੇਵ ਕਰੋ';
       document.getElementById('cancelSaleEditBtn').style.display = 'none';
@@ -1480,7 +1481,7 @@
       addSaleItemRow();
     }
 
-    // BLOCK 6: Save Labour (Reads from Fixed Items Grid Table)
+    // BLOCK 6: Save Labour
     function saveLabour(e) {
       e.preventDefault();
       const editId = document.getElementById('editLabourId').value;
@@ -1557,7 +1558,6 @@
       db.ref('labourLogs/' + id).remove();
     }
 
-    // Render Compact Summary Rows for Labour
     function renderLabourTable() {
       const tbody = document.querySelector('#labourTable tbody');
       if (labourLogs.length === 0) {
@@ -1590,7 +1590,6 @@
       }).join('');
     }
 
-    // POPUP DRILL-DOWN MODAL FOR LABOUR DETAILS
     function openLabourDetailModal(id) {
       const l = labourLogs.find(item => item.id === id);
       if (!l) return;
@@ -1847,7 +1846,7 @@
       `).join('');
     }
 
-    // BLOCK 5: FACTORY STOCK LIVE CALCULATION (SUPPORTS DYNAMIC ITEMS)
+    // BLOCK 5: FACTORY STOCK LIVE CALCULATION
     function renderFactoryStock() {
       const tbody = document.querySelector('#stockTable tbody');
       
@@ -1999,7 +1998,7 @@
 
         const itemsHtml = items.map(it => `
           <div style="font-size:0.82rem; margin-bottom:2px;">
-            <strong>${it.item}</strong>: ${it.qty} ਨਗ × ₹${it.rate} = <span style="color:var(--primary); font-weight:700;">₹${it.total}</span>
+            <strong>${it.item}</strong>: ${it.qty} ਨਗ = <span style="color:var(--primary); font-weight:700;">₹${it.total}</span>
           </div>
         `).join('');
 
@@ -2030,7 +2029,11 @@
               <strong>${s.deliveryDate || s.date}</strong>
               ${nextDateDisplay}
             </td>
-            <td><strong>${s.client}</strong>${s.phone ? `<br><small>${s.phone}</small>` : ''}</td>
+            <td>
+              <strong>${s.client}</strong>
+              ${s.phone ? `<br><small>${s.phone}</small>` : ''}
+              ${s.address ? `<br><small style="color:var(--text-muted);">📍 ${s.address}</small>` : ''}
+            </td>
             <td>${itemsHtml}</td>
             <td><strong>₹${s.total}</strong></td>
             <td style="color:var(--success); font-weight:700;">₹${s.paid}</td>
@@ -2157,7 +2160,7 @@
           <td><strong>${t.name}</strong></td>
           <td>${t.desc}</td>
           <td style="color:var(--success); font-weight:700;">${t.in > 0 ? '+ ₹' + t.in : '-'}</td>
-          <td style="color:var(--danger); font-weight:700;">- ₹' + t.out : '-'}</td>
+          <td style="color:var(--danger); font-weight:700;">${t.out > 0 ? '- ₹' + t.out : '-'}</td>
         </tr>
       `).join('');
     }
@@ -2248,19 +2251,21 @@
       selectedLedgerParty = null;
     }
 
+    // BEAUTIFUL WHATSAPP MESSAGE WITHOUT PER-PIECE RATE
     function sendWhatsAppInvoice(id, type) {
       const rec = type === 'sale' ? sales.find(s => s.id === id) : purchases.find(p => p.id === id);
       if (!rec || !rec.phone) return alert('ਨੰਬਰ ਦਰਜ ਨਹੀਂ ਹੈ!');
       
       let itemLines = '';
       if (type === 'sale') {
-        const items = rec.items || [{ item: rec.item, qty: rec.qty, rate: rec.rate, total: rec.total }];
-        itemLines = items.map(i => `• ${i.item}: ${i.qty} ਨਗ @ ₹${i.rate} = ₹${i.total}`).join('\n');
+        const items = rec.items || [{ item: rec.item, qty: rec.qty, total: rec.total }];
+        // Showing item and quantity only (No per piece rate)
+        itemLines = items.map(i => `▫️ *${i.item}*: ${i.qty.toLocaleString('en-IN')} ਨਗ`).join('\n');
       }
 
       const txt = type === 'sale' 
-        ? `ਸਤਿ ਸ਼੍ਰੀ ਅਕਾਲ ਜੀ ${rec.client},\n\nਬਿੱਲ ਵੇਰਵਾ:\n${itemLines}\n\nਕੁੱਲ ਰਕਮ: ₹${rec.total}\nਜਮ੍ਹਾਂ / ਐਡਵਾਂਸ: ₹${rec.paid}\nਬਾਕੀ ਬਕਾਇਆ: ₹${rec.balance}\nਡਿਲਿਵਰੀ ਤਾਰੀਖ: ${rec.deliveryDate || rec.date}\n\nਧੰਨਵਾਦ!`
-        : `ਸਤਿ ਸ਼੍ਰੀ ਅਕਾਲ ਜੀ ${rec.supplier},\n\nਸਮਾਨ ਵੇਰਵਾ:\nਆਈਟਮ: ${rec.item}\nਕੁੱਲ: ₹${rec.total}\nਦਿੱਤੇ: ₹${rec.paid}\nਬਾਕੀ: ₹${rec.balance}\n\nਧੰਨਵਾਦ!`;
+        ? `ਸਤਿ ਸ਼੍ਰੀ ਅਕਾਲ ਜੀ, *${rec.client}* 🙏\n\nਤੁਹਾਡੇ ਆਰਡਰ ਦਾ ਵੇਰਵਾ ਹੇਠ ਅਨੁਸਾਰ ਹੈ:\n\n${itemLines}\n\n💰 *ਕੁੱਲ ਰਕਮ (Full Payment)*: ₹${Number(rec.total).toLocaleString('en-IN')}\n💵 *ਐਡਵਾਂਸ ਰਕਮ (Advance)*: ₹${Number(rec.paid).toLocaleString('en-IN')}\n🔴 *ਬਕਾਇਆ ਰਕਮ (Balance)*: ₹${Number(rec.balance).toLocaleString('en-IN')}\n\n📅 *ਡਿਲਿਵਰੀ ਤਾਰੀਖ*: ${rec.deliveryDate || rec.date}\n${rec.address ? `📍 *ਪਤਾ / ਲੋਕੇਸ਼ਨ*: ${rec.address}\n` : ''}\nਧੰਨਵਾਦ ਸਹਿਤ,\n*ਗਿੱਲ ਐਂਟਰਪ੍ਰਾਈਜਿਸ*`
+        : `ਸਤਿ ਸ਼੍ਰੀ ਅਕਾਲ ਜੀ, *${rec.supplier}* 🙏\n\nਸਮਾਨ ਵੇਰਵਾ:\nਆਈਟਮ: ${rec.item}\nਕੁੱਲ ਰਕਮ: ₹${Number(rec.total).toLocaleString('en-IN')}\nਦਿੱਤੀ ਰਕਮ: ₹${Number(rec.paid).toLocaleString('en-IN')}\nਬਕਾਇਆ: ₹${Number(rec.balance).toLocaleString('en-IN')}\n\nਧੰਨਵਾਦ!`;
 
       let num = rec.phone.replace(/[^0-9]/g, '');
       if (num.length === 10) num = '91' + num;
@@ -2275,7 +2280,7 @@
 
       let total = 0, bal = 0;
       partySales.forEach(s => { total += s.total; bal += s.balance; });
-      const txt = `ਸਤਿ ਸ਼੍ਰੀ ਅਕਾਲ ਜੀ ${selectedLedgerParty},\n\nਤੁਹਾਡੇ ਖਾਤੇ ਦਾ ਕੁੱਲ ਬਕਾਇਆ ₹${bal} ਹੈ (ਕੁੱਲ ਕਾਰੋਬਾਰ: ₹${total})। ਕਿਰਪਾ ਕਰਕੇ ਬਕਾਇਆ ਰਕਮ ਕਲੀਅਰ ਕਰੋ ਜੀ।`;
+      const txt = `ਸਤਿ ਸ਼੍ਰੀ ਅਕਾਲ ਜੀ, *${selectedLedgerParty}* 🙏\n\nਤੁਹਾਡੇ ਖਾਤੇ ਦਾ ਕੁੱਲ ਬਕਾਇਆ *₹${Number(bal).toLocaleString('en-IN')}* ਹੈ (ਕੁੱਲ ਕਾਰੋਬਾਰ: ₹${Number(total).toLocaleString('en-IN')})। ਕਿਰਪਾ ਕਰਕੇ ਬਕਾਇਆ ਰਕਮ ਕਲੀਅਰ ਕਰਵਾਉਣ ਦੀ ਕਿਰਪਾਲਤਾ ਕਰੋ ਜੀ।\n\nਧੰਨਵਾਦ ਸਹਿਤ,\n*ਗਿੱਲ ਐਂਟਰਪ੍ਰਾਈਜਿਸ*`;
       let num = phone.replace(/[^0-9]/g, '');
       if (num.length === 10) num = '91' + num;
       window.open(`https://wa.me/${num}?text=${encodeURIComponent(txt)}`, '_blank');
@@ -2284,14 +2289,14 @@
     function exportToCSV(type) {
       let csv = 'data:text/csv;charset=utf-8,';
       if (type === 'sales') {
-        csv += 'Date,DeliveryDate,Client,Phone,Items,Total,Paid,Balance\n';
+        csv += 'Date,DeliveryDate,Client,Phone,Address,Items,Total,Paid,Balance\n';
         sales.forEach(s => {
           const itemSummary = (s.items || [{ item: s.item, qty: s.qty }]).map(i => `${i.item}(${i.qty})`).join('; ');
-          csv += `"${s.date}","${s.deliveryDate||''}","${s.client}","${s.phone || ''}","${itemSummary}",${s.total},${s.paid},${s.balance}\n`;
+          csv += `"${s.date}","${s.deliveryDate||''}","${s.client}","${s.phone || ''}","${s.address || ''}","${itemSummary}",${s.total},${s.paid},${s.balance}\n`;
         });
       } else if (type === 'purchases') {
         csv += 'Date,Supplier,Phone,Item,Quantity,Rate,Total,Paid,Balance\n';
-        purchases.forEach(p => { csv += `"${p.date}","${p.supplier}","${p.phone || ''}","${p.item}",${p.qty},${p.rate},${p.total},${p.balance}\n`; });
+        purchases.forEach(p => { csv += `"${p.date}","${p.supplier}","${p.phone || ''}","${p.item}",${p.qty},${p.rate},${p.total},${p.paid},${p.balance}\n`; });
       } else if (type === 'labour') {
         csv += 'Date,Team,Items,TotalWage,TotalCement\n';
         labourLogs.forEach(l => {
