@@ -433,7 +433,6 @@
             </div>
           </div>
 
-          <!-- Dynamic Sale Items -->
           <div class="items-box">
             <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;">
               <strong style="color:var(--primary); font-size:0.95rem;">ਸੇਲ ਆਈਟਮਾਂ (Items & Rates)</strong>
@@ -669,15 +668,15 @@
       </div>
     </section>
 
-    <!-- BLOCK 5: FACTORY STOCK (18 ITEMS LIVE) -->
+    <!-- BLOCK 5: FACTORY STOCK (LIVE LIST OF ALL ITEMS) -->
     <section id="tab-stock" class="tab-content">
       <div class="card">
         <div class="card-title">
-          <span>ਫੈਕਟਰੀ ਸਟੋਕ ਰਜਿਸਟਰ (18 ਆਈਟਮਾਂ ਸਮੇਤ ਸੀਮੈਂਟ ਬੋਰੀਆਂ)</span>
+          <span>ਫੈਕਟਰੀ ਸਟੋਕ ਰਜਿਸਟਰ (ਸਾਰੀਆਂ ਆਈਟਮਾਂ ਸਮੇਤ ਸੀਮੈਂਟ ਬੋਰੀਆਂ)</span>
           <button class="btn btn-outline btn-sm" onclick="exportToCSV('stock')">📥 Stock Export</button>
         </div>
         <p style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 12px;">
-          ℹ️ ਲੇਬਰ ਬਲੌਕ ਵਿੱਚ ਬਣਿਆ ਮਾਲ ਜੁੜਦਾ ਹੈ (+), ਸੇਲ ਵਿੱਚ ਡਿਸਪੈਚ ਕੀਤਾ ਮਾਲ ਘਟਦਾ ਹੈ (-), ਅਤੇ ਸੀਮੈਂਟ ਵਰਤੋਂ ਸਿੱਧੀ 18ਵੇਂ ਨੰਬਰ 'ਤੇ ਮਾਈਨਸ ਹੁੰਦੀ ਹੈ।
+          ℹ️ ਲੇਬਰ ਬਲੌਕ ਵਿੱਚ ਬਣਿਆ ਮਾਲ ਜੁੜਦਾ ਹੈ (+), ਸੇਲ ਵਿੱਚ ਡਿਸਪੈਚ ਕੀਤਾ ਮਾਲ ਘਟਦਾ ਹੈ (-), ਅਤੇ ਸੀਮੈਂਟ ਵਰਤੋਂ ਸਿੱਧੀ ਸੀਮੈਂਟ ਵਿੱਚੋਂ ਮਾਈਨਸ ਹੁੰਦੀ ਹੈ।
         </p>
         <div class="table-responsive">
           <table id="stockTable">
@@ -696,13 +695,13 @@
       </div>
     </section>
 
-    <!-- BLOCK 6: LABOUR PRODUCTION (18 ITEMS GRID) & PAYOUT LEDGER -->
+    <!-- BLOCK 6: LABOUR PRODUCTION (ALL ITEMS GRID) & PAYOUT LEDGER -->
     <section id="tab-labour" class="tab-content">
       
-      <!-- Upper Section: 18 Fixed Items Grid Form -->
+      <!-- Upper Section: Fixed Items Grid Form -->
       <div class="card">
         <div class="card-title">
-          <span id="labourFormTitle">1. ਲੇਬਰ ਰੋਜ਼ਾਨਾ ਉਤਪਾਦਨ ਐਂਟਰੀ (18 ਆਈਟਮਾਂ ਗਰਿੱਡ)</span>
+          <span id="labourFormTitle">1. ਲੇਬਰ ਰੋਜ਼ਾਨਾ ਉਤਪਾਦਨ ਐਂਟਰੀ (ਆਈਟਮਾਂ ਗਰਿੱਡ)</span>
           <button type="button" id="cancelLabourEditBtn" class="btn btn-outline btn-sm" style="display:none;" onclick="cancelLabourEdit()">ਰੱਦ ਕਰੋ ✖</button>
         </div>
         <form id="labourForm" onsubmit="saveLabour(event)">
@@ -719,11 +718,15 @@
             </div>
           </div>
 
-          <!-- Fixed 18-Items Table -->
+          <!-- All Items Table -->
           <div class="items-box">
-            <strong style="color:var(--purple); font-size:0.95rem; display:block; margin-bottom:10px;">
-              18 ਆਈਟਮਾਂ ਦੀ ਸੂਚੀ (ਜਿਹੜੀ ਆਈਟਮ ਬਣੀ ਹੈ ਸਿਰਫ਼ ਉਸਦੇ ਅੱਗੇ ਨਗ, ਰੇਟ ਅਤੇ ਸੀਮੈਂਟ ਭਰੋ):
-            </strong>
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px; flex-wrap:wrap; gap:8px;">
+              <strong style="color:var(--purple); font-size:0.95rem;">
+                ਆਈਟਮਾਂ ਦੀ ਸੂਚੀ (ਜਿਹੜੀ ਆਈਟਮ ਬਣੀ ਹੈ ਸਿਰਫ਼ ਉਸਦੇ ਅੱਗੇ ਨਗ, ਰੇਟ ਅਤੇ ਸੀਮੈਂਟ ਭਰੋ):
+              </strong>
+              <!-- Add New Custom Item Button -->
+              <button type="button" class="btn btn-purple btn-sm" onclick="promptAddNewItem()">➕ ਨਵੀਂ ਆਈਟਮ ਐਡ ਕਰੋ (18, 19, 20...)</button>
+            </div>
             
             <div class="table-responsive">
               <table id="labour18ItemsTable">
@@ -969,7 +972,8 @@
   </div>
 
   <script>
-    const STANDARD_18_ITEMS = [
+    // BASE ITEMS LIST: 'BANCH' and 'TABLE' replaced with '10*10'
+    const DEFAULT_ITEMS = [
       "BARFI 60 MM",
       "ZABRA 60 MM",
       "ZABRA 40 MM",
@@ -983,12 +987,13 @@
       "CRAVE",
       "CHOKET",
       "CHANNEL",
-      "BANCH",
-      "TABLE",
+      "10*10",
       "4*4 dabi",
       "Stone 80mm",
       "ਸੀਮੈਂਟ (Cement Bags)"
     ];
+
+    let currentItemsList = [...DEFAULT_ITEMS];
 
     const firebaseConfig = {
       apiKey: "AIzaSyAZdQ-7cmL5PmKY7X5tTGCjYy1JCbilleE",
@@ -1033,18 +1038,46 @@
 
     function initItemSelectOptions() {
       const datalist = document.getElementById('standardItemList');
-      datalist.innerHTML = STANDARD_18_ITEMS.map(item => `<option value="${item}">`).join('');
+      datalist.innerHTML = currentItemsList.map(item => `<option value="${item}">`).join('');
 
       const rawList = document.getElementById('rawMaterialList');
       rawList.innerHTML = rawMaterials.map(m => `<option value="${m}">`).join('');
     }
 
-    // BUILD FIXED 18-ITEMS GRID TABLE IN BLOCK 6
+    // PROMPT TO ADD NEW ITEMS TO SYSTEM DYNAMICALLY (18, 19, 20...)
+    function promptAddNewItem() {
+      const newItem = prompt("ਨਵੀਂ ਆਈਟਮ ਦਾ ਨਾਮ ਲਿਖੋ (ਜਿਵੇਂ: 10*12, ਨਵਾਂ ਡੰਬਲ ਆਦਿ):");
+      if (!newItem || !newItem.trim()) return;
+
+      const trimmed = newItem.trim();
+      if (currentItemsList.some(i => i.toLowerCase() === trimmed.toLowerCase())) {
+        alert("ਇਹ ਆਈਟਮ ਪਹਿਲਾਂ ਤੋਂ ਹੀ ਲਿਸਟ ਵਿੱਚ ਮੌਜੂਦ ਹੈ!");
+        return;
+      }
+
+      // Add before cement bags
+      const cementIdx = currentItemsList.findIndex(i => i.includes("ਸੀਮੈਂਟ") || i.includes("Cement"));
+      if (cementIdx !== -1) {
+        currentItemsList.splice(cementIdx, 0, trimmed);
+      } else {
+        currentItemsList.push(trimmed);
+      }
+
+      // Sync custom items list to firebase
+      db.ref('customItems').set(currentItemsList);
+
+      initItemSelectOptions();
+      buildLabour18ItemsGrid();
+      renderFactoryStock();
+      alert(`✅ ਨਵੀਂ ਆਈਟਮ "${trimmed}" ਸਿਸਟਮ ਵਿੱਚ ਐਡ ਹੋ ਗਈ ਹੈ!`);
+    }
+
+    // BUILD FIXED ITEMS GRID TABLE IN BLOCK 6
     function buildLabour18ItemsGrid(prefillData = []) {
       const tbody = document.getElementById('labour18ItemsBody');
       tbody.innerHTML = '';
 
-      STANDARD_18_ITEMS.forEach((itemName, index) => {
+      currentItemsList.forEach((itemName, index) => {
         const found = prefillData.find(d => (d.item || '').toLowerCase() === itemName.toLowerCase());
         const qtyVal = found ? found.qty : '';
         const rateVal = found ? found.rate : '';
@@ -1171,6 +1204,17 @@
         }
       });
 
+      // Sync custom dynamic items
+      db.ref('customItems').on('value', snapshot => {
+        const val = snapshot.val();
+        if (val && Array.isArray(val) && val.length > 0) {
+          currentItemsList = val;
+          initItemSelectOptions();
+          buildLabour18ItemsGrid();
+          renderFactoryStock();
+        }
+      });
+
       db.ref('sales').on('value', snapshot => {
         const val = snapshot.val();
         sales = val ? Object.values(val) : [];
@@ -1253,7 +1297,7 @@
         items.forEach(it => {
           let itemDispatched = 0;
           dispatches.forEach(d => {
-            if ((d.item || '').toLowerCase() === (it.item || '').toLowerCase()) {
+            if ((d.item || '').toLowerCase() === it.item.toLowerCase()) {
               itemDispatched += Number(d.qty) || 0;
             }
           });
@@ -1387,7 +1431,7 @@
       addSaleItemRow();
     }
 
-    // BLOCK 6: Save Labour (Reads from Fixed 18-Items Grid Table)
+    // BLOCK 6: Save Labour
     function saveLabour(e) {
       e.preventDefault();
       const editId = document.getElementById('editLabourId').value;
@@ -1414,7 +1458,7 @@
       });
 
       if (itemsList.length === 0) {
-        return alert('ਕਿਰਪਾ ਕਰਕੇ 18 ਆਈਟਮਾਂ ਵਿੱਚੋਂ ਘੱਟੋ-ਘੱਟ ਇੱਕ ਆਈਟਮ ਦਾ ਨਗ (Qty) ਜਾਂ ਸੀਮੈਂਟ ਭਰੋ!');
+        return alert('ਕਿਰਪਾ ਕਰਕੇ ਘੱਟੋ-ਘੱਟ ਇੱਕ ਆਈਟਮ ਦਾ ਨਗ (Qty) ਜਾਂ ਸੀਮੈਂਟ ਭਰੋ!');
       }
 
       const id = editId ? editId : ('L_' + Date.now());
@@ -1452,7 +1496,7 @@
       document.getElementById('editLabourId').value = '';
       document.getElementById('labourForm').reset();
       document.getElementById('labourDate').value = new Date().toISOString().split('T')[0];
-      document.getElementById('labourFormTitle').textContent = '1. ਲੇਬਰ ਰੋਜ਼ਾਨਾ ਉਤਪਾਦਨ ਐਂਟਰੀ (18 ਆਈਟਮਾਂ ਗਰਿੱਡ)';
+      document.getElementById('labourFormTitle').textContent = '1. ਲੇਬਰ ਰੋਜ਼ਾਨਾ ਉਤਪਾਦਨ ਐਂਟਰੀ (ਆਈਟਮਾਂ ਗਰਿੱਡ)';
       document.getElementById('labourSubmitBtn').textContent = '➕ ਲੇਬਰ ਐਂਟਰੀ ਸੇਵ ਕਰੋ';
       document.getElementById('cancelLabourEditBtn').style.display = 'none';
 
@@ -1754,15 +1798,17 @@
       `).join('');
     }
 
-    // BLOCK 5: FACTORY STOCK LIVE CALCULATION
+    // BLOCK 5: FACTORY STOCK LIVE CALCULATION (SUPPORT DYNAMIC ITEMS)
     function renderFactoryStock() {
       const tbody = document.querySelector('#stockTable tbody');
       
-      const stockSummary = STANDARD_18_ITEMS.map((itemName, index) => {
+      const stockSummary = currentItemsList.map((itemName, index) => {
         let totalMadeOrIn = 0;
         let totalSoldOrUsed = 0;
 
-        if (index === 17) {
+        const isCement = itemName.includes("ਸੀਮੈਂਟ") || itemName.includes("Cement");
+
+        if (isCement) {
           purchases.forEach(p => {
             const pi = (p.item || '').toLowerCase();
             if (pi.includes('cement') || pi.includes('ਸੀਮੈਂਟ')) {
@@ -1808,7 +1854,7 @@
           in: totalMadeOrIn,
           out: totalSoldOrUsed,
           balance: available,
-          isCement: index === 17
+          isCement: isCement
         };
       });
 
@@ -2195,7 +2241,7 @@
         });
       } else if (type === 'purchases') {
         csv += 'Date,Supplier,Phone,Item,Quantity,Rate,Total,Paid,Balance\n';
-        purchases.forEach(p => { csv += `"${p.date}","${p.supplier}","${p.phone || ''}","${p.item}",${p.qty},${p.rate},${p.total},${p.paid},${p.balance}\n`; });
+        purchases.forEach(p => { csv += `"${p.date}","${p.supplier}","${p.phone || ''}","${p.item}",${p.qty},${p.rate},${p.total},${p.balance}\n`; });
       } else if (type === 'labour') {
         csv += 'Date,Team,Items,TotalWage,TotalCement\n';
         labourLogs.forEach(l => {
@@ -2204,9 +2250,11 @@
         });
       } else if (type === 'stock') {
         csv += 'Sr No,Item Name,Total In/Made,Total Out/Sold,Available Stock\n';
-        STANDARD_18_ITEMS.forEach((itemName, i) => {
+        currentItemsList.forEach((itemName, i) => {
           let made = 0, sold = 0;
-          if (i === 17) {
+          const isCement = itemName.includes("ਸੀਮੈਂਟ") || itemName.includes("Cement");
+
+          if (isCement) {
             purchases.forEach(p => { if ((p.item||'').toLowerCase().includes('cement') || (p.item||'').includes('ਸੀਮੈਂਟ')) made += Number(p.qty)||0; });
             labourLogs.forEach(l => {
               if (l.items) l.items.forEach(it => sold += Number(it.cementBags)||0);
