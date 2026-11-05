@@ -330,7 +330,7 @@
     .modal-box {
       background: white;
       border-radius: var(--radius);
-      max-width: 560px;
+      max-width: 540px;
       width: 100%;
       padding: 20px;
       box-shadow: var(--shadow);
@@ -428,6 +428,7 @@
               <label>ਮੋਬਾਈਲ / WhatsApp</label>
               <input type="tel" id="salePhone" placeholder="10 ਅੰਕਾਂ ਦਾ ਨੰਬਰ" pattern="[0-9]{10}">
             </div>
+            <!-- CLIENT ADDRESS BLOCK ADDED -->
             <div class="form-group" style="flex:0 0 240px; min-width:210px;">
               <label>ਪਤਾ / ਸਾਈਟ ਲੋਕੇਸ਼ਨ (Address)</label>
               <input type="text" id="saleAddress" placeholder="ਪਿੰਡ/ਸ਼ਹਿਰ/ਸਾਈਟ ਦਾ ਪਤਾ">
@@ -677,7 +678,7 @@
       </div>
     </section>
 
-    <!-- BLOCK 5: FACTORY STOCK -->
+    <!-- BLOCK 5: FACTORY STOCK (LIVE LIST OF ALL ITEMS) -->
     <section id="tab-stock" class="tab-content">
       <div class="card">
         <div class="card-title">
@@ -704,10 +705,10 @@
       </div>
     </section>
 
-    <!-- BLOCK 6: LABOUR PRODUCTION, PAYOUT & LOADING/UNLOADING LEDGER -->
+    <!-- BLOCK 6: LABOUR PRODUCTION & PAYOUT LEDGER -->
     <section id="tab-labour" class="tab-content">
       
-      <!-- 1. Fixed Items Grid Form (Cement unified at bottom) -->
+      <!-- Upper Section: Fixed Items Grid Form -->
       <div class="card">
         <div class="card-title">
           <span id="labourFormTitle">1. ਲੇਬਰ ਰੋਜ਼ਾਨਾ ਉਤਪਾਦਨ ਐਂਟਰੀ</span>
@@ -727,10 +728,11 @@
             </div>
           </div>
 
+          <!-- All Items Table -->
           <div class="items-box">
             <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px; flex-wrap:wrap; gap:8px;">
               <strong style="color:var(--purple); font-size:0.95rem;">
-                ਆਈਟਮਾਂ ਦੀ ਸੂਚੀ (ਜਿਹੜੀ ਆਈਟਮ ਬਣੀ ਹੈ ਸਿਰਫ਼ ਉਸਦੇ ਅੱਗੇ ਨਗ ਭਰੋ; Delete ਕਰਨ ਲਈ ਨਾਮ 'ਤੇ Hold ਕਰੋ):
+                ਆਈਟਮਾਂ ਦੀ ਸੂਚੀ (ਜਿਹੜੀ ਆਈਟਮ ਬਣੀ ਹੈ ਸਿਰਫ਼ ਉਸਦੇ ਅੱਗੇ ਨਗ ਭਰੋ; Delete ਕਰਨ ਲਈ ਨਾਮ 'ਤੇ Hold/Long Press ਕਰੋ):
               </strong>
               <button type="button" class="btn btn-purple btn-sm" onclick="promptAddNewItem()">➕ ਨਵੀਂ ਆਈਟਮ ਐਡ ਕਰੋ</button>
             </div>
@@ -741,33 +743,27 @@
                   <tr>
                     <th>ਲੜੀ</th>
                     <th>ਆਈਟਮ ਦਾ ਨਾਮ (Hold to Delete)</th>
-                    <th style="min-width:130px;">ਬਣੇ ਪੀਸ (Qty)</th>
-                    <th style="min-width:120px;">ਲੇਬਰ ਰੇਟ (₹)</th>
-                    <th style="min-width:130px;">ਮਜ਼ਦੂਰੀ ਰਕਮ (₹)</th>
+                    <th style="min-width:110px;">ਬਣੇ ਪੀਸ (Qty)</th>
+                    <th style="min-width:110px;">ਲੇਬਰ ਰੇਟ (₹)</th>
+                    <th style="min-width:120px;">ਵਰਤਿਆ ਸੀਮੈਂਟ (Bags)</th>
+                    <th style="min-width:110px;">ਮਜ਼ਦੂਰੀ ਰਕਮ (₹)</th>
                   </tr>
                 </thead>
                 <tbody id="labour18ItemsBody">
-                  <!-- Populated via buildLabour18ItemsGrid() -->
+                  <!-- Injected via buildLabour18ItemsGrid() -->
                 </tbody>
               </table>
-            </div>
-
-            <!-- Single Consolidated Cement Block -->
-            <div style="margin-top:14px; background:#f0fdf4; border:1.5px solid #86efac; border-radius:8px; padding:12px; display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:10px;">
-              <div>
-                <strong style="color:#166534; font-size:0.95rem;">🏗️ ਅੱਜ ਕੁੱਲ ਵਰਤੀਆਂ ਸੀਮੈਂਟ ਬੋਰੀਆਂ (Total Cement Bags Used):</strong>
-                <small style="display:block; color:#15803d; font-size:0.8rem;">(ਇਹ ਬੋਰੀਆਂ ਫੈਕਟਰੀ ਸਟੋਕ ਵਿੱਚੋਂ ਸਿੱਧੀਆਂ ਮਾਈਨਸ ਹੋਣਗੀਆਂ)</small>
-              </div>
-              <div style="width:160px;">
-                <input type="number" id="labourSingleCementBags" min="0" placeholder="0" value="0" style="padding:8px; font-size:1rem; font-weight:bold; border-color:#86efac; border-radius:6px; width:100%;">
-              </div>
             </div>
           </div>
 
           <div class="horizontal-row">
-            <div class="form-group" style="flex:0 0 250px;">
+            <div class="form-group">
               <label>ਕੁੱਲ ਲੇਬਰ ਮਜ਼ਦੂਰੀ / Total Wages (₹)</label>
               <input type="number" id="labourGrandTotal" readonly>
+            </div>
+            <div class="form-group">
+              <label>ਕੁੱਲ ਵਰਤਿਆ ਸੀਮੈਂਟ (Bags)</label>
+              <input type="number" id="labourGrandCement" readonly>
             </div>
           </div>
 
@@ -778,10 +774,10 @@
         </form>
       </div>
 
-      <!-- Compact Production Summary Rows -->
+      <!-- Lower Section: Clean Compact Summary Rows (Click to open drill-down details) -->
       <div class="card">
         <div class="card-title">
-          <span>ਲੇਬਰ ਉਤਪਾਦਨ ਸਮਰੀ ਰਿਕਾਰਡ (ਵੇਰਵਾ ਵੇਖਣ ਲਈ ਤਾਰੀਖ 'ਤੇ ਕਲਿੱਕ ਕਰੋ)</span>
+          <span>ਲੇਬਰ ਉਤਪਾਦਨ ਸਮਰੀ ਰਿਕਾਰਡ (ਵੇਰਵਾ ਵੇਖਣ ਲਈ ਤਾਰੀਖ ਜਾਂ ਲਾਈਨ 'ਤੇ ਕਲਿੱਕ ਕਰੋ)</span>
         </div>
         <div class="table-responsive">
           <table id="labourTable">
@@ -790,7 +786,7 @@
                 <th>ਤਾਰੀਖ</th>
                 <th>ਲੇਬਰ ਟੀਮ</th>
                 <th>ਕੁੱਲ ਬਣਿਆ ਮਾਲ</th>
-                <th>ਕੁੱਲ ਸੀਮੈਂਟ ਬੋਰੀਆਂ</th>
+                <th>ਕੁੱਲ ਸੀਮੈਂਟ</th>
                 <th>ਕੁੱਲ ਮਜ਼ਦੂਰੀ (₹)</th>
                 <th>ਐਕਸ਼ਨ</th>
               </tr>
@@ -800,7 +796,7 @@
         </div>
       </div>
 
-      <!-- 2. Labour Payout Ledger Section -->
+      <!-- Payout Ledger Section -->
       <div class="card" style="border-top: 4px solid var(--purple);">
         <div class="card-title">
           <span>2. ਲੇਬਰ ਭੁਗਤਾਨ & ਖਾਤਾ ਰਜਿਸਟਰ (Labour Wages & Payout Ledger)</span>
@@ -860,40 +856,6 @@
           </table>
         </div>
       </div>
-
-      <!-- 3. NEW BLOCK: LOADING & UNLOADING LABOUR LEDGER -->
-      <div class="card" style="border-top: 4px solid var(--warning);">
-        <div class="card-title">
-          <span>3. ਲੇਬਰ ਲੋਡਿੰਗ & ਅਨਲੋਡਿੰਗ ਰਿਕਾਰਡ (Loading / Unloading Ledger)</span>
-        </div>
-        <p style="font-size:0.85rem; color:var(--text-muted); margin-bottom:12px;">
-          ℹ️ ਸੇਲ ਪੇਜ ਤੋਂ ਜਦੋਂ ਵੀ ਮਾਲ ਡਿਸਪੈਚ ਕੀਤਾ ਜਾਂਦਾ ਹੈ, ਤਾਂ ਲੋਡਿੰਗ/ਅਨਲੋਡਿੰਗ ਦਾ ਹਿਸਾਬ ਆਟੋਮੈਟਿਕ ਇੱਥੇ ਦਰਜ ਹੋ ਜਾਂਦਾ ਹੈ। (ਵੇਰਵਾ ਵੇਖਣ ਲਈ ਕਤਾਰ 'ਤੇ ਟੱਚ ਕਰੋ)
-        </p>
-
-        <div class="stats-grid">
-          <div class="stat-card pending">
-            <div class="stat-title">ਕੁੱਲ ਲੋਡਿੰਗ/ਅਨਲੋਡਿੰਗ ਲੇਬਰ (Total Due)</div>
-            <div class="stat-val" id="statLoadingTotalWage">₹0</div>
-          </div>
-        </div>
-
-        <div class="table-responsive">
-          <table id="loadingUnloadingTable">
-            <thead>
-              <tr>
-                <th>ਤਾਰੀਖ</th>
-                <th>ਕਲਾਇੰਟ ਦਾ ਨਾਮ</th>
-                <th>ਸਟੇਟਸ (Loaded / Unloaded)</th>
-                <th>ਕੁੱਲ ਮਾਲ</th>
-                <th>ਕੁੱਲ ਲੇਬਰ ਪੇਮੈਂਟ (₹)</th>
-                <th>ਐਕਸ਼ਨ</th>
-              </tr>
-            </thead>
-            <tbody></tbody>
-          </table>
-        </div>
-      </div>
-
     </section>
 
   </div>
@@ -962,18 +924,15 @@
           <input type="date" id="dispatchNextDate">
         </div>
         <div class="form-group" style="margin-bottom: 14px;">
-          <label>ਲੋਡਿੰਗ / ਅਨਲੋਡਿੰਗ (ਆਟੋ ਲੇਬਰ ਕੈਲਕੁਲੇਸ਼ਨ):</label>
+          <label>ਲੋਡਿੰਗ / ਅਨਲੋਡਿੰਗ (ਆਪਸ਼ਨਲ ਟਿੱਕ):</label>
           <div class="checkbox-row">
             <label class="checkbox-label">
-              <input type="checkbox" id="dispatchLoaded"> 📦 Loaded (ਲੋਡ ਹੋਇਆ)
+              <input type="checkbox" id="dispatchLoaded"> 📦 Loaded
             </label>
             <label class="checkbox-label">
-              <input type="checkbox" id="dispatchUnloaded"> 🚛 Unloaded (ਅਨਲੋਡ ਹੋਇਆ)
+              <input type="checkbox" id="dispatchUnloaded"> 🚛 Unloaded
             </label>
           </div>
-          <small style="color:var(--text-muted); display:block; margin-top:4px;">
-            (Crave: ₹1.25, ਬਾਕੀ ਸਭ: ₹0.50 ਪ੍ਰਤੀ ਪੀਸ)
-          </small>
         </div>
         <div style="display: flex; justify-content: flex-end; gap: 8px;">
           <button type="button" class="btn btn-outline" onclick="closeDispatchModal()">ਰੱਦ ਕਰੋ</button>
@@ -1002,6 +961,7 @@
               <th>ਬਣੇ ਪੀਸ (Qty)</th>
               <th>ਰੇਟ (₹)</th>
               <th>ਮਜ਼ਦੂਰੀ (₹)</th>
+              <th>ਸੀਮੈਂਟ (Bags)</th>
             </tr>
           </thead>
           <tbody id="ldModalBody"></tbody>
@@ -1020,45 +980,8 @@
     </div>
   </div>
 
-  <!-- POPUP MODAL: Loading/Unloading Details (Drill-Down View) -->
-  <div class="modal" id="loadingDetailModal">
-    <div class="modal-box">
-      <div class="modal-header">
-        <div>
-          <h3 style="font-size:1.15rem; font-weight:800; color:var(--warning);" id="loadingModalTitle">ਲੋਡਿੰਗ / ਅਨਲੋਡਿੰਗ ਵੇਰਵਾ</h3>
-          <small id="loadingModalSubtitle" style="color:var(--text-muted); font-size:0.85rem;"></small>
-        </div>
-        <button class="close-modal" onclick="closeLoadingDetailModal()">×</button>
-      </div>
-
-      <div class="table-responsive">
-        <table>
-          <thead>
-            <tr>
-              <th>ਆਈਟਮ</th>
-              <th>ਨਗ (Qty)</th>
-              <th>ਕੰਮ</th>
-              <th>ਰੇਟ (₹)</th>
-              <th>ਕੁੱਲ ਲੇਬਰ (₹)</th>
-            </tr>
-          </thead>
-          <tbody id="loadingModalBody"></tbody>
-        </table>
-      </div>
-
-      <div style="margin-top:16px; padding:12px; background:#fefce8; border:1px solid #fef08a; border-radius:8px; display:flex; justify-content:space-between; font-weight:700;">
-        <span id="loadingModalTotalQty">ਕੁੱਲ ਨਗ: 0</span>
-        <span id="loadingModalTotalWage" style="color:var(--danger);">ਕੁੱਲ ਲੇਬਰ: ₹0</span>
-      </div>
-
-      <div style="margin-top:16px; display:flex; justify-content:flex-end;">
-        <button type="button" class="btn btn-outline" onclick="closeLoadingDetailModal()">ਬੰਦ ਕਰੋ ✖</button>
-      </div>
-    </div>
-  </div>
-
   <script>
-    // BASE ITEMS WITH FIXED LABOUR RATES (EXCLUDING CEMENT FROM PRODUCTION RATES)
+    // BASE ITEMS WITH FIXED LABOUR RATES
     const DEFAULT_ITEMS_DATA = [
       { name: "BARFI 60 MM", rate: 1.6 },
       { name: "ZABRA 60 MM", rate: 1.5 },
@@ -1075,7 +998,8 @@
       { name: "CHANNEL", rate: 3.0 },
       { name: "10*10", rate: 1.8 },
       { name: "4*4 dabi", rate: 1.4 },
-      { name: "Stone 80mm", rate: 1.7 }
+      { name: "Stone 80mm", rate: 1.7 },
+      { name: "ਸੀਮੈਂਟ (Cement Bags)", rate: 0.0 }
     ];
 
     let currentItemsData = [...DEFAULT_ITEMS_DATA];
@@ -1122,9 +1046,8 @@
     });
 
     function initItemSelectOptions() {
-      const allItemsWithCement = [...currentItemsData.map(i => i.name), "ਸੀਮੈਂਟ (Cement Bags)"];
       const datalist = document.getElementById('standardItemList');
-      datalist.innerHTML = allItemsWithCement.map(item => `<option value="${item}">`).join('');
+      datalist.innerHTML = currentItemsData.map(item => `<option value="${item.name}">`).join('');
 
       const rawList = document.getElementById('rawMaterialList');
       rawList.innerHTML = rawMaterials.map(m => `<option value="${m}">`).join('');
@@ -1143,7 +1066,13 @@
       const rateInput = prompt(`ਇਸ ਆਈਟਮ ("${trimmed}") ਦਾ ਲੇਬਰ ਰੇਟ (₹) ਲਿਖੋ:`, "1.5");
       const rateVal = parseFloat(rateInput) || 0;
 
-      currentItemsData.push({ name: trimmed, rate: rateVal });
+      const cementIdx = currentItemsData.findIndex(i => i.name.includes("ਸੀਮੈਂਟ") || i.name.includes("Cement"));
+      if (cementIdx !== -1) {
+        currentItemsData.splice(cementIdx, 0, { name: trimmed, rate: rateVal });
+      } else {
+        currentItemsData.push({ name: trimmed, rate: rateVal });
+      }
+
       db.ref('customItemsData').set(currentItemsData);
 
       initItemSelectOptions();
@@ -1153,6 +1082,10 @@
     }
 
     function deleteCustomItem(itemName) {
+      if (itemName.includes("ਸੀਮੈਂਟ") || itemName.includes("Cement")) {
+        alert("ਸੀਮੈਂਟ ਨੂੰ ਡਿਲੀਟ ਨਹੀਂ ਕੀਤਾ ਜਾ ਸਕਦਾ!");
+        return;
+      }
       if (confirm(`ਕੀ ਤੁਸੀਂ "${itemName}" ਨੂੰ ਲਿਸਟ ਵਿੱਚੋਂ ਹਟਾਉਣਾ ਚਾਹੁੰਦੇ ਹੋ?`)) {
         currentItemsData = currentItemsData.filter(i => i.name.toLowerCase() !== itemName.toLowerCase());
         db.ref('customItemsData').set(currentItemsData);
@@ -1162,8 +1095,7 @@
       }
     }
 
-    // BUILD LABOUR ITEMS GRID (WITHOUT CEMENT PER ITEM ROW)
-    function buildLabour18ItemsGrid(prefillData = [], prefillCement = 0) {
+    function buildLabour18ItemsGrid(prefillData = []) {
       const tbody = document.getElementById('labour18ItemsBody');
       tbody.innerHTML = '';
 
@@ -1174,6 +1106,7 @@
         const found = prefillData.find(d => (d.item || '').toLowerCase() === itemName.toLowerCase());
         const qtyVal = found ? found.qty : '';
         const rateVal = found ? found.rate : (defaultRate > 0 ? defaultRate : '');
+        const cementVal = found ? found.cementBags : '';
         const wageVal = found ? (found.qty * found.rate).toFixed(2) : '';
 
         const tr = document.createElement('tr');
@@ -1191,6 +1124,9 @@
           </td>
           <td>
             <input type="number" step="0.01" class="grid-labour-rate" min="0" placeholder="₹0" value="${rateVal}" oninput="calcLabour18GridTotal()" style="padding:6px 8px; font-size:0.88rem;">
+          </td>
+          <td>
+            <input type="number" class="grid-labour-cement" min="0" placeholder="0" value="${cementVal}" oninput="calcLabour18GridTotal()" style="padding:6px 8px; font-size:0.88rem;">
           </td>
           <td>
             <input type="number" class="grid-labour-wage" value="${wageVal}" readonly style="padding:6px 8px; font-size:0.88rem; background:#f8fafc; font-weight:700; color:var(--purple);">
@@ -1219,27 +1155,29 @@
         tbody.appendChild(tr);
       });
 
-      document.getElementById('labourSingleCementBags').value = prefillCement || 0;
       calcLabour18GridTotal();
     }
 
     function calcLabour18GridTotal() {
       let grandWage = 0;
+      let grandCement = 0;
       const rows = document.querySelectorAll('.labour-grid-row');
 
       rows.forEach(r => {
         const qty = parseFloat(r.querySelector('.grid-labour-qty').value) || 0;
         const rate = parseFloat(r.querySelector('.grid-labour-rate').value) || 0;
+        const cement = parseFloat(r.querySelector('.grid-labour-cement').value) || 0;
         const lineWage = qty * rate;
 
         r.querySelector('.grid-labour-wage').value = lineWage > 0 ? lineWage.toFixed(2) : '';
         grandWage += lineWage;
+        grandCement += cement;
       });
 
       document.getElementById('labourGrandTotal').value = grandWage.toFixed(2);
+      document.getElementById('labourGrandCement').value = grandCement;
     }
 
-    // MULTI-ITEM SALE LOGIC
     function addSaleItemRow(itemVal = '', qtyVal = '', rateVal = '', lineTotalVal = '') {
       const container = document.getElementById('saleItemsContainer');
       const rowId = 'itemRow_' + Date.now() + '_' + Math.random().toString(36).substring(2, 6);
@@ -1363,7 +1301,6 @@
       renderFactoryStock();
       renderLabourTable();
       renderLabourPayoutLedger();
-      renderLoadingUnloadingLedger();
       renderDeliveryDateAlerts();
       refreshPartiesDropdown();
       if (selectedLedgerParty) showClientDetail(selectedLedgerParty);
@@ -1381,11 +1318,7 @@
       if (tabId === 'monthly') renderMonthlySummary();
       if (tabId === 'clients') renderClientList();
       if (tabId === 'stock') renderFactoryStock();
-      if (tabId === 'labour') {
-        renderLabourTable();
-        renderLabourPayoutLedger();
-        renderLoadingUnloadingLedger();
-      }
+      if (tabId === 'labour') { renderLabourTable(); renderLabourPayoutLedger(); }
     }
 
     function calcPurTotal() {
@@ -1411,7 +1344,7 @@
         items.forEach(it => {
           let itemDispatched = 0;
           dispatches.forEach(d => {
-            if ((d.item || '').toLowerCase() === it.item.toLowerCase()) {
+            if ((d.item || '').toLowerCase() === (it.item || '').toLowerCase()) {
               itemDispatched += Number(d.qty) || 0;
             }
           });
@@ -1548,32 +1481,34 @@
       addSaleItemRow();
     }
 
-    // BLOCK 6: Save Labour (Single Cement Input at Bottom)
+    // BLOCK 6: Save Labour
     function saveLabour(e) {
       e.preventDefault();
       const editId = document.getElementById('editLabourId').value;
       const date = document.getElementById('labourDate').value;
       const team = document.getElementById('labourTeam').value.trim();
-      const totalCement = parseFloat(document.getElementById('labourSingleCementBags').value) || 0;
 
       const rows = document.querySelectorAll('.labour-grid-row');
       const itemsList = [];
       let grandWage = 0;
+      let grandCement = 0;
 
       rows.forEach(r => {
         const item = r.dataset.item;
         const qty = parseFloat(r.querySelector('.grid-labour-qty').value) || 0;
         const rate = parseFloat(r.querySelector('.grid-labour-rate').value) || 0;
+        const cementBags = parseFloat(r.querySelector('.grid-labour-cement').value) || 0;
         const lineWage = qty * rate;
 
-        if (qty > 0) {
-          itemsList.push({ item, qty, rate, wage: lineWage });
+        if (qty > 0 || cementBags > 0) {
+          itemsList.push({ item, qty, rate, cementBags, wage: lineWage });
           grandWage += lineWage;
+          grandCement += cementBags;
         }
       });
 
-      if (itemsList.length === 0 && totalCement === 0) {
-        return alert('ਕਿਰਪਾ ਕਰਕੇ ਘੱਟੋ-ਘੱਟ ਇੱਕ ਆਈਟਮ ਦਾ ਨਗ (Qty) ਜਾਂ ਸੀਮੈਂਟ ਬੋਰੀਆਂ ਭਰੋ!');
+      if (itemsList.length === 0) {
+        return alert('ਕਿਰਪਾ ਕਰਕੇ ਘੱਟੋ-ਘੱਟ ਇੱਕ ਆਈਟਮ ਦਾ ਨਗ (Qty) ਜਾਂ ਸੀਮੈਂਟ ਭਰੋ!');
       }
 
       const id = editId ? editId : ('L_' + Date.now());
@@ -1582,7 +1517,7 @@
         id, date, team,
         items: itemsList,
         total: grandWage,
-        totalCement: totalCement
+        totalCement: grandCement
       };
 
       db.ref('labourLogs/' + id).set(record);
@@ -1598,8 +1533,8 @@
       document.getElementById('labourDate').value = l.date;
       document.getElementById('labourTeam').value = l.team || '';
 
-      const items = l.items || [{ item: l.item, qty: l.qty, rate: l.rate, wage: l.total }];
-      buildLabour18ItemsGrid(items, l.totalCement || 0);
+      const items = l.items || [{ item: l.item, qty: l.qty, rate: l.rate, cementBags: l.cementBags || 0, wage: l.total }];
+      buildLabour18ItemsGrid(items);
 
       document.getElementById('labourFormTitle').textContent = 'ਲੇਬਰ ਉਤਪਾਦਨ ਐਂਟਰੀ ਐਡਿਟ ਕਰੋ';
       document.getElementById('labourSubmitBtn').textContent = '💾 ਬਦਲਾਅ ਅੱਪਡੇਟ ਕਰੋ';
@@ -1615,7 +1550,7 @@
       document.getElementById('labourSubmitBtn').textContent = '➕ ਲੇਬਰ ਐਂਟਰੀ ਸੇਵ ਕਰੋ';
       document.getElementById('cancelLabourEditBtn').style.display = 'none';
 
-      buildLabour18ItemsGrid([], 0);
+      buildLabour18ItemsGrid();
     }
 
     function deleteLabour(id) {
@@ -1623,7 +1558,6 @@
       db.ref('labourLogs/' + id).remove();
     }
 
-    // Render Compact Summary Rows for Labour Production
     function renderLabourTable() {
       const tbody = document.querySelector('#labourTable tbody');
       if (labourLogs.length === 0) {
@@ -1631,7 +1565,7 @@
         return;
       }
       tbody.innerHTML = labourLogs.slice().reverse().map(l => {
-        const items = l.items || [{ item: l.item, qty: l.qty, rate: l.rate, wage: l.total }];
+        const items = l.items || [{ item: l.item, qty: l.qty, rate: l.rate, cementBags: l.cementBags || 0, wage: l.total }];
         let totalPieces = 0;
         items.forEach(it => totalPieces += (Number(it.qty) || 0));
 
@@ -1663,7 +1597,7 @@
       document.getElementById('ldModalTitle').textContent = `ਉਤਪਾਦਨ ਵੇਰਵਾ (${l.date})`;
       document.getElementById('ldModalSubtitle').textContent = `ਕਾਰੀਗਰ / ਟੀਮ: ${l.team || 'ਦਰਜ ਨਹੀਂ'}`;
 
-      const items = l.items || [{ item: l.item, qty: l.qty, rate: l.rate, wage: l.total }];
+      const items = l.items || [{ item: l.item, qty: l.qty, rate: l.rate, cementBags: l.cementBags || 0, wage: l.total }];
       let totalQty = 0;
 
       const tbody = document.getElementById('ldModalBody');
@@ -1675,6 +1609,7 @@
             <td>${it.qty.toLocaleString('en-IN')}</td>
             <td>₹${Number(it.rate || 0).toFixed(2)}</td>
             <td style="color:var(--purple); font-weight:700;">₹${Number(it.wage || 0).toLocaleString('en-IN')}</td>
+            <td style="color:var(--danger); font-weight:700;">${it.cementBags || 0}</td>
           </tr>
         `;
       }).join('');
@@ -1690,7 +1625,7 @@
       document.getElementById('labourDetailModal').classList.remove('show');
     }
 
-    // DISPATCH MODAL LOGIC (AUTO-CALCULATES LOADING & UNLOADING WAGE)
+    // Dispatch Modal Logic
     function openDispatchModal(saleId) {
       currentDispatchSaleId = saleId;
       const s = sales.find(item => item.id === saleId);
@@ -1773,24 +1708,13 @@
 
       if (sendQty <= 0) return alert('ਕਿਰਪਾ ਕਰਕੇ ਸਹੀ ਕੁਆਂਟਿਟੀ ਭਰੋ!');
 
-      // Rate calculation: CRAVE is 1.25, others 0.50 (excluding cement)
-      const isCrave = selectedItem.item.toUpperCase().includes('CRAVE');
-      const isCement = selectedItem.item.includes('ਸੀਮੈਂਟ') || selectedItem.item.toLowerCase().includes('cement');
-      const ratePerAction = isCement ? 0 : (isCrave ? 1.25 : 0.50);
-
-      let loadingCost = 0;
-      if (loaded) loadingCost += sendQty * ratePerAction;
-      if (unloaded) loadingCost += sendQty * ratePerAction;
-
       if (!s.dispatches) s.dispatches = [];
       s.dispatches.push({
         item: selectedItem.item,
         qty: sendQty,
         date: date,
         loaded: loaded,
-        unloaded: unloaded,
-        ratePerAction: ratePerAction,
-        loadingCost: loadingCost
+        unloaded: unloaded
       });
 
       if (nextDate) {
@@ -1799,113 +1723,7 @@
 
       db.ref('sales/' + s.id).set(s);
       closeDispatchModal();
-      alert(`🚚 ${selectedItem.item} ਦੇ ${sendQty} ਪੀਸ ਡਿਸਪੈਚ ਹੋ ਗਏ ਹਨ! (ਲੇਬਰ ਲੋਡਿੰਗ ਖਾਤੇ ਵਿੱਚ ₹${loadingCost.toFixed(2)} ਦਰਜ ਹੋ ਗਏ ਹਨ)`);
-    }
-
-    // RENDER BLOCK 6: 3. LOADING & UNLOADING LEDGER
-    function renderLoadingUnloadingLedger() {
-      const tbody = document.querySelector('#loadingUnloadingTable tbody');
-      let grandLoadingWage = 0;
-      const rows = [];
-
-      sales.forEach(s => {
-        if (s.dispatches && s.dispatches.length > 0) {
-          s.dispatches.forEach((d, dIdx) => {
-            if (d.loaded || d.unloaded) {
-              const cost = Number(d.loadingCost) || 0;
-              grandLoadingWage += cost;
-
-              let statusText = [];
-              if (d.loaded) statusText.push('📦 Loaded');
-              if (d.unloaded) statusText.push('🚛 Unloaded');
-
-              rows.push({
-                saleId: s.id,
-                dispatchIdx: dIdx,
-                date: d.date || s.date,
-                client: s.client,
-                item: d.item,
-                qty: d.qty,
-                status: statusText.join(' + '),
-                loaded: d.loaded,
-                unloaded: d.unloaded,
-                rate: d.ratePerAction || (d.item.toUpperCase().includes('CRAVE') ? 1.25 : 0.50),
-                cost: cost
-              });
-            }
-          });
-        }
-      });
-
-      document.getElementById('statLoadingTotalWage').textContent = `₹${grandLoadingWage.toLocaleString('en-IN')}`;
-
-      if (rows.length === 0) {
-        tbody.innerHTML = '<tr><td colspan="6" style="text-align:center;">ਕੋਈ ਲੋਡਿੰਗ/ਅਨਲੋਡਿੰਗ ਰਿਕਾਰਡ ਨਹੀਂ ਹੈ</td></tr>';
-        return;
-      }
-
-      rows.sort((a, b) => new Date(b.date) - new Date(a.date));
-
-      tbody.innerHTML = rows.map((r, idx) => `
-        <tr class="clickable-row">
-          <td onclick="openLoadingDetailModal(${idx})">
-            <strong style="color:var(--primary); text-decoration:underline;">📅 ${r.date}</strong>
-          </td>
-          <td onclick="openLoadingDetailModal(${idx})"><strong>${r.client}</strong></td>
-          <td onclick="openLoadingDetailModal(${idx})"><span class="badge badge-partial">${r.status}</span></td>
-          <td onclick="openLoadingDetailModal(${idx})">${r.qty.toLocaleString('en-IN')} (${r.item})</td>
-          <td onclick="openLoadingDetailModal(${idx})" style="color:var(--danger); font-weight:700;">₹${r.cost.toLocaleString('en-IN')}</td>
-          <td>
-            <button class="btn btn-outline btn-sm" onclick="openLoadingDetailModal(${idx})">👁️ ਵੇਰਵਾ</button>
-          </td>
-        </tr>
-      `).join('');
-
-      window.cachedLoadingRows = rows;
-    }
-
-    function openLoadingDetailModal(idx) {
-      const r = window.cachedLoadingRows && window.cachedLoadingRows[idx];
-      if (!r) return;
-
-      document.getElementById('loadingModalTitle').textContent = `ਲੋਡਿੰਗ/ਅਨਲੋਡਿੰਗ ਵੇਰਵਾ (${r.date})`;
-      document.getElementById('loadingModalSubtitle').textContent = `ਕਲਾਇੰਟ: ${r.client}`;
-
-      const tbody = document.getElementById('loadingModalBody');
-      const lines = [];
-
-      if (r.loaded) {
-        lines.push(`
-          <tr>
-            <td><strong>${r.item}</strong></td>
-            <td>${r.qty.toLocaleString('en-IN')}</td>
-            <td>📦 Loading</td>
-            <td>₹${r.rate.toFixed(2)}</td>
-            <td style="color:var(--danger); font-weight:700;">₹${(r.qty * r.rate).toLocaleString('en-IN')}</td>
-          </tr>
-        `);
-      }
-      if (r.unloaded) {
-        lines.push(`
-          <tr>
-            <td><strong>${r.item}</strong></td>
-            <td>${r.qty.toLocaleString('en-IN')}</td>
-            <td>🚛 Unloading</td>
-            <td>₹${r.rate.toFixed(2)}</td>
-            <td style="color:var(--danger); font-weight:700;">₹${(r.qty * r.rate).toLocaleString('en-IN')}</td>
-          </tr>
-        `);
-      }
-
-      tbody.innerHTML = lines.join('');
-      document.getElementById('loadingModalTotalQty').textContent = `ਕੁੱਲ ਨਗ: ${r.qty.toLocaleString('en-IN')}`;
-      document.getElementById('loadingModalTotalWage').textContent = `ਕੁੱਲ ਲੇਬਰ: ₹${r.cost.toLocaleString('en-IN')}`;
-
-      document.getElementById('loadingDetailModal').classList.add('show');
-    }
-
-    function closeLoadingDetailModal() {
-      document.getElementById('loadingDetailModal').classList.remove('show');
+      alert(`🚚 ${selectedItem.item} ਦੇ ${sendQty} ਪੀਸ ਡਿਸਪੈਚ ਹੋ ਗਏ ਹਨ ਅਤੇ ਫੈਕਟਰੀ ਸਟੋਕ ਵਿੱਚੋਂ ਘੱਟ ਗਏ ਹਨ!`);
     }
 
     // BLOCK 2: Purchases
@@ -2028,13 +1846,12 @@
       `).join('');
     }
 
-    // BLOCK 5: FACTORY STOCK LIVE CALCULATION (WITH DYNAMIC ITEMS & UNIFIED CEMENT DEDUCTION)
+    // BLOCK 5: FACTORY STOCK LIVE CALCULATION
     function renderFactoryStock() {
       const tbody = document.querySelector('#stockTable tbody');
       
-      const allItemsWithCement = [...currentItemsData.map(i => i.name), "ਸੀਮੈਂਟ (Cement Bags)"];
-
-      const stockSummary = allItemsWithCement.map((itemName, index) => {
+      const stockSummary = currentItemsData.map((itemObj, index) => {
+        const itemName = itemObj.name;
         let totalMadeOrIn = 0;
         let totalSoldOrUsed = 0;
 
@@ -2048,7 +1865,11 @@
             }
           });
           labourLogs.forEach(l => {
-            totalSoldOrUsed += Number(l.totalCement) || 0;
+            if (l.items) {
+              l.items.forEach(it => totalSoldOrUsed += Number(it.cementBags) || 0);
+            } else {
+              totalSoldOrUsed += Number(l.cementBags) || 0;
+            }
           });
         } else {
           labourLogs.forEach(log => {
@@ -2430,6 +2251,7 @@
       selectedLedgerParty = null;
     }
 
+    // BEAUTIFUL WHATSAPP MESSAGE WITHOUT PER-PIECE RATE
     function sendWhatsAppInvoice(id, type) {
       const rec = type === 'sale' ? sales.find(s => s.id === id) : purchases.find(p => p.id === id);
       if (!rec || !rec.phone) return alert('ਨੰਬਰ ਦਰਜ ਨਹੀਂ ਹੈ!');
@@ -2437,6 +2259,7 @@
       let itemLines = '';
       if (type === 'sale') {
         const items = rec.items || [{ item: rec.item, qty: rec.qty, total: rec.total }];
+        // Showing item and quantity only (No per piece rate)
         itemLines = items.map(i => `▫️ *${i.item}*: ${i.qty.toLocaleString('en-IN')} ਨਗ`).join('\n');
       }
 
@@ -2473,7 +2296,7 @@
         });
       } else if (type === 'purchases') {
         csv += 'Date,Supplier,Phone,Item,Quantity,Rate,Total,Paid,Balance\n';
-        purchases.forEach(p => { csv += `"${p.date}","${p.supplier}","${p.phone || ''}","${p.item}",${p.qty},${p.rate},${p.total},${p.balance}\n`; });
+        purchases.forEach(p => { csv += `"${p.date}","${p.supplier}","${p.phone || ''}","${p.item}",${p.qty},${p.rate},${p.total},${p.paid},${p.balance}\n`; });
       } else if (type === 'labour') {
         csv += 'Date,Team,Items,TotalWage,TotalCement\n';
         labourLogs.forEach(l => {
@@ -2482,15 +2305,16 @@
         });
       } else if (type === 'stock') {
         csv += 'Sr No,Item Name,Total In/Made,Total Out/Sold,Available Stock\n';
-        const allItemsWithCement = [...currentItemsData.map(i => i.name), "ਸੀਮੈਂਟ (Cement Bags)"];
-        allItemsWithCement.forEach((itemName, i) => {
+        currentItemsData.forEach((itemObj, i) => {
+          const itemName = itemObj.name;
           let made = 0, sold = 0;
           const isCement = itemName.includes("ਸੀਮੈਂਟ") || itemName.includes("Cement");
 
           if (isCement) {
             purchases.forEach(p => { if ((p.item||'').toLowerCase().includes('cement') || (p.item||'').includes('ਸੀਮੈਂਟ')) made += Number(p.qty)||0; });
             labourLogs.forEach(l => {
-              sold += Number(l.totalCement) || 0;
+              if (l.items) l.items.forEach(it => sold += Number(it.cementBags)||0);
+              else sold += Number(l.cementBags)||0;
             });
           } else {
             labourLogs.forEach(l => {
