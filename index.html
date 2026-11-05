@@ -45,48 +45,22 @@
     header {
       background: linear-gradient(135deg, var(--primary), #0f172a);
       color: #ffffff;
-      padding: 14px 16px;
-      position: relative;
-    }
-
-    .header-top {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      max-width: 960px;
-      margin: 0 auto;
+      padding: 16px;
+      text-align: center;
     }
 
     header h1 {
-      font-size: 1.35rem;
+      font-size: 1.45rem;
       font-weight: 800;
-    }
-
-    .menu-btn {
-      background: rgba(255, 255, 255, 0.18);
-      border: 1px solid rgba(255, 255, 255, 0.3);
-      color: white;
-      font-size: 1.25rem;
-      border-radius: 8px;
-      padding: 5px 12px;
-      cursor: pointer;
-      display: inline-flex;
-      align-items: center;
-      gap: 6px;
-      transition: background 0.2s;
-    }
-
-    .menu-btn:hover {
-      background: rgba(255, 255, 255, 0.3);
     }
 
     .sync-status {
       display: inline-flex;
       align-items: center;
       gap: 6px;
-      font-size: 0.78rem;
+      font-size: 0.8rem;
       background: rgba(255, 255, 255, 0.15);
-      padding: 3px 10px;
+      padding: 4px 10px;
       border-radius: 20px;
       margin-top: 6px;
     }
@@ -356,7 +330,7 @@
     .modal-box {
       background: white;
       border-radius: var(--radius);
-      max-width: 580px;
+      max-width: 560px;
       width: 100%;
       padding: 20px;
       box-shadow: var(--shadow);
@@ -392,19 +366,10 @@
 <body>
 
   <header>
-    <div class="header-top">
-      <div>
-        <h1>ਖਾਤਾ ਬੁੱਕ & ਫੈਕਟਰੀ ਮੈਨੇਜਰ</h1>
-        <div class="sync-status">
-          <span class="dot" id="syncDot"></span>
-          <span id="syncText">ਕਨੈਕਟ ਹੋ ਰਿਹਾ ਹੈ...</span>
-        </div>
-      </div>
-      <!-- Top Right 3-Line Menu for Deleted Items (Recycle Bin) -->
-      <button type="button" class="menu-btn" onclick="openRecycleBinModal()" title="ਡਿਲੀਟ ਕੀਤੀਆਂ ਆਈਟਮਾਂ & ਐਂਟਰੀਆਂ">
-        <span>☰</span>
-        <span style="font-size:0.85rem;">ਰੱਦ ਰਿਕਾਰਡ</span>
-      </button>
+    <h1>ਖਾਤਾ ਬੁੱਕ & ਫੈਕਟਰੀ ਮੈਨੇਜਰ</h1>
+    <div class="sync-status">
+      <span class="dot" id="syncDot"></span>
+      <span id="syncText">ਕਨੈਕਟ ਹੋ ਰਿਹਾ ਹੈ...</span>
     </div>
   </header>
 
@@ -742,7 +707,7 @@
     <!-- BLOCK 6: LABOUR PRODUCTION, PAYOUT & LOADING/UNLOADING LEDGER -->
     <section id="tab-labour" class="tab-content">
       
-      <!-- 1. Fixed Items Grid Form -->
+      <!-- 1. Fixed Items Grid Form (Cement unified at bottom) -->
       <div class="card">
         <div class="card-title">
           <span id="labourFormTitle">1. ਲੇਬਰ ਰੋਜ਼ਾਨਾ ਉਤਪਾਦਨ ਐਂਟਰੀ</span>
@@ -835,15 +800,15 @@
         </div>
       </div>
 
-      <!-- 2. Labour Payout Ledger Section (WITH AUTO-COMBINED LOADING CHARGES) -->
+      <!-- 2. Labour Payout Ledger Section -->
       <div class="card" style="border-top: 4px solid var(--purple);">
         <div class="card-title">
-          <span>2. ਲੇਬਰ ਭੁਗਤਾਨ & ਖਾਤਾ ਰਜਿਸਟਰ (ਸਮੇਤ ਲੋਡਿੰਗ & ਅਨਲੋਡਿੰਗ ਮਜ਼ਦੂਰੀ)</span>
+          <span>2. ਲੇਬਰ ਭੁਗਤਾਨ & ਖਾਤਾ ਰਜਿਸਟਰ (Labour Wages & Payout Ledger)</span>
         </div>
 
         <div class="stats-grid">
           <div class="stat-card purple">
-            <div class="stat-title">ਕੁੱਲ ਬਣੀ ਮਜ਼ਦੂਰੀ (ਉਤਪਾਦਨ + ਲੋਡਿੰਗ)</div>
+            <div class="stat-title">ਕੁੱਲ ਬਣੀ ਮਜ਼ਦੂਰੀ (Total Earned)</div>
             <div class="stat-val" id="statLabourEarned">₹0</div>
           </div>
           <div class="stat-card debit">
@@ -851,7 +816,7 @@
             <div class="stat-val" id="statLabourPaid">₹0</div>
           </div>
           <div class="stat-card pending">
-            <div class="stat-title">ਬਾਕੀ ਦੇਣ ਯੋਗ ਬਕਾਇਆ (Net Balance Due)</div>
+            <div class="stat-title">ਬਾਕੀ ਦੇਣ ਯੋਗ ਬਕਾਇਆ (Balance Due)</div>
             <div class="stat-val" id="statLabourDue">₹0</div>
           </div>
         </div>
@@ -896,18 +861,18 @@
         </div>
       </div>
 
-      <!-- 3. LOADING & UNLOADING LABOUR LEDGER (CLEAN SUMMARY & AUTOMATIC TO 2ND BLOCK) -->
+      <!-- 3. NEW BLOCK: LOADING & UNLOADING LABOUR LEDGER -->
       <div class="card" style="border-top: 4px solid var(--warning);">
         <div class="card-title">
           <span>3. ਲੇਬਰ ਲੋਡਿੰਗ & ਅਨਲੋਡਿੰਗ ਰਿਕਾਰਡ (Loading / Unloading Ledger)</span>
         </div>
         <p style="font-size:0.85rem; color:var(--text-muted); margin-bottom:12px;">
-          ℹ️ ਸੇਲ ਪੇਜ ਤੋਂ ਮਾਲ ਡਿਸਪੈਚ ਕਰਨ 'ਤੇ ਲੋਡਿੰਗ/ਅਨਲੋਡਿੰਗ ਦੀ ਇਹ ਪੇਮੈਂਟ ਉੱਪਰ 2nd ਬਲਾਕ ਦੇ ਕੁੱਲ ਹਿਸਾਬ ਵਿੱਚ ਆਪਣੇ ਆਪ ਜੁੜ ਜਾਂਦੀ ਹੈ। (ਵੇਰਵਾ ਵੇਖਣ ਲਈ ਕਤਾਰ 'ਤੇ ਟੱਚ ਕਰੋ)
+          ℹ️ ਸੇਲ ਪੇਜ ਤੋਂ ਜਦੋਂ ਵੀ ਮਾਲ ਡਿਸਪੈਚ ਕੀਤਾ ਜਾਂਦਾ ਹੈ, ਤਾਂ ਲੋਡਿੰਗ/ਅਨਲੋਡਿੰਗ ਦਾ ਹਿਸਾਬ ਆਟੋਮੈਟਿਕ ਇੱਥੇ ਦਰਜ ਹੋ ਜਾਂਦਾ ਹੈ। (ਵੇਰਵਾ ਵੇਖਣ ਲਈ ਕਤਾਰ 'ਤੇ ਟੱਚ ਕਰੋ)
         </p>
 
         <div class="stats-grid">
           <div class="stat-card pending">
-            <div class="stat-title">ਕੁੱਲ ਬਣੀ ਲੋਡਿੰਗ/ਅਨਲੋਡਿੰਗ ਲੇਬਰ (Earned)</div>
+            <div class="stat-title">ਕੁੱਲ ਲੋਡਿੰਗ/ਅਨਲੋਡਿੰਗ ਲੇਬਰ (Total Due)</div>
             <div class="stat-val" id="statLoadingTotalWage">₹0</div>
           </div>
         </div>
@@ -918,9 +883,9 @@
               <tr>
                 <th>ਤਾਰੀਖ</th>
                 <th>ਕਲਾਇੰਟ ਦਾ ਨਾਮ</th>
-                <th>ਕੰਮ (Status)</th>
-                <th>ਕੁੱਲ ਮਾਲ (Qty)</th>
-                <th>ਬਣੀ ਲੇਬਰ ਪੇਮੈਂਟ (₹)</th>
+                <th>ਸਟੇਟਸ (Loaded / Unloaded)</th>
+                <th>ਕੁੱਲ ਮਾਲ</th>
+                <th>ਕੁੱਲ ਲੇਬਰ ਪੇਮੈਂਟ (₹)</th>
                 <th>ਐਕਸ਼ਨ</th>
               </tr>
             </thead>
@@ -1092,40 +1057,8 @@
     </div>
   </div>
 
-  <!-- POPUP MODAL: RECYCLE BIN / DELETED ITEMS (UNDO & PERMANENT DELETE) -->
-  <div class="modal" id="recycleBinModal">
-    <div class="modal-box" style="max-width: 650px;">
-      <div class="modal-header">
-        <div>
-          <h3 style="font-size:1.15rem; font-weight:800; color:var(--danger);">🗑️ ਰੱਦ ਕੀਤੇ ਰਿਕਾਰਡ (Deleted Items & Entries)</h3>
-          <small style="color:var(--text-muted); font-size:0.82rem;">ਤੁਸੀਂ ਰਿਕਾਰਡ ਵਾਪਸ ਲਿਆ ਸਕਦੇ ਹੋ (Restore) ਜਾਂ ਹਮੇਸ਼ਾ ਲਈ ਡਿਲੀਟ ਕਰ ਸਕਦੇ ਹੋ</small>
-        </div>
-        <button class="close-modal" onclick="closeRecycleBinModal()">×</button>
-      </div>
-
-      <div class="table-responsive">
-        <table>
-          <thead>
-            <tr>
-              <th>ਕਿਸਮ</th>
-              <th>ਤਾਰੀਖ / ਨਾਮ</th>
-              <th>ਵੇਰਵਾ</th>
-              <th>ਐਕਸ਼ਨ</th>
-            </tr>
-          </thead>
-          <tbody id="recycleBinTableBody"></tbody>
-        </table>
-      </div>
-
-      <div style="margin-top:16px; display:flex; justify-content:space-between; align-items:center;">
-        <button type="button" class="btn btn-danger btn-sm" onclick="clearAllDeletedItems()">ਸਾਰੇ ਹਮੇਸ਼ਾ ਲਈ ਸਾਫ਼ ਕਰੋ ⚠️</button>
-        <button type="button" class="btn btn-outline" onclick="closeRecycleBinModal()">ਬੰਦ ਕਰੋ ✖</button>
-      </div>
-    </div>
-  </div>
-
   <script>
-    // BASE ITEMS WITH FIXED LABOUR RATES
+    // BASE ITEMS WITH FIXED LABOUR RATES (EXCLUDING CEMENT FROM PRODUCTION RATES)
     const DEFAULT_ITEMS_DATA = [
       { name: "BARFI 60 MM", rate: 1.6 },
       { name: "ZABRA 60 MM", rate: 1.5 },
@@ -1164,7 +1097,6 @@
     let purchases = [];
     let labourLogs = [];
     let labourPayouts = [];
-    let deletedRecords = [];
     let parties = [];
     let rawMaterials = ['Cement Bags', 'ਸੀਮੈਂਟ', 'ਰੇਤ / ਡਸਟ', 'ਫਲਾਈ ਐਸ਼', 'ਕੈਮੀਕਲ'];
 
@@ -1221,11 +1153,7 @@
     }
 
     function deleteCustomItem(itemName) {
-      if (confirm(`ਕੀ ਤੁਸੀਂ "${itemName}" ਨੂੰ ਲਿਸਟ ਵਿੱਚੋਂ ਹਟਾਉਣਾ ਚਾਹੁੰਦੇ ਹੋ? (ਇਹ ਰੱਦ ਰਿਕਾਰਡ ਵਿੱਚ ਚਲੀ ਜਾਵੇਗੀ)`)) {
-        const itemObj = currentItemsData.find(i => i.name.toLowerCase() === itemName.toLowerCase());
-        if (itemObj) {
-          moveToTrash('item', 'ਆਈਟਮ: ' + itemName, itemObj);
-        }
+      if (confirm(`ਕੀ ਤੁਸੀਂ "${itemName}" ਨੂੰ ਲਿਸਟ ਵਿੱਚੋਂ ਹਟਾਉਣਾ ਚਾਹੁੰਦੇ ਹੋ?`)) {
         currentItemsData = currentItemsData.filter(i => i.name.toLowerCase() !== itemName.toLowerCase());
         db.ref('customItemsData').set(currentItemsData);
         initItemSelectOptions();
@@ -1234,6 +1162,7 @@
       }
     }
 
+    // BUILD LABOUR ITEMS GRID (WITHOUT CEMENT PER ITEM ROW)
     function buildLabour18ItemsGrid(prefillData = [], prefillCement = 0) {
       const tbody = document.getElementById('labour18ItemsBody');
       tbody.innerHTML = '';
@@ -1417,11 +1346,6 @@
         const val = snapshot.val();
         labourPayouts = val ? Object.values(val) : [];
         updateAllViews();
-      });
-
-      db.ref('deletedRecords').on('value', snapshot => {
-        const val = snapshot.val();
-        deletedRecords = val ? Object.values(val) : [];
       });
 
       db.ref('knowledge/parties').on('value', snapshot => {
@@ -1695,12 +1619,11 @@
     }
 
     function deleteLabour(id) {
-      if (!confirm('ਕੀ ਤੁਸੀਂ ਇਹ ਲੇਬਰ ਰਿਕਾਰਡ ਹਟਾਉਣਾ ਚਾਹੁੰਦੇ ਹੋ? (ਇਹ ਰੱਦ ਰਿਕਾਰਡ ਵਿੱਚ ਜਾਵੇਗਾ)')) return;
-      const l = labourLogs.find(item => item.id === id);
-      if (l) moveToTrash('labour', `${l.date} - ${l.team}`, l);
+      if (!confirm('ਕੀ ਤੁਸੀਂ ਇਹ ਲੇਬਰ ਰਿਕਾਰਡ ਹਟਾਉਣਾ ਚਾਹੁੰਦੇ ਹੋ?')) return;
       db.ref('labourLogs/' + id).remove();
     }
 
+    // Render Compact Summary Rows for Labour Production
     function renderLabourTable() {
       const tbody = document.querySelector('#labourTable tbody');
       if (labourLogs.length === 0) {
@@ -1850,6 +1773,7 @@
 
       if (sendQty <= 0) return alert('ਕਿਰਪਾ ਕਰਕੇ ਸਹੀ ਕੁਆਂਟਿਟੀ ਭਰੋ!');
 
+      // Rate calculation: CRAVE is 1.25, others 0.50 (excluding cement)
       const isCrave = selectedItem.item.toUpperCase().includes('CRAVE');
       const isCement = selectedItem.item.includes('ਸੀਮੈਂਟ') || selectedItem.item.toLowerCase().includes('cement');
       const ratePerAction = isCement ? 0 : (isCrave ? 1.25 : 0.50);
@@ -1875,10 +1799,10 @@
 
       db.ref('sales/' + s.id).set(s);
       closeDispatchModal();
-      alert(`🚚 ${selectedItem.item} ਦੇ ${sendQty} ਪੀਸ ਡਿਸਪੈਚ ਹੋ ਗਏ ਹਨ! (ਲੋਡਿੰਗ/ਅਨਲੋਡਿੰਗ ਲੇਬਰ ਦੇ ₹${loadingCost.toFixed(2)} ਲੇਬਰ ਖਾਤੇ ਵਿੱਚ ਜੁੜ ਗਏ ਹਨ)`);
+      alert(`🚚 ${selectedItem.item} ਦੇ ${sendQty} ਪੀਸ ਡਿਸਪੈਚ ਹੋ ਗਏ ਹਨ! (ਲੇਬਰ ਲੋਡਿੰਗ ਖਾਤੇ ਵਿੱਚ ₹${loadingCost.toFixed(2)} ਦਰਜ ਹੋ ਗਏ ਹਨ)`);
     }
 
-    // BLOCK 6: 3. LOADING & UNLOADING LEDGER
+    // RENDER BLOCK 6: 3. LOADING & UNLOADING LEDGER
     function renderLoadingUnloadingLedger() {
       const tbody = document.querySelector('#loadingUnloadingTable tbody');
       let grandLoadingWage = 0;
@@ -2069,34 +1993,20 @@
     }
 
     function deleteLabourPayout(id) {
-      if (!confirm('ਕੀ ਤੁਸੀਂ ਇਹ ਭੁਗਤਾਨ ਰਿਕਾਰਡ ਹਟਾਉਣਾ ਚਾਹੁੰਦੇ ਹੋ? (ਇਹ ਰੱਦ ਰਿਕਾਰਡ ਵਿੱਚ ਜਾਵੇਗਾ)')) return;
-      const lp = labourPayouts.find(item => item.id === id);
-      if (lp) moveToTrash('labourPayout', `${lp.date} - ${lp.team} (₹${lp.amount})`, lp);
+      if (!confirm('ਕੀ ਤੁਸੀਂ ਇਹ ਭੁਗਤਾਨ ਰਿਕਾਰਡ ਹਟਾਉਣਾ ਚਾਹੁੰਦੇ ਹੋ?')) return;
       db.ref('labourPayouts/' + id).remove();
     }
 
-    // 2. LABOUR PAYOUT LEDGER: AUTOMATICALLY COMBINES PRODUCTION WAGES + LOADING/UNLOADING CHARGES
     function renderLabourPayoutLedger() {
-      let totalProductionEarned = 0;
-      labourLogs.forEach(l => totalProductionEarned += (Number(l.total) || 0));
-
-      let totalLoadingEarned = 0;
-      sales.forEach(s => {
-        if (s.dispatches && s.dispatches.length > 0) {
-          s.dispatches.forEach(d => {
-            totalLoadingEarned += (Number(d.loadingCost) || 0);
-          });
-        }
-      });
-
-      const grandLabourEarned = totalProductionEarned + totalLoadingEarned;
+      let totalEarned = 0;
+      labourLogs.forEach(l => totalEarned += (Number(l.total) || 0));
 
       let totalPaid = 0;
       labourPayouts.forEach(p => totalPaid += (Number(p.amount) || 0));
 
-      const balanceDue = grandLabourEarned - totalPaid;
+      const balanceDue = totalEarned - totalPaid;
 
-      document.getElementById('statLabourEarned').textContent = `₹${grandLabourEarned.toLocaleString('en-IN')}`;
+      document.getElementById('statLabourEarned').textContent = `₹${totalEarned.toLocaleString('en-IN')}`;
       document.getElementById('statLabourPaid').textContent = `₹${totalPaid.toLocaleString('en-IN')}`;
       document.getElementById('statLabourDue').textContent = `₹${balanceDue.toLocaleString('en-IN')}`;
 
@@ -2118,7 +2028,7 @@
       `).join('');
     }
 
-    // BLOCK 5: FACTORY STOCK LIVE CALCULATION
+    // BLOCK 5: FACTORY STOCK LIVE CALCULATION (WITH DYNAMIC ITEMS & UNIFIED CEMENT DEDUCTION)
     function renderFactoryStock() {
       const tbody = document.querySelector('#stockTable tbody');
       
@@ -2250,92 +2160,9 @@
       alert('ਬਕਾਇਆ ਰਕਮ ਅੱਪਡੇਟ ਹੋ ਗਈ ਹੈ!');
     }
 
-    // SOFT DELETE WITH RECYCLE BIN
     function deleteRecord(id, type) {
-      if (!confirm('ਕੀ ਤੁਸੀਂ ਇਹ ਰਿਕਾਰਡ ਹਟਾਉਣਾ ਚਾਹੁੰਦੇ ਹੋ? (ਇਹ ਰੱਦ ਰਿਕਾਰਡ ਵਿੱਚ ਚਲਾ ਜਾਵੇਗਾ)')) return;
-      const path = type === 'sale' ? `sales/${id}` : `purchases/${id}`;
-      const rec = type === 'sale' ? sales.find(s => s.id === id) : purchases.find(p => p.id === id);
-      if (rec) {
-        moveToTrash(type, `${rec.date} - ${type === 'sale' ? rec.client : rec.supplier}`, rec);
-      }
-      db.ref(path).remove();
-    }
-
-    // RECYCLE BIN SYSTEM
-    function moveToTrash(type, label, data) {
-      const trashId = 'DEL_' + Date.now() + '_' + Math.random().toString(36).substr(2, 4);
-      const trashObj = {
-        trashId,
-        type,
-        label,
-        deletedAt: new Date().toLocaleString(),
-        data
-      };
-      db.ref('deletedRecords/' + trashId).set(trashObj);
-    }
-
-    function openRecycleBinModal() {
-      renderRecycleBinTable();
-      document.getElementById('recycleBinModal').classList.add('show');
-    }
-
-    function closeRecycleBinModal() {
-      document.getElementById('recycleBinModal').classList.remove('show');
-    }
-
-    function renderRecycleBinTable() {
-      const tbody = document.getElementById('recycleBinTableBody');
-      if (deletedRecords.length === 0) {
-        tbody.innerHTML = '<tr><td colspan="4" style="text-align:center; padding:16px;">ਕੋਈ ਰੱਦ ਰਿਕਾਰਡ ਨਹੀਂ ਹੈ</td></tr>';
-        return;
-      }
-
-      tbody.innerHTML = deletedRecords.slice().reverse().map(d => `
-        <tr>
-          <td><span class="badge badge-partial">${d.type.toUpperCase()}</span></td>
-          <td><strong>${d.label}</strong></td>
-          <td><small style="color:var(--text-muted);">${d.deletedAt}</small></td>
-          <td>
-            <div style="display:flex; gap:6px;">
-              <button class="btn btn-success btn-sm" onclick="restoreDeletedRecord('${d.trashId}')" title="ਵਾਪਸ ਲਿਆਓ">↩️ Undo</button>
-              <button class="btn btn-danger btn-sm" onclick="permanentDeleteRecord('${d.trashId}')" title="ਪੱਕਾ ਡਿਲੀਟ ਕਰੋ">🗑️ ਪੱਕਾ ਡਿਲੀਟ</button>
-            </div>
-          </td>
-        </tr>
-      `).join('');
-    }
-
-    function restoreDeletedRecord(trashId) {
-      const d = deletedRecords.find(item => item.trashId === trashId);
-      if (!d) return;
-
-      if (d.type === 'sale') {
-        db.ref('sales/' + d.data.id).set(d.data);
-      } else if (d.type === 'purchase') {
-        db.ref('purchases/' + d.data.id).set(d.data);
-      } else if (d.type === 'labour') {
-        db.ref('labourLogs/' + d.data.id).set(d.data);
-      } else if (d.type === 'labourPayout') {
-        db.ref('labourPayouts/' + d.data.id).set(d.data);
-      } else if (d.type === 'item') {
-        if (!currentItemsData.some(i => i.name.toLowerCase() === d.data.name.toLowerCase())) {
-          currentItemsData.push(d.data);
-          db.ref('customItemsData').set(currentItemsData);
-        }
-      }
-
-      db.ref('deletedRecords/' + trashId).remove();
-      alert(`✅ ਰਿਕਾਰਡ ਸਫਲਤਾਪੂਰਵਕ ਵਾਪਸ ਆ ਗਿਆ ਹੈ!`);
-    }
-
-    function permanentDeleteRecord(trashId) {
-      if (!confirm('ਕੀ ਤੁਸੀਂ ਇਸ ਰਿਕਾਰਡ ਨੂੰ ਹਮੇਸ਼ਾ ਲਈ ਪੱਕਾ ਡਿਲੀਟ ਕਰਨਾ ਚਾਹੁੰਦੇ ਹੋ? ਇਹ ਕਦੇ ਵਾਪਸ ਨਹੀਂ ਆਵੇਗਾ!')) return;
-      db.ref('deletedRecords/' + trashId).remove();
-    }
-
-    function clearAllDeletedItems() {
-      if (!confirm('ਕੀ ਤੁਸੀਂ ਸਾਰੇ ਰੱਦ ਰਿਕਾਰਡ ਪੱਕੇ ਤੌਰ 'ਤੇ ਸਾਫ਼ ਕਰਨਾ ਚਾਹੁੰਦੇ ਹੋ?')) return;
-      db.ref('deletedRecords').remove();
+      if (!confirm('ਕੀ ਤੁਸੀਂ ਇਹ ਰਿਕਾਰਡ ਹਟਾਉਣਾ ਚਾਹੁੰਦੇ ਹੋ?')) return;
+      db.ref(`${type === 'sale' ? 'sales' : 'purchases'}/${id}`).remove();
     }
 
     function renderSales() {
@@ -2512,7 +2339,7 @@
           <td><strong>${t.name}</strong></td>
           <td>${t.desc}</td>
           <td style="color:var(--success); font-weight:700;">${t.in > 0 ? '+ ₹' + t.in : '-'}</td>
-          <td style="color:var(--danger); font-weight:700;">- ₹' + t.out : '-'}</td>
+          <td style="color:var(--danger); font-weight:700;">${t.out > 0 ? '- ₹' + t.out : '-'}</td>
         </tr>
       `).join('');
     }
