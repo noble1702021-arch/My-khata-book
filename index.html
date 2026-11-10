@@ -498,21 +498,19 @@
 
       <div class="card">
         <div class="card-title">
-          <span>ਸੇਲਜ਼ ਆਰਡਰ ਸੂਚੀ (ਪੂਰਾ ਖਾਤਾ ਵੇਖਣ ਲਈ ਕਲਾਇੰਟ ਦੇ ਨਾਮ 'ਤੇ ਕਲਿੱਕ ਕਰੋ)</span>
+          <span>ਗਾਹਕਾਂ ਦੀ ਸੇਲ ਸੂਚੀ (ਪੂਰਾ ਖਾਤਾ ਵੇਖਣ ਜਾਂ ਨਵਾਂ ਸਮਾਨ ਜੋੜਨ ਲਈ ਨਾਮ 'ਤੇ ਟੈਪ ਕਰੋ)</span>
         </div>
         <div class="table-responsive">
           <table id="salesTable">
             <thead>
               <tr>
-                <th>ਬੁਕਿੰਗ</th>
-                <th>ਡਿਲਿਵਰੀ</th>
-                <th>ਕਲਾਇੰਟ (Touch for Ledger)</th>
-                <th>ਆਈਟਮਾਂ ਤੇ ਵੇਰਵਾ</th>
-                <th>ਕੁੱਲ ਰਕਮ</th>
-                <th>ਮਿਲੇ</th>
-                <th>ਬਕਾਇਆ</th>
-                <th>ਡਿਸਪੈਚ ਸਥਿਤੀ</th>
-                <th>ਐਕਸ਼ਨ & ਡਿਸਪੈਚ</th>
+                <th>ਕਲਾਇੰਟ ਦਾ ਨਾਮ (Touch for All Orders)</th>
+                <th>ਆਖ਼ਰੀ ਆਰਡਰ ਤਾਰੀਖ</th>
+                <th>ਕੁੱਲ ਲਿਆ ਸਮਾਨ (ਸਾਰੇ ਆਰਡਰ)</th>
+                <th>ਕੁੱਲ ਰਕਮ (ਸਾਰੇ ਦਿਨਾਂ ਦੀ)</th>
+                <th>ਕੁੱਲ ਮਿਲੇ ਪੈਸੇ</th>
+                <th>ਕੁੱਲ ਨੈੱਟ ਬਕਾਇਆ</th>
+                <th>ਐਕਸ਼ਨ</th>
               </tr>
             </thead>
             <tbody></tbody>
@@ -748,8 +746,8 @@
               <input type="date" id="labourDate" required>
             </div>
             <div class="form-group">
-              <label>ਕਾਰੀਗਰ / ਲੇਬਰ ਟੀਮ ਦਾ ਨਾਮ</label>
-              <input type="text" id="labourTeam" placeholder="ਮਿਸਤਰੀ / ਟੀਮ ਦਾ ਨਾਮ" required>
+              <label>ਕਾਰੀਗਰ / ਠੇਕੇਦਾਰ ਦਾ ਨਾਮ</label>
+              <input type="text" id="labourTeam" placeholder="ਠੇਕੇਦਾਰ ਦਾ ਨਾਮ" value="YUDHA" required>
             </div>
           </div>
 
@@ -812,7 +810,7 @@
             <thead>
               <tr>
                 <th>ਤਾਰੀਖ</th>
-                <th>ਲੇਬਰ ਟੀਮ</th>
+                <th>ਠੇਕੇਦਾਰ</th>
                 <th>ਕੁੱਲ ਬਣਿਆ ਮਾਲ</th>
                 <th>ਕੁੱਲ ਸੀਮੈਂਟ ਬੋਰੀਆਂ</th>
                 <th>ਕੁੱਲ ਮਜ਼ਦੂਰੀ (₹)</th>
@@ -852,16 +850,16 @@
               <input type="date" id="lpayDate" required>
             </div>
             <div class="form-group">
-              <label>ਲੇਬਰ ਟੀਮ / ਮਿਸਤਰੀ</label>
-              <input type="text" id="lpayTeam" placeholder="ਕਿਸ ਟੀਮ ਨੂੰ ਪੈਸੇ ਦਿੱਤੇ" required>
+              <label>ਠੇਕੇਦਾਰ ਦਾ ਨਾਮ</label>
+              <input type="text" id="lpayTeam" placeholder="ਠੇਕੇਦਾਰ ਦਾ ਨਾਮ" value="YUDHA" required>
             </div>
             <div class="form-group">
-              <label>ਦਿੱਤੀ ਗਈ ਰਕਮ (Amount Paid ₹)</label>
-              <input type="number" step="0.01" id="lpayAmount" min="1" placeholder="ਜਿਵੇਂ 5000" required>
+              <label>ਦਿੱਤੀ ਗਈ ਰਕਮ (Amount Paid ₹ - 0 ਵੀ ਚੱਲੇਗਾ)</label>
+              <input type="number" step="0.01" id="lpayAmount" min="0" placeholder="0" value="0" required>
             </div>
             <div class="form-group">
               <label>ਵੇਰਵਾ / ਨੋਟ (Remarks)</label>
-              <input type="text" id="lpayRemarks" placeholder="ਨਕਦ, UPI ਜਾਂ ਕਿਸ਼ਤ">
+              <input type="text" id="lpayRemarks" placeholder="ਨਕਦ, UPI ਜਾਂ ਛੁੱਟੀ (ਕੋਈ ਕੰਮ ਨਹੀਂ)">
             </div>
           </div>
           <div style="margin-top: 14px;">
@@ -874,7 +872,7 @@
             <thead>
               <tr>
                 <th>ਤਾਰੀਖ</th>
-                <th>ਲੇਬਰ ਟੀਮ</th>
+                <th>ਠੇਕੇਦਾਰ</th>
                 <th>ਦਿੱਤੀ ਰਕਮ (₹)</th>
                 <th>ਵੇਰਵਾ</th>
                 <th>ਐਕਸ਼ਨ</th>
@@ -885,7 +883,7 @@
         </div>
       </div>
 
-      <!-- 3. LOADING & UNLOADING LABOUR LEDGER -->
+      <!-- 3. LOADING & UNLOADING LABOUR LEDGER (COMPACT SUMMARY) -->
       <div class="card" style="border-top: 4px solid var(--warning);">
         <div class="card-title">
           <span>3. ਲੇਬਰ ਲੋਡਿੰਗ & ਅਨਲੋਡਿੰਗ ਰਿਕਾਰਡ (ਪੂਰਾ ਵੇਰਵਾ ਵੇਖਣ ਲਈ ਟੱਚ ਕਰੋ)</span>
@@ -987,7 +985,7 @@
             </label>
           </div>
           <small style="color:var(--text-muted); display:block; margin-top:4px;">
-            (Crave: ₹1.25, ਬਾਕੀ ਸਭ: ₹0.50 ਪ੍ਰਤੀ ਪੀਸ)
+            (Crave: ₹1.25, ਚੌਖਟ: ₹0.50, 4*4 dabi/Cement: ₹0, ਬਾਕੀ ਸਭ: ₹0.25 ਪ੍ਰਤੀ ਪੀਸ)
           </small>
         </div>
         <div style="display: flex; justify-content: flex-end; gap: 8px;">
@@ -1103,37 +1101,93 @@
     </div>
   </div>
 
-  <!-- POPUP MODAL: CLIENT QUICK PROFILE & HISTORY LEDGER (FROM PAGE 1 CLICK) -->
+  <!-- POPUP MODAL: CLIENT DEDICATED PAGE (ADD NEW ORDERS + FULL HISTORY) -->
   <div class="modal" id="clientQuickModal">
-    <div class="modal-box" style="max-width: 680px;">
+    <div class="modal-box" style="max-width: 760px;">
       <div class="modal-header">
         <div>
-          <h3 style="font-size:1.25rem; font-weight:800; color:var(--primary);" id="cqClientName">ਕਲਾਇੰਟ ਖਾਤਾ</h3>
-          <small id="cqClientMeta" style="color:var(--text-muted); font-size:0.85rem; display:block;"></small>
+          <h3 style="font-size:1.35rem; font-weight:800; color:var(--primary);" id="cqClientName">ਕਲਾਇੰਟ ਖਾਤਾ</h3>
+          <small id="cqClientMeta" style="color:var(--text-muted); font-size:0.88rem; display:block; margin-top:2px;"></small>
         </div>
         <button class="close-modal" onclick="closeClientQuickModal()">×</button>
       </div>
 
-      <div style="display:flex; justify-content:space-between; align-items:center; background:#eff6ff; border:1px solid #bfdbfe; border-radius:8px; padding:12px; margin-bottom:14px; flex-wrap:wrap; gap:8px;">
+      <!-- Financial Overall Summary Box -->
+      <div style="display:flex; justify-content:space-between; align-items:center; background:#eff6ff; border:1.5px solid #bfdbfe; border-radius:10px; padding:14px; margin-bottom:16px; flex-wrap:wrap; gap:10px;">
         <div>
-          <span style="font-size:0.85rem; color:#1e40af; font-weight:600;">ਕੁੱਲ ਲੈਣ-ਦੇਣ ਦਾ ਬਕਾਇਆ:</span>
+          <span style="font-size:0.82rem; color:#1e40af; font-weight:600;">ਸਾਰੇ ਆਰਡਰਾਂ ਦੀ ਕੁੱਲ ਰਕਮ:</span>
+          <div style="font-size:1.25rem; font-weight:800; color:var(--primary);" id="cqTotalBusiness">₹0</div>
+        </div>
+        <div>
+          <span style="font-size:0.82rem; color:#166534; font-weight:600;">ਹੁਣ ਤੱਕ ਮਿਲੇ ਕੁੱਲ ਪੈਸੇ:</span>
+          <div style="font-size:1.25rem; font-weight:800; color:var(--success);" id="cqTotalPaid">₹0</div>
+        </div>
+        <div>
+          <span style="font-size:0.82rem; color:#991b1b; font-weight:600;">ਕੁੱਲ ਲੈਣ ਵਾਲਾ ਬਕਾਇਆ (Net Due):</span>
           <div style="font-size:1.35rem; font-weight:800; color:var(--danger);" id="cqNetBalance">₹0</div>
         </div>
-        <!-- BUTTON TO QUICKLY ADD ANOTHER ORDER FOR THIS SAME CLIENT -->
-        <button type="button" class="btn btn-primary btn-sm" onclick="quickAddSaleForThisClient()">➕ ਇਸ ਕਲਾਇੰਟ ਲਈ ਨਵਾਂ ਆਰਡਰ ਜੋੜੋ</button>
       </div>
 
-      <strong style="font-size:0.9rem; color:var(--text);">ਇਸ ਗਾਹਕ ਦੇ ਸਾਰੇ ਪੁਰਾਣੇ ਆਰਡਰ ਅਤੇ ਲੈਣ-ਦੇਣ:</strong>
-      <div class="table-responsive" style="margin-top:6px;">
+      <!-- IN-MODAL FORM TO DIRECTLY ADD NEXT DAY'S SALE ORDER -->
+      <div class="card" style="border:1.5px dashed var(--primary); background:#f8fafc; margin-bottom:16px; padding:14px;">
+        <div style="font-weight:800; color:var(--primary); font-size:0.98rem; margin-bottom:10px;">
+          ➕ ਇਸ ਗਾਹਕ ਲਈ ਨਵਾਂ ਆਰਡਰ / ਅਗਲੇ ਦਿਨ ਦਾ ਸਮਾਨ ਸ਼ਾਮਲ ਕਰੋ:
+        </div>
+        <form id="inModalSaleForm" onsubmit="saveInModalSale(event)">
+          <div class="horizontal-row">
+            <div class="form-group" style="flex:1;">
+              <label>ਬੁਕਿੰਗ ਤਾਰੀਖ</label>
+              <input type="date" id="imSaleDate" required>
+            </div>
+            <div class="form-group" style="flex:1;">
+              <label>ਡਿਲਿਵਰੀ ਤਾਰੀਖ</label>
+              <input type="date" id="imSaleDeliveryDate" required>
+            </div>
+          </div>
+
+          <div class="items-box" style="margin:10px 0; background:white;">
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px;">
+              <strong style="color:var(--primary); font-size:0.9rem;">ਆਈਟਮਾਂ (Items & Rates)</strong>
+              <button type="button" class="btn btn-primary btn-sm" onclick="addInModalSaleItemRow()">➕ ਆਈਟਮ ਜੋੜੋ</button>
+            </div>
+            <div id="inModalSaleItemsContainer"></div>
+          </div>
+
+          <div class="horizontal-row">
+            <div class="form-group" style="flex:1;">
+              <label>ਇਸ ਆਰਡਰ ਦੀ ਕੁੱਲ ਰਕਮ (₹)</label>
+              <input type="number" id="imSaleGrandTotal" readonly>
+            </div>
+            <div class="form-group" style="flex:1;">
+              <label>ਅੱਜ ਮਿਲੇ ਐਡਵਾਂਸ (₹)</label>
+              <input type="number" step="0.01" id="imSaleAdvance" min="0" value="0" oninput="calcInModalSaleGrandTotal()" required>
+            </div>
+            <div class="form-group" style="flex:1;">
+              <label>ਇਸ ਆਰਡਰ ਦਾ ਬਕਾਇਆ (₹)</label>
+              <input type="number" id="imSaleBalance" readonly>
+            </div>
+          </div>
+
+          <div style="margin-top:12px; display:flex; justify-content:flex-end;">
+            <button type="submit" class="btn btn-primary">💾 ਇਹ ਨਵਾਂ ਆਰਡਰ ਖਾਤੇ ਵਿੱਚ ਸੇਵ ਕਰੋ</button>
+          </div>
+        </form>
+      </div>
+
+      <!-- Past Orders List for this Customer -->
+      <strong style="font-size:0.92rem; color:var(--text); display:block; margin-bottom:6px;">
+        ਇਸ ਗਾਹਕ ਦੇ ਸਾਰੇ ਪੁਰਾਣੇ ਆਰਡਰ ਅਤੇ ਲੈਣ-ਦੇਣ ਦੀ ਸੂਚੀ:
+      </strong>
+      <div class="table-responsive">
         <table>
           <thead>
             <tr>
-              <th>ਬੁਕਿੰਗ ਤਾਰੀਖ</th>
-              <th>ਸਮਾਨ (ਵੇਰਵਾ)</th>
-              <th>ਕੁੱਲ ਰਕਮ</th>
-              <th>ਜਮ੍ਹਾਂ</th>
+              <th>ਆਰਡਰ ਤਾਰੀਖ</th>
+              <th>ਸਮਾਨ ਦਾ ਵੇਰਵਾ</th>
+              <th>ਆਰਡਰ ਰਕਮ</th>
+              <th>ਮਿਲੇ</th>
               <th>ਬਕਾਇਆ</th>
-              <th>ਐਕਸ਼ਨ</th>
+              <th>ਐਕਸ਼ਨ & ਡਿਸਪੈਚ</th>
             </tr>
           </thead>
           <tbody id="cqOrdersTableBody"></tbody>
@@ -1211,6 +1265,22 @@
       buildLabour18ItemsGrid();
       initDataSync();
     });
+
+    function getLoadingRateForItem(itemName) {
+      if (!itemName) return 0.25;
+      const upper = itemName.toUpperCase();
+
+      if (upper.includes('CRAVE') || upper.includes('CARV')) {
+        return 1.25;
+      }
+      if (upper.includes('CHOKET') || upper.includes('ਚੌਖਟ')) {
+        return 0.50;
+      }
+      if (upper.includes('4*4') || upper.includes('ਸੀਮੈਂਟ') || upper.includes('CEMENT')) {
+        return 0.00;
+      }
+      return 0.25;
+    }
 
     function initItemSelectOptions() {
       const allItemsWithCement = [...currentItemsData.map(i => i.name), "ਸੀਮੈਂਟ (Cement Bags)"];
@@ -1461,6 +1531,118 @@
       document.getElementById('saleBalance').value = Math.max(0, grandTotal - advance).toFixed(2);
     }
 
+    // IN-MODAL MULTI-ITEM SALE FORM FUNCTIONS
+    function addInModalSaleItemRow(itemVal = '', qtyVal = '', rateVal = '', lineTotalVal = '') {
+      const container = document.getElementById('inModalSaleItemsContainer');
+      const rowId = 'imItemRow_' + Date.now() + '_' + Math.random().toString(36).substring(2, 6);
+
+      const div = document.createElement('div');
+      div.className = 'item-entry-row';
+      div.id = rowId;
+      div.innerHTML = `
+        <div class="form-group" style="flex:2; min-width:170px;">
+          <label>ਆਈਟਮ</label>
+          <input type="text" class="im-item-name" list="standardItemList" placeholder="ਆਈਟਮ ਚੁਣੋ" value="${itemVal}" required>
+        </div>
+        <div class="form-group" style="flex:1; min-width:90px;">
+          <label>ਨਗ (Qty)</label>
+          <input type="number" class="im-item-qty" min="1" placeholder="ਮਾਤਰਾ" value="${qtyVal}" oninput="calcInModalSaleGrandTotal()" required>
+        </div>
+        <div class="form-group" style="flex:1; min-width:100px;">
+          <label>ਰੇਟ (₹)</label>
+          <input type="number" step="0.01" class="im-item-rate" min="0" placeholder="ਰੇਟ" value="${rateVal}" oninput="calcInModalSaleGrandTotal()" required>
+        </div>
+        <div class="form-group" style="flex:1; min-width:110px;">
+          <label>ਰਕਮ (₹)</label>
+          <input type="number" class="im-item-linetotal" value="${lineTotalVal}" readonly>
+        </div>
+        <div style="flex:0 0 45px; margin-top:20px;">
+          <button type="button" class="btn btn-danger btn-sm" onclick="removeInModalSaleItemRow('${rowId}')" title="ਹਟਾਓ">✖</button>
+        </div>
+      `;
+      container.appendChild(div);
+      calcInModalSaleGrandTotal();
+    }
+
+    function removeInModalSaleItemRow(rowId) {
+      const rows = document.querySelectorAll('#inModalSaleItemsContainer .item-entry-row');
+      if (rows.length <= 1) {
+        alert('ਘੱਟੋ-ਘੱਟ ਇੱਕ ਆਈਟਮ ਹੋਣੀ ਜ਼ਰੂਰੀ ਹੈ!');
+        return;
+      }
+      const el = document.getElementById(rowId);
+      if (el) el.remove();
+      calcInModalSaleGrandTotal();
+    }
+
+    function calcInModalSaleGrandTotal() {
+      let grandTotal = 0;
+      const rows = document.querySelectorAll('#inModalSaleItemsContainer .item-entry-row');
+
+      rows.forEach(r => {
+        const qty = parseFloat(r.querySelector('.im-item-qty').value) || 0;
+        const rate = parseFloat(r.querySelector('.im-item-rate').value) || 0;
+        const lineTotal = qty * rate;
+        r.querySelector('.im-item-linetotal').value = lineTotal.toFixed(2);
+        grandTotal += lineTotal;
+      });
+
+      const advance = parseFloat(document.getElementById('imSaleAdvance').value) || 0;
+      document.getElementById('imSaleGrandTotal').value = grandTotal.toFixed(2);
+      document.getElementById('imSaleBalance').value = Math.max(0, grandTotal - advance).toFixed(2);
+    }
+
+    function saveInModalSale(e) {
+      e.preventDefault();
+      if (!currentQuickClient) return;
+
+      const clientSales = sales.filter(s => (s.client || '').trim().toLowerCase() === currentQuickClient.trim().toLowerCase());
+      const last = clientSales[0];
+
+      const phone = (last && last.phone) || '';
+      const address = (last && last.address) || '';
+
+      const date = document.getElementById('imSaleDate').value;
+      const deliveryDate = document.getElementById('imSaleDeliveryDate').value;
+
+      const rows = document.querySelectorAll('#inModalSaleItemsContainer .item-entry-row');
+      const itemsList = [];
+      let grandTotal = 0;
+
+      rows.forEach(r => {
+        const item = r.querySelector('.im-item-name').value.trim();
+        const qty = parseFloat(r.querySelector('.im-item-qty').value) || 0;
+        const rate = parseFloat(r.querySelector('.im-item-rate').value) || 0;
+        const lineTotal = qty * rate;
+        if (item && qty > 0) {
+          itemsList.push({ item, qty, rate, total: lineTotal });
+          grandTotal += lineTotal;
+        }
+      });
+
+      if (itemsList.length === 0) return alert('ਕਿਰਪਾ ਕਰਕੇ ਘੱਟੋ-ਘੱਟ ਇੱਕ ਆਈਟਮ ਭਰੋ!');
+
+      const advance = parseFloat(document.getElementById('imSaleAdvance').value) || 0;
+      const balance = Math.max(0, grandTotal - advance);
+
+      const id = 'S_' + Date.now();
+      let existingPayments = [];
+      if (advance > 0) existingPayments = [{ amount: advance, date }];
+
+      const record = {
+        id, client: currentQuickClient, phone, address, date, deliveryDate, nextDeliveryDate: deliveryDate,
+        items: itemsList,
+        total: grandTotal,
+        paid: advance, balance,
+        payments: existingPayments,
+        dispatches: []
+      };
+
+      db.ref('sales/' + id).set(record);
+      alert(`✅ ${currentQuickClient} ਦੇ ਖਾਤੇ ਵਿੱਚ ਨਵਾਂ ਆਰਡਰ ਸੇਵ ਹੋ ਗਿਆ ਹੈ!`);
+      openClientQuickModal(currentQuickClient);
+    }
+
     function initDataSync() {
       const dot = document.getElementById('syncDot');
       const text = document.getElementById('syncText');
@@ -1615,7 +1797,6 @@
       `).join('');
     }
 
-    // BLOCK 1: Save Sales (WITH CLIENT ADDRESS)
     function saveSale(e) {
       e.preventDefault();
       const editId = document.getElementById('editSaleId').value;
@@ -1716,7 +1897,7 @@
       addSaleItemRow();
     }
 
-    // OPEN CLIENT QUICK PROFILE & HISTORY LEDGER
+    // OPEN DEDICATED CLIENT PROFILE WITH IN-MODAL ORDER FORM & HISTORICAL ORDERS
     function openClientQuickModal(clientName) {
       currentQuickClient = clientName;
       const clientSales = sales.filter(s => (s.client || '').trim().toLowerCase() === clientName.trim().toLowerCase());
@@ -1724,7 +1905,7 @@
       const phone = (clientSales[0] && clientSales[0].phone) || '';
       const address = (clientSales[0] && clientSales[0].address) || '';
 
-      document.getElementById('cqClientName').textContent = clientName;
+      document.getElementById('cqClientName').textContent = `👤 ${clientName}`;
       document.getElementById('cqClientMeta').textContent = `${phone ? 'ਫ਼ੋਨ: ' + phone : ''} ${address ? ' | ਪਤਾ: ' + address : ''}`;
 
       let totalSalesAmount = 0;
@@ -1737,7 +1918,17 @@
         netBal += (Number(s.balance) || 0);
       });
 
+      document.getElementById('cqTotalBusiness').textContent = `₹${totalSalesAmount.toLocaleString('en-IN')}`;
+      document.getElementById('cqTotalPaid').textContent = `₹${totalPaidAmount.toLocaleString('en-IN')}`;
       document.getElementById('cqNetBalance').textContent = `₹${netBal.toLocaleString('en-IN')}`;
+
+      // Reset In-Modal Form for a fresh entry
+      const today = new Date().toISOString().split('T')[0];
+      document.getElementById('imSaleDate').value = today;
+      document.getElementById('imSaleDeliveryDate').value = today;
+      document.getElementById('imSaleAdvance').value = '0';
+      document.getElementById('inModalSaleItemsContainer').innerHTML = '';
+      addInModalSaleItemRow();
 
       const tbody = document.getElementById('cqOrdersTableBody');
       if (clientSales.length === 0) {
@@ -1748,17 +1939,24 @@
           const items = s.items || [{ item: s.item, qty: s.qty, total: s.total }];
           const desc = items.map(it => `${it.item} (${it.qty})`).join(', ');
 
+          const dispatched = (s.dispatches || []).reduce((acc, cur) => acc + (Number(cur.qty) || 0), 0);
+          let totalItemsQty = 0;
+          items.forEach(it => totalItemsQty += (Number(it.qty) || 0));
+          const isCompleted = dispatched >= totalItemsQty;
+
           return `
             <tr>
               <td><strong>${s.date}</strong></td>
               <td>${desc}</td>
-              <td>₹${Number(s.total).toLocaleString('en-IN')}</td>
+              <td><strong>₹${Number(s.total).toLocaleString('en-IN')}</strong></td>
               <td style="color:var(--success); font-weight:700;">₹${Number(s.paid).toLocaleString('en-IN')}</td>
               <td style="color:var(--danger); font-weight:700;">₹${Number(s.balance).toLocaleString('en-IN')}</td>
               <td>
-                <div style="display:flex; gap:4px;">
-                  ${s.balance > 0 ? `<button class="btn btn-success btn-sm" onclick="openPaymentModal('${s.id}', 'sale')">ਜਮ੍ਹਾਂ</button>` : ''}
+                <div style="display:flex; flex-wrap:wrap; gap:4px;">
+                  ${!isCompleted ? `<button class="btn btn-warning btn-sm" onclick="closeClientQuickModal(); openDispatchModal('${s.id}')">🚚 ਡਿਸਪੈਚ</button>` : ''}
+                  ${s.balance > 0 ? `<button class="btn btn-success btn-sm" onclick="closeClientQuickModal(); openPaymentModal('${s.id}', 'sale')">ਜਮ੍ਹਾਂ</button>` : ''}
                   <button class="btn btn-edit btn-sm" onclick="closeClientQuickModal(); editSale('${s.id}');">✏️</button>
+                  <button class="btn btn-danger btn-sm" onclick="deleteRecord('${s.id}', 'sale')">🗑️</button>
                 </div>
               </td>
             </tr>
@@ -1772,22 +1970,6 @@
     function closeClientQuickModal() {
       document.getElementById('clientQuickModal').classList.remove('show');
       currentQuickClient = null;
-    }
-
-    // PREFILL CLIENT DATA TO QUICKLY ADD A NEW SALE ORDER FOR THE SAME CLIENT
-    function quickAddSaleForThisClient() {
-      if (!currentQuickClient) return;
-      const clientSales = sales.filter(s => (s.client || '').trim().toLowerCase() === currentQuickClient.trim().toLowerCase());
-      const last = clientSales[0];
-
-      closeClientQuickModal();
-      cancelSaleEdit();
-
-      document.getElementById('saleClient').value = currentQuickClient;
-      if (last && last.phone) document.getElementById('salePhone').value = last.phone;
-      if (last && last.address) document.getElementById('saleAddress').value = last.address;
-
-      window.scrollTo({ top: 0, behavior: 'smooth' });
     }
 
     function sendWhatsAppFromQuickModal() {
@@ -1805,12 +1987,85 @@
       window.open(`https://wa.me/${num}?text=${encodeURIComponent(txt)}`, '_blank');
     }
 
-    // BLOCK 6: Save Labour
+    // MAIN PAGE 1: GROUP SALES BY UNIQUE CLIENT SO EACH CLIENT APPEARS ONCE WITH TOTAL AGGREGATES
+    function renderSales() {
+      const tbody = document.querySelector('#salesTable tbody');
+      if (sales.length === 0) {
+        tbody.innerHTML = '<tr><td colspan="7" style="text-align:center;">ਕੋਈ ਸੇਲ ਰਿਕਾਰਡ ਨਹੀਂ ਹੈ</td></tr>';
+        return;
+      }
+
+      // Group by client name
+      const clientMap = {};
+      sales.forEach(s => {
+        const clientKey = (s.client || '').trim();
+        if (!clientKey) return;
+
+        if (!clientMap[clientKey]) {
+          clientMap[clientKey] = {
+            client: clientKey,
+            phone: s.phone || '',
+            address: s.address || '',
+            latestDate: s.date,
+            totalBusiness: 0,
+            totalPaid: 0,
+            totalBalance: 0,
+            itemsCount: {},
+            lastSaleId: s.id
+          };
+        }
+
+        const c = clientMap[clientKey];
+        if (s.date && (!c.latestDate || new Date(s.date) > new Date(c.latestDate))) {
+          c.latestDate = s.date;
+        }
+        if (s.phone && !c.phone) c.phone = s.phone;
+        if (s.address && !c.address) c.address = s.address;
+
+        c.totalBusiness += (Number(s.total) || 0);
+        c.totalPaid += (Number(s.paid) || 0);
+        c.totalBalance += (Number(s.balance) || 0);
+
+        const items = s.items || [{ item: s.item, qty: s.qty }];
+        items.forEach(it => {
+          c.itemsCount[it.item] = (c.itemsCount[it.item] || 0) + (Number(it.qty) || 0);
+        });
+      });
+
+      const clientList = Object.values(clientMap);
+      clientList.sort((a, b) => new Date(b.latestDate) - new Date(a.latestDate));
+
+      tbody.innerHTML = clientList.map(c => {
+        const itemsSummary = Object.entries(c.itemsCount).map(([name, qty]) => `${name}: ${qty} ਨਗ`).join(', ');
+
+        return `
+          <tr class="clickable-row">
+            <td onclick="openClientQuickModal('${c.client.replace(/'/g, "\\'")}')">
+              <strong style="color:var(--primary); text-decoration:underline; font-size:1rem;">👤 ${c.client}</strong>
+              ${c.phone ? `<br><small>${c.phone}</small>` : ''}
+              ${c.address ? `<br><small style="color:var(--text-muted);">📍 ${c.address}</small>` : ''}
+            </td>
+            <td onclick="openClientQuickModal('${c.client.replace(/'/g, "\\'")}')"><strong>${c.latestDate || '-'}</strong></td>
+            <td onclick="openClientQuickModal('${c.client.replace(/'/g, "\\'")}')"><small>${itemsSummary}</small></td>
+            <td onclick="openClientQuickModal('${c.client.replace(/'/g, "\\'")}')"><strong>₹${c.totalBusiness.toLocaleString('en-IN')}</strong></td>
+            <td onclick="openClientQuickModal('${c.client.replace(/'/g, "\\'")}')" style="color:var(--success); font-weight:700;">₹${c.totalPaid.toLocaleString('en-IN')}</td>
+            <td onclick="openClientQuickModal('${c.client.replace(/'/g, "\\'")}')"><span class="badge ${c.totalBalance > 0 ? 'badge-pending' : 'badge-cleared'}">₹${c.totalBalance.toLocaleString('en-IN')}</span></td>
+            <td>
+              <div style="display:flex; gap:4px;">
+                <button class="btn btn-outline btn-sm" onclick="openClientQuickModal('${c.client.replace(/'/g, "\\'")}')">📂 ਖਾਤਾ ਖੋਲ੍ਹੋ</button>
+              </div>
+            </td>
+          </tr>
+        `;
+      }).join('');
+    }
+
+    // BLOCK 6: Save Labour (Contractor YUDHA Default)
     function saveLabour(e) {
       e.preventDefault();
       const editId = document.getElementById('editLabourId').value;
       const date = document.getElementById('labourDate').value;
-      const team = document.getElementById('labourTeam').value.trim();
+      const team = document.getElementById('labourTeam').value.trim() || 'YUDHA';
       const totalCement = parseFloat(document.getElementById('labourSingleCementBags').value) || 0;
 
       const rows = document.querySelectorAll('.labour-grid-row');
@@ -1853,7 +2108,7 @@
 
       document.getElementById('editLabourId').value = l.id;
       document.getElementById('labourDate').value = l.date;
-      document.getElementById('labourTeam').value = l.team || '';
+      document.getElementById('labourTeam').value = l.team || 'YUDHA';
 
       const items = l.items || [{ item: l.item, qty: l.qty, rate: l.rate, wage: l.total }];
       buildLabour18ItemsGrid(items, l.totalCement || 0);
@@ -1868,6 +2123,7 @@
       document.getElementById('editLabourId').value = '';
       document.getElementById('labourForm').reset();
       document.getElementById('labourDate').value = new Date().toISOString().split('T')[0];
+      document.getElementById('labourTeam').value = 'YUDHA';
       document.getElementById('labourFormTitle').textContent = '1. ਲੇਬਰ ਰੋਜ਼ਾਨਾ ਉਤਪਾਦਨ ਐਂਟਰੀ';
       document.getElementById('labourSubmitBtn').textContent = '➕ ਲੇਬਰ ਐਂਟਰੀ ਸੇਵ ਕਰੋ';
       document.getElementById('cancelLabourEditBtn').style.display = 'none';
@@ -1928,7 +2184,7 @@
             <td onclick="openLabourDetailModal('${l.id}')">
               <strong style="color:var(--primary); text-decoration:underline;">📅 ${l.date}</strong>
             </td>
-            <td onclick="openLabourDetailModal('${l.id}')"><strong>${l.team || '-'}</strong></td>
+            <td onclick="openLabourDetailModal('${l.id}')"><strong>${l.team || 'YUDHA'}</strong></td>
             <td onclick="openLabourDetailModal('${l.id}')">${totalPieces.toLocaleString('en-IN')} ਪੀਸ</td>
             <td onclick="openLabourDetailModal('${l.id}')" style="color:var(--danger); font-weight:700;">${l.totalCement || 0} ਬੋਰੀਆਂ</td>
             <td onclick="openLabourDetailModal('${l.id}')" style="color:var(--purple); font-weight:700;">₹${l.total.toLocaleString('en-IN')}</td>
@@ -1949,7 +2205,7 @@
       if (!l) return;
 
       document.getElementById('ldModalTitle').textContent = `ਉਤਪਾਦਨ ਵੇਰਵਾ (${l.date})`;
-      document.getElementById('ldModalSubtitle').textContent = `ਕਾਰੀਗਰ / ਟੀਮ: ${l.team || 'ਦਰਜ ਨਹੀਂ'}`;
+      document.getElementById('ldModalSubtitle').textContent = `ਠੇਕੇਦਾਰ: ${l.team || 'YUDHA'}`;
 
       const items = l.items || [{ item: l.item, qty: l.qty, rate: l.rate, wage: l.total }];
       let totalQty = 0;
@@ -1978,6 +2234,7 @@
       document.getElementById('labourDetailModal').classList.remove('show');
     }
 
+    // DISPATCH MODAL WITH UPDATED LOADING/UNLOADING RATES
     function openDispatchModal(saleId) {
       currentDispatchSaleId = saleId;
       const s = sales.find(item => item.id === saleId);
@@ -2060,9 +2317,7 @@
 
       if (sendQty <= 0) return alert('ਕਿਰਪਾ ਕਰਕੇ ਸਹੀ ਕੁਆਂਟਿਟੀ ਭਰੋ!');
 
-      const isCrave = selectedItem.item.toUpperCase().includes('CRAVE');
-      const isCement = selectedItem.item.includes('ਸੀਮੈਂਟ') || selectedItem.item.toLowerCase().includes('cement');
-      const ratePerAction = isCement ? 0 : (isCrave ? 1.25 : 0.50);
+      const ratePerAction = getLoadingRateForItem(selectedItem.item);
 
       let loadingCost = 0;
       if (loaded) loadingCost += sendQty * ratePerAction;
@@ -2088,6 +2343,7 @@
       alert(`🚚 ${selectedItem.item} ਦੇ ${sendQty} ਪੀਸ ਡਿਸਪੈਚ ਹੋ ਗਏ ਹਨ! (ਲੇਬਰ ਖਾਤੇ ਵਿੱਚ ₹${loadingCost.toFixed(2)} ਜੁੜ ਗਏ ਹਨ)`);
     }
 
+    // RENDER BLOCK 6: 3. LOADING & UNLOADING LEDGER
     function renderLoadingUnloadingLedger() {
       const tbody = document.querySelector('#loadingUnloadingTable tbody');
       let grandLoadingWage = 0;
@@ -2097,7 +2353,12 @@
         if (s.dispatches && s.dispatches.length > 0) {
           s.dispatches.forEach((d, dIdx) => {
             if (d.loaded || d.unloaded) {
-              const cost = Number(d.loadingCost) || 0;
+              const currentRate = getLoadingRateForItem(d.item);
+              let actionsCount = 0;
+              if (d.loaded) actionsCount += 1;
+              if (d.unloaded) actionsCount += 1;
+
+              const cost = (Number(d.qty) || 0) * currentRate * actionsCount;
               grandLoadingWage += cost;
 
               let statusText = [];
@@ -2114,7 +2375,7 @@
                 status: statusText.join(' + '),
                 loaded: d.loaded,
                 unloaded: d.unloaded,
-                rate: d.ratePerAction || (d.item.toUpperCase().includes('CRAVE') ? 1.25 : 0.50),
+                rate: currentRate,
                 cost: cost
               });
             }
@@ -2135,7 +2396,7 @@
         <tr class="clickable-row" onclick="openLoadingDetailModal(${idx})">
           <td><strong style="color:var(--primary); text-decoration:underline;">📅 ${r.date}</strong></td>
           <td><strong>${r.client}</strong></td>
-          <td style="color:var(--danger); font-weight:700;">₹${r.cost.toLocaleString('en-IN')}</td>
+          <td style="color:var(--danger); font-weight:700;">₹${r.cost.toLocaleString('en-IN', {minimumFractionDigits: 2, maximumFractionDigits: 2})}</td>
           <td><button class="btn btn-outline btn-sm">👁️ ਵੇਰਵਾ ਵੇਖੋ</button></td>
         </tr>
       `).join('');
@@ -2160,7 +2421,7 @@
             <td>${r.qty.toLocaleString('en-IN')}</td>
             <td>📦 Loading</td>
             <td>₹${r.rate.toFixed(2)}</td>
-            <td style="color:var(--danger); font-weight:700;">₹${(r.qty * r.rate).toLocaleString('en-IN')}</td>
+            <td style="color:var(--danger); font-weight:700;">₹${(r.qty * r.rate).toLocaleString('en-IN', {minimumFractionDigits: 2, maximumFractionDigits: 2})}</td>
           </tr>
         `);
       }
@@ -2171,14 +2432,14 @@
             <td>${r.qty.toLocaleString('en-IN')}</td>
             <td>🚛 Unloading</td>
             <td>₹${r.rate.toFixed(2)}</td>
-            <td style="color:var(--danger); font-weight:700;">₹${(r.qty * r.rate).toLocaleString('en-IN')}</td>
+            <td style="color:var(--danger); font-weight:700;">₹${(r.qty * r.rate).toLocaleString('en-IN', {minimumFractionDigits: 2, maximumFractionDigits: 2})}</td>
           </tr>
         `);
       }
 
       tbody.innerHTML = lines.join('');
       document.getElementById('loadingModalTotalQty').textContent = `ਕੁੱਲ ਨਗ: ${r.qty.toLocaleString('en-IN')}`;
-      document.getElementById('loadingModalTotalWage').textContent = `ਕੁੱਲ ਲੇਬਰ: ₹${r.cost.toLocaleString('en-IN')}`;
+      document.getElementById('loadingModalTotalWage').textContent = `ਕੁੱਲ ਲੇਬਰ: ₹${r.cost.toLocaleString('en-IN', {minimumFractionDigits: 2, maximumFractionDigits: 2})}`;
 
       document.getElementById('loadingDetailModal').classList.add('show');
     }
@@ -2187,6 +2448,7 @@
       document.getElementById('loadingDetailModal').classList.remove('show');
     }
 
+    // BLOCK 2: Purchases
     function savePurchase(e) {
       e.preventDefault();
       const editId = document.getElementById('editPurId').value;
@@ -2254,10 +2516,11 @@
       calcPurTotal();
     }
 
+    // SAVE LABOUR PAYOUT (YUDHA DEFAULT & 0 VALUE ALLOWED)
     function saveLabourPayment(e) {
       e.preventDefault();
       const date = document.getElementById('lpayDate').value;
-      const team = document.getElementById('lpayTeam').value.trim();
+      const team = document.getElementById('lpayTeam').value.trim() || 'YUDHA';
       const amount = parseFloat(document.getElementById('lpayAmount').value) || 0;
       const remarks = document.getElementById('lpayRemarks').value.trim();
 
@@ -2267,9 +2530,12 @@
       db.ref('labourPayouts/' + id).set(record);
       document.getElementById('labourPaymentForm').reset();
       document.getElementById('lpayDate').value = new Date().toISOString().split('T')[0];
-      alert(`✅ ₹${amount} ਲੇਬਰ ਭੁਗਤਾਨ ਦਰਜ ਹੋ ਗਿਆ ਹੈ!`);
+      document.getElementById('lpayTeam').value = 'YUDHA';
+      document.getElementById('lpayAmount').value = '0';
+      alert(`✅ ਠੇਕੇਦਾਰ ${team} ਲਈ ₹${amount} ਲੇਬਰ ਭੁਗਤਾਨ ਦਰਜ ਹੋ ਗਿਆ ਹੈ!`);
     }
 
+    // 2. LABOUR PAYOUT LEDGER CALCULATION (INCLUDES LOADING & UNLOADING WAGE)
     function renderLabourPayoutLedger() {
       let totalEarned = 0;
       labourLogs.forEach(l => totalEarned += (Number(l.total) || 0));
@@ -2282,9 +2548,9 @@
 
       const balanceDue = totalEarned - totalPaid;
 
-      document.getElementById('statLabourEarned').textContent = `₹${totalEarned.toLocaleString('en-IN')}`;
-      document.getElementById('statLabourPaid').textContent = `₹${totalPaid.toLocaleString('en-IN')}`;
-      document.getElementById('statLabourDue').textContent = `₹${balanceDue.toLocaleString('en-IN')}`;
+      document.getElementById('statLabourEarned').textContent = `₹${totalEarned.toLocaleString('en-IN', {minimumFractionDigits: 2, maximumFractionDigits: 2})}`;
+      document.getElementById('statLabourPaid').textContent = `₹${totalPaid.toLocaleString('en-IN', {minimumFractionDigits: 2, maximumFractionDigits: 2})}`;
+      document.getElementById('statLabourDue').textContent = `₹${balanceDue.toLocaleString('en-IN', {minimumFractionDigits: 2, maximumFractionDigits: 2})}`;
 
       const tbody = document.querySelector('#labourPayoutTable tbody');
       if (labourPayouts.length === 0) {
@@ -2295,7 +2561,7 @@
         <tr>
           <td>${p.date}</td>
           <td><strong>${p.team}</strong></td>
-          <td style="color:var(--danger); font-weight:700;">₹${p.amount.toLocaleString('en-IN')}</td>
+          <td style="color:var(--danger); font-weight:700;">₹${p.amount.toLocaleString('en-IN', {minimumFractionDigits: 2, maximumFractionDigits: 2})}</td>
           <td>${p.remarks || '-'}</td>
           <td>
             <button class="btn btn-danger btn-sm" onclick="deleteLabourPayout('${p.id}')">🗑️</button>
@@ -2304,6 +2570,7 @@
       `).join('');
     }
 
+    // BLOCK 5: FACTORY STOCK LIVE CALCULATION
     function renderFactoryStock() {
       const tbody = document.querySelector('#stockTable tbody');
       
@@ -2433,306 +2700,6 @@
 
       closeModal();
       alert('ਬਕਾਇਆ ਰਕਮ ਅੱਪਡੇਟ ਹੋ ਗਈ ਹੈ!');
-    }
-
-    // RENDER SALES TABLE: TOUCHING CLIENT NAME OPENS CLIENT PROFILE & ALL ORDERS
-    function renderSales() {
-      const tbody = document.querySelector('#salesTable tbody');
-      if (sales.length === 0) {
-        tbody.innerHTML = '<tr><td colspan="9" style="text-align:center;">ਕੋਈ ਸੇਲ ਰਿਕਾਰਡ ਨਹੀਂ ਹੈ</td></tr>';
-        return;
-      }
-      tbody.innerHTML = sales.slice().reverse().map(s => {
-        const items = s.items || [{ item: s.item, qty: s.qty, rate: s.rate, total: s.total }];
-        const dispatches = s.dispatches || [];
-
-        const itemsHtml = items.map(it => `
-          <div style="font-size:0.82rem; margin-bottom:2px;">
-            <strong>${it.item}</strong>: ${it.qty} ਨਗ = <span style="color:var(--primary); font-weight:700;">₹${it.total}</span>
-          </div>
-        `).join('');
-
-        let totalItemsQty = 0;
-        let totalDispatchedQty = 0;
-        items.forEach(it => totalItemsQty += (Number(it.qty) || 0));
-        dispatches.forEach(d => totalDispatchedQty += (Number(d.qty) || 0));
-
-        const isCompleted = totalDispatchedQty >= totalItemsQty;
-
-        let dispatchBadges = '';
-        if (dispatches.length > 0) {
-          dispatchBadges = dispatches.map(d => 
-            `<small style="display:block; color:var(--text-muted); font-size:0.75rem;">
-              • ${d.item}: ${d.qty} (${d.date}) ${d.loaded ? '☑️L' : ''} ${d.unloaded ? '☑️U' : ''}
-            </small>`
-          ).join('');
-        }
-
-        const nextDateDisplay = (!isCompleted && s.nextDeliveryDate) 
-          ? `<br><small style="color:var(--danger); font-weight:700;">ਅਗਲੀ: ${s.nextDeliveryDate}</small>` 
-          : '';
-
-        return `
-          <tr>
-            <td>${s.date}</td>
-            <td>
-              <strong>${s.deliveryDate || s.date}</strong>
-              ${nextDateDisplay}
-            </td>
-            <!-- CLIENT CELL IS CLICKABLE TO OPEN FULL CLIENT LEDGER -->
-            <td class="clickable-row" onclick="openClientQuickModal('${s.client.replace(/'/g, "\\'")}')" title="ਪੂਰਾ ਖਾਤਾ ਵੇਖਣ ਲਈ ਕਲਿੱਕ ਕਰੋ">
-              <strong style="color:var(--primary); text-decoration:underline;">👤 ${s.client}</strong>
-              ${s.phone ? `<br><small>${s.phone}</small>` : ''}
-              ${s.address ? `<br><small style="color:var(--text-muted);">📍 ${s.address}</small>` : ''}
-            </td>
-            <td>${itemsHtml}</td>
-            <td><strong>₹${s.total}</strong></td>
-            <td style="color:var(--success); font-weight:700;">₹${s.paid}</td>
-            <td><span class="badge ${s.balance > 0 ? 'badge-pending' : 'badge-cleared'}">₹${s.balance}</span></td>
-            <td>
-              <span class="badge ${isCompleted ? 'badge-cleared' : totalDispatchedQty > 0 ? 'badge-partial' : 'badge-pending'}">
-                ${isCompleted ? 'ਪੂਰਾ ਡਿਲੀਵਰਡ' : `${totalDispatchedQty}/${totalItemsQty} ਭੇਜੇ`}
-              </span>
-              ${dispatchBadges}
-            </td>
-            <td>
-              <div style="display:flex; flex-wrap:wrap; gap:4px;">
-                ${!isCompleted ? `<button class="btn btn-warning btn-sm" onclick="openDispatchModal('${s.id}')">🚚 ਮਾਲ ਭੇਜੋ</button>` : ''}
-                ${s.balance > 0 ? `<button class="btn btn-success btn-sm" onclick="openPaymentModal('${s.id}', 'sale')">ਜਮ੍ਹਾਂ</button>` : ''}
-                <button class="btn btn-edit btn-sm" onclick="editSale('${s.id}')">✏️</button>
-                ${s.phone ? `<button class="btn btn-whatsapp btn-sm" onclick="sendWhatsAppInvoice('${s.id}', 'sale')">💬 WA</button>` : ''}
-                <button class="btn btn-danger btn-sm" onclick="deleteRecord('${s.id}', 'sale')">🗑️</button>
-              </div>
-            </td>
-          </tr>
-        `;
-      }).join('');
-    }
-
-    function renderPurchases() {
-      const tbody = document.querySelector('#purchaseTable tbody');
-      if (purchases.length === 0) {
-        tbody.innerHTML = '<tr><td colspan="9" style="text-align:center;">ਕੋਈ ਖਰੀਦ ਰਿਕਾਰਡ ਨਹੀਂ ਹੈ</td></tr>';
-        return;
-      }
-      tbody.innerHTML = purchases.slice().reverse().map(p => `
-        <tr>
-          <td>${p.date}</td>
-          <td><strong>${p.supplier}</strong>${p.phone ? `<br><small>${p.phone}</small>` : ''}</td>
-          <td>${p.item}</td>
-          <td>${p.qty}</td>
-          <td>₹${p.rate}</td>
-          <td>₹${p.total}</td>
-          <td style="color:var(--danger); font-weight:700;">₹${p.paid}</td>
-          <td><span class="badge ${p.balance > 0 ? 'badge-pending' : 'badge-cleared'}">₹${p.balance}</span></td>
-          <td>
-            <div style="display:flex; gap:4px;">
-              ${p.balance > 0 ? `<button class="btn btn-success btn-sm" onclick="openPaymentModal('${p.id}', 'purchase')">ਦਿਓ</button>` : ''}
-              <button class="btn btn-edit btn-sm" onclick="editPurchase('${p.id}')">✏️</button>
-              ${p.phone ? `<button class="btn btn-whatsapp btn-sm" onclick="sendWhatsAppInvoice('${p.id}', 'purchase')">💬 WA</button>` : ''}
-              <button class="btn btn-danger btn-sm" onclick="deleteRecord('${p.id}', 'purchase')">🗑️</button>
-            </div>
-          </td>
-        </tr>
-      `).join('');
-    }
-
-    function renderMonthlySummary() {
-      const selectedMonth = document.getElementById('summaryMonth').value;
-      if (!selectedMonth) return;
-
-      document.getElementById('monthlyTableTitle').textContent = `${selectedMonth} ਮਹੀਨੇ ਦਾ ਹਿਸਾਬ`;
-      let totalCredit = 0, totalDebit = 0, marketReceivable = 0;
-
-      sales.forEach(s => marketReceivable += (s.balance || 0));
-
-      const txs = [];
-      sales.forEach(s => {
-        const itemNames = (s.items || [{ item: s.item }]).map(i => i.item).join(', ');
-        if (s.date && s.date.startsWith(selectedMonth)) {
-          const init = (s.payments && s.payments[0]) ? s.payments[0].amount : s.paid;
-          if (init > 0) {
-            totalCredit += init;
-            txs.push({ date: s.date, type: 'ਸੇਲ ਆਮਦਨ', name: s.client, desc: itemNames, in: init, out: 0 });
-          }
-        }
-        if (s.payments && s.payments.length > 1) {
-          for (let i = 1; i < s.payments.length; i++) {
-            if (s.payments[i].date && s.payments[i].date.startsWith(selectedMonth)) {
-              totalCredit += s.payments[i].amount;
-              txs.push({ date: s.payments[i].date, type: 'ਬਕਾਇਆ ਵਸੂਲੀ', name: s.client, desc: itemNames, in: s.payments[i].amount, out: 0 });
-            }
-          }
-        }
-      });
-
-      purchases.forEach(p => {
-        if (p.date && p.date.startsWith(selectedMonth)) {
-          const init = (p.payments && p.payments[0]) ? p.payments[0].amount : p.paid;
-          if (init > 0) {
-            totalDebit += init;
-            txs.push({ date: p.date, type: 'ਖਰੀਦ ਖਰਚਾ', name: p.supplier, desc: p.item, in: 0, out: init });
-          }
-        }
-        if (p.payments && p.payments.length > 1) {
-          for (let i = 1; i < p.payments.length; i++) {
-            if (p.payments[i].date && p.payments[i].date.startsWith(selectedMonth)) {
-              totalDebit += p.payments[i].amount;
-              txs.push({ date: p.payments[i].date, type: 'ਸਪਲਾਇਰ ਭੁਗਤਾਨ', name: p.supplier, desc: p.item, in: 0, out: p.payments[i].amount });
-            }
-          }
-        }
-      });
-
-      labourPayouts.forEach(lp => {
-        if (lp.date && lp.date.startsWith(selectedMonth)) {
-          totalDebit += Number(lp.amount) || 0;
-          txs.push({ date: lp.date, type: 'ਲੇਬਰ ਮਜ਼ਦੂਰੀ', name: lp.team, desc: lp.remarks || 'ਮਜ਼ਦੂਰੀ ਭੁਗਤਾਨ', in: 0, out: Number(lp.amount) || 0 });
-        }
-      });
-
-      txs.sort((a, b) => new Date(b.date) - new Date(a.date));
-
-      document.getElementById('statCredit').textContent = `₹${totalCredit.toLocaleString('en-IN')}`;
-      document.getElementById('statDebit').textContent = `₹${totalDebit.toLocaleString('en-IN')}`;
-      document.getElementById('statNet').textContent = `₹${(totalCredit - totalDebit).toLocaleString('en-IN')}`;
-      document.getElementById('statMarketReceivable').textContent = `₹${marketReceivable.toLocaleString('en-IN')}`;
-
-      const tbody = document.querySelector('#monthlyStatementTable tbody');
-      if (txs.length === 0) {
-        tbody.innerHTML = '<tr><td colspan="6" style="text-align:center;">ਇਸ ਮਹੀਨੇ ਕੋਈ ਲੈਣ-ਦੇਣ ਨਹੀਂ ਹੈ</td></tr>';
-        return;
-      }
-
-      tbody.innerHTML = txs.map(t => `
-        <tr>
-          <td>${t.date}</td>
-          <td><span class="badge ${t.in > 0 ? 'badge-cleared' : 'badge-pending'}">${t.type}</span></td>
-          <td><strong>${t.name}</strong></td>
-          <td>${t.desc}</td>
-          <td style="color:var(--success); font-weight:700;">${t.in > 0 ? '+ ₹' + t.in : '-'}</td>
-          <td style="color:var(--danger); font-weight:700;">${t.out > 0 ? '- ₹' + t.out : '-'}</td>
-        </tr>
-      `).join('');
-    }
-
-    function renderClientList() {
-      const query = (document.getElementById('clientSearch').value || '').toLowerCase();
-      const map = {};
-
-      sales.forEach(s => {
-        const k = s.client.trim();
-        if (!map[k]) map[k] = { name: k, phone: s.phone || '', total: 0, balance: 0 };
-        map[k].total += s.total;
-        map[k].balance += s.balance;
-        if (!map[k].phone && s.phone) map[k].phone = s.phone;
-      });
-
-      purchases.forEach(p => {
-        const k = p.supplier.trim();
-        if (!map[k]) map[k] = { name: k, phone: p.phone || '', total: 0, balance: 0 };
-        map[k].total += p.total;
-        map[k].balance -= p.balance;
-        if (!map[k].phone && p.phone) map[k].phone = p.phone;
-      });
-
-      const list = Object.values(map).filter(p => p.name.toLowerCase().includes(query) || p.phone.includes(query));
-      const tbody = document.querySelector('#clientsOverviewTable tbody');
-
-      if (list.length === 0) {
-        tbody.innerHTML = '<tr><td colspan="5" style="text-align:center;">ਕੋਈ ਕਲਾਇੰਟ ਨਹੀਂ ਮਿਲਿਆ</td></tr>';
-        return;
-      }
-
-      tbody.innerHTML = list.map(p => `
-        <tr>
-          <td><strong>${p.name}</strong></td>
-          <td>${p.phone || '-'}</td>
-          <td>₹${p.total}</td>
-          <td>
-            <strong style="color: ${p.balance > 0 ? 'var(--danger)' : p.balance < 0 ? 'var(--warning)' : 'var(--success)'};">
-              ${p.balance > 0 ? `ਲੈਣਾ: ₹${p.balance}` : p.balance < 0 ? `ਦੇਣਾ: ₹${Math.abs(p.balance)}` : 'ਹਿਸਾਬ ਕਲੀਅਰ'}
-            </strong>
-          </td>
-          <td>
-            <button class="btn btn-outline btn-sm" onclick="showClientDetail('${p.name.replace(/'/g, "\\'")}')">ਪੂਰਾ ਖਾਤਾ ਵੇਖੋ</button>
-          </td>
-        </tr>
-      `).join('');
-    }
-
-    function showClientDetail(partyName) {
-      selectedLedgerParty = partyName;
-      document.getElementById('clientDetailCard').style.display = 'block';
-
-      const partySales = sales.filter(s => s.client.trim().toLowerCase() === partyName.trim().toLowerCase());
-      const partyPurchases = purchases.filter(p => p.supplier.trim().toLowerCase() === partyName.trim().toLowerCase());
-      const phone = (partySales[0] && partySales[0].phone) || (partyPurchases[0] && partyPurchases[0].phone) || '';
-
-      document.getElementById('detailClientName').textContent = `${partyName} ਦਾ ਖਾਤਾ`;
-      document.getElementById('detailClientPhone').textContent = phone ? `ਫ਼ੋਨ: ${phone}` : '';
-
-      const txs = [];
-      partySales.forEach(s => {
-        const itemNames = (s.items || [{ item: s.item }]).map(i => i.item).join(', ');
-        txs.push({ id: s.id, date: s.date, type: 'ਸੇਲ', desc: itemNames, total: s.total, paid: s.paid, balance: s.balance, raw: 'sale' });
-      });
-      partyPurchases.forEach(p => txs.push({ id: p.id, date: p.date, type: 'ਖਰੀਦ', desc: `${p.item} (${p.qty})`, total: p.total, paid: p.paid, balance: p.balance, raw: 'purchase' }));
-
-      txs.sort((a, b) => new Date(b.date) - new Date(a.date));
-      const tbody = document.querySelector('#clientTransactionsTable tbody');
-
-      tbody.innerHTML = txs.map(t => `
-        <tr>
-          <td>${t.date}</td>
-          <td>${t.type}</td>
-          <td>${t.desc}</td>
-          <td>₹${t.total}</td>
-          <td>₹${t.paid}</td>
-          <td><span class="badge ${t.balance > 0 ? 'badge-pending' : 'badge-cleared'}">₹${t.balance}</span></td>
-          <td>
-            ${t.balance > 0 ? `<button class="btn btn-success btn-sm" onclick="openPaymentModal('${t.id}', '${t.raw}')">ਕਲੀਅਰ</button>` : 'ਕਲੀਅਰ'}
-          </td>
-        </tr>
-      `).join('');
-    }
-
-    function closeClientDetail() {
-      document.getElementById('clientDetailCard').style.display = 'none';
-      selectedLedgerParty = null;
-    }
-
-    function sendWhatsAppInvoice(id, type) {
-      const rec = type === 'sale' ? sales.find(s => s.id === id) : purchases.find(p => p.id === id);
-      if (!rec || !rec.phone) return alert('ਨੰਬਰ ਦਰਜ ਨਹੀਂ ਹੈ!');
-      
-      let itemLines = '';
-      if (type === 'sale') {
-        const items = rec.items || [{ item: rec.item, qty: rec.qty, total: rec.total }];
-        itemLines = items.map(i => `▫️ *${i.item}*: ${i.qty.toLocaleString('en-IN')} ਨਗ`).join('\n');
-      }
-
-      const txt = type === 'sale' 
-        ? `ਸਤਿ ਸ਼੍ਰੀ ਅਕਾਲ ਜੀ, *${rec.client}* 🙏\n\nਤੁਹਾਡੇ ਆਰਡਰ ਦਾ ਵੇਰਵਾ ਹੇਠ ਅਨੁਸਾਰ ਹੈ:\n\n${itemLines}\n\n💰 *ਕੁੱਲ ਰਕਮ (Full Payment)*: ₹${Number(rec.total).toLocaleString('en-IN')}\n💵 *ਐਡਵਾਂਸ ਰਕਮ (Advance)*: ₹${Number(rec.paid).toLocaleString('en-IN')}\n🔴 *ਬਕਾਇਆ ਰਕਮ (Balance)*: ₹${Number(rec.balance).toLocaleString('en-IN')}\n\n📅 *ਡਿਲਿਵਰੀ ਤਾਰੀਖ*: ${rec.deliveryDate || rec.date}\n${rec.address ? `📍 *ਪਤਾ / ਲੋਕੇਸ਼ਨ*: ${rec.address}\n` : ''}\nਧੰਨਵਾਦ ਸਹਿਤ,\n*ਗਿੱਲ ਐਂਟਰਪ੍ਰਾਈਜਿਸ*`
-        : `ਸਤਿ ਸ਼੍ਰੀ ਅਕਾਲ ਜੀ, *${rec.supplier}* 🙏\n\nਸਮਾਨ ਵੇਰਵਾ:\nਆਈਟਮ: ${rec.item}\nਕੁੱਲ ਰਕਮ: ₹${Number(rec.total).toLocaleString('en-IN')}\nਦਿੱਤੀ ਰਕਮ: ₹${Number(rec.paid).toLocaleString('en-IN')}\nਬਕਾਇਆ: ₹${Number(rec.balance).toLocaleString('en-IN')}\n\nਧੰਨਵਾਦ!`;
-
-      let num = rec.phone.replace(/[^0-9]/g, '');
-      if (num.length === 10) num = '91' + num;
-      window.open(`https://wa.me/${num}?text=${encodeURIComponent(txt)}`, '_blank');
-    }
-
-    function sendWhatsAppLedger() {
-      if (!selectedLedgerParty) return;
-      const partySales = sales.filter(s => s.client.trim().toLowerCase() === selectedLedgerParty.trim().toLowerCase());
-      const phone = partySales[0] && partySales[0].phone;
-      if (!phone) return alert('ਫ਼ੋਨ ਨੰਬਰ ਉਪਲਬਧ ਨਹੀਂ ਹੈ!');
-
-      let total = 0, bal = 0;
-      partySales.forEach(s => { total += s.total; bal += s.balance; });
-      const txt = `ਸਤਿ ਸ਼੍ਰੀ ਅਕਾਲ ਜੀ, *${selectedLedgerParty}* 🙏\n\nਤੁਹਾਡੇ ਖਾਤੇ ਦਾ ਕੁੱਲ ਬਕਾਇਆ *₹${Number(bal).toLocaleString('en-IN')}* ਹੈ (ਕੁੱਲ ਕਾਰੋਬਾਰ: ₹${Number(total).toLocaleString('en-IN')})। ਕਿਰਪਾ ਕਰਕੇ ਬਕਾਇਆ ਰਕਮ ਕਲੀਅਰ ਕਰਵਾਉਣ ਦੀ ਕਿਰਪਾਲਤਾ ਕਰੋ ਜੀ।\n\nਧੰਨਵਾਦ ਸਹਿਤ,\n*ਗਿੱਲ ਐਂਟਰਪ੍ਰਾਈਜਿਸ*`;
-      let num = phone.replace(/[^0-9]/g, '');
-      if (num.length === 10) num = '91' + num;
-      window.open(`https://wa.me/${num}?text=${encodeURIComponent(txt)}`, '_blank');
     }
 
     function exportToCSV(type) {
