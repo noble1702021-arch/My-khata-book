@@ -74,7 +74,6 @@
       display: inline-block;
     }
 
-    /* 3-LINE MENU BUTTON AT TOP RIGHT */
     .menu-btn {
       position: absolute;
       top: 16px;
@@ -394,7 +393,7 @@
       <span id="syncText">ਕਨੈਕਟ ਹੋ ਰਿਹਾ ਹੈ...</span>
     </div>
 
-    <!-- 3-LINE (HAMBURGER) BUTTON FOR RECYCLE BIN / TRASH -->
+    <!-- 3-LINE BUTTON FOR RECYCLE BIN -->
     <button class="menu-btn" onclick="openTrashModal()" title="ਰੀਸਾਈਕਲ ਬਿਨ (ਡਿਲੀਟ ਕੀਤਾ ਡਾਟਾ)">☰</button>
   </header>
 
@@ -434,7 +433,7 @@
 
   <div class="container">
     
-    <!-- BLOCK 1: SALES WITH CLIENT ADDRESS -->
+    <!-- BLOCK 1: SALES WITH CLIENT ADDRESS & CLIENT QUICK PROFILE -->
     <section id="tab-sale" class="tab-content active">
       <div class="card">
         <div class="card-title">
@@ -498,14 +497,16 @@
       </div>
 
       <div class="card">
-        <div class="card-title"><span>ਸੇਲਜ਼ ਆਰਡਰ ਅਤੇ ਡਿਲਿਵਰੀ ਸੂਚੀ</span></div>
+        <div class="card-title">
+          <span>ਸੇਲਜ਼ ਆਰਡਰ ਸੂਚੀ (ਪੂਰਾ ਖਾਤਾ ਵੇਖਣ ਲਈ ਕਲਾਇੰਟ ਦੇ ਨਾਮ 'ਤੇ ਕਲਿੱਕ ਕਰੋ)</span>
+        </div>
         <div class="table-responsive">
           <table id="salesTable">
             <thead>
               <tr>
                 <th>ਬੁਕਿੰਗ</th>
                 <th>ਡਿਲਿਵਰੀ</th>
-                <th>ਕਲਾਇੰਟ</th>
+                <th>ਕਲਾਇੰਟ (Touch for Ledger)</th>
                 <th>ਆਈਟਮਾਂ ਤੇ ਵੇਰਵਾ</th>
                 <th>ਕੁੱਲ ਰਕਮ</th>
                 <th>ਮਿਲੇ</th>
@@ -823,7 +824,7 @@
         </div>
       </div>
 
-      <!-- 2. Labour Payout Ledger Section (Includes Loading & Unloading in Grand Earned) -->
+      <!-- 2. Labour Payout Ledger Section -->
       <div class="card" style="border-top: 4px solid var(--purple);">
         <div class="card-title">
           <span>2. ਲੇਬਰ ਭੁਗਤਾਨ & ਖਾਤਾ ਰਜਿਸਟਰ (Labour Wages & Payout Ledger)</span>
@@ -884,7 +885,7 @@
         </div>
       </div>
 
-      <!-- 3. LOADING & UNLOADING LABOUR LEDGER (COMPACT SUMMARY) -->
+      <!-- 3. LOADING & UNLOADING LABOUR LEDGER -->
       <div class="card" style="border-top: 4px solid var(--warning);">
         <div class="card-title">
           <span>3. ਲੇਬਰ ਲੋਡਿੰਗ & ਅਨਲੋਡਿੰਗ ਰਿਕਾਰਡ (ਪੂਰਾ ਵੇਰਵਾ ਵੇਖਣ ਲਈ ਟੱਚ ਕਰੋ)</span>
@@ -1102,6 +1103,50 @@
     </div>
   </div>
 
+  <!-- POPUP MODAL: CLIENT QUICK PROFILE & HISTORY LEDGER (FROM PAGE 1 CLICK) -->
+  <div class="modal" id="clientQuickModal">
+    <div class="modal-box" style="max-width: 680px;">
+      <div class="modal-header">
+        <div>
+          <h3 style="font-size:1.25rem; font-weight:800; color:var(--primary);" id="cqClientName">ਕਲਾਇੰਟ ਖਾਤਾ</h3>
+          <small id="cqClientMeta" style="color:var(--text-muted); font-size:0.85rem; display:block;"></small>
+        </div>
+        <button class="close-modal" onclick="closeClientQuickModal()">×</button>
+      </div>
+
+      <div style="display:flex; justify-content:space-between; align-items:center; background:#eff6ff; border:1px solid #bfdbfe; border-radius:8px; padding:12px; margin-bottom:14px; flex-wrap:wrap; gap:8px;">
+        <div>
+          <span style="font-size:0.85rem; color:#1e40af; font-weight:600;">ਕੁੱਲ ਲੈਣ-ਦੇਣ ਦਾ ਬਕਾਇਆ:</span>
+          <div style="font-size:1.35rem; font-weight:800; color:var(--danger);" id="cqNetBalance">₹0</div>
+        </div>
+        <!-- BUTTON TO QUICKLY ADD ANOTHER ORDER FOR THIS SAME CLIENT -->
+        <button type="button" class="btn btn-primary btn-sm" onclick="quickAddSaleForThisClient()">➕ ਇਸ ਕਲਾਇੰਟ ਲਈ ਨਵਾਂ ਆਰਡਰ ਜੋੜੋ</button>
+      </div>
+
+      <strong style="font-size:0.9rem; color:var(--text);">ਇਸ ਗਾਹਕ ਦੇ ਸਾਰੇ ਪੁਰਾਣੇ ਆਰਡਰ ਅਤੇ ਲੈਣ-ਦੇਣ:</strong>
+      <div class="table-responsive" style="margin-top:6px;">
+        <table>
+          <thead>
+            <tr>
+              <th>ਬੁਕਿੰਗ ਤਾਰੀਖ</th>
+              <th>ਸਮਾਨ (ਵੇਰਵਾ)</th>
+              <th>ਕੁੱਲ ਰਕਮ</th>
+              <th>ਜਮ੍ਹਾਂ</th>
+              <th>ਬਕਾਇਆ</th>
+              <th>ਐਕਸ਼ਨ</th>
+            </tr>
+          </thead>
+          <tbody id="cqOrdersTableBody"></tbody>
+        </table>
+      </div>
+
+      <div style="margin-top:16px; display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:8px;">
+        <button type="button" class="btn btn-whatsapp btn-sm" onclick="sendWhatsAppFromQuickModal()">💬 WhatsApp ਖਾਤਾ ਭੇਜੋ</button>
+        <button type="button" class="btn btn-outline" onclick="closeClientQuickModal()">ਬੰਦ ਕਰੋ ✖</button>
+      </div>
+    </div>
+  </div>
+
   <script>
     const DEFAULT_ITEMS_DATA = [
       { name: "BARFI 60 MM", rate: 1.6 },
@@ -1148,6 +1193,7 @@
     let currentSettlement = null;
     let currentDispatchSaleId = null;
     let selectedLedgerParty = null;
+    let currentQuickClient = null;
 
     window.addEventListener('DOMContentLoaded', () => {
       const today = new Date().toISOString().split('T')[0];
@@ -1210,7 +1256,6 @@
       }
     }
 
-    // RECYCLE BIN (TRASH) LOGIC: MOVE, RESTORE, PERMANENT DELETE
     function moveToTrash(type, title, data) {
       const trashId = 'TR_' + Date.now();
       const trashRecord = {
@@ -1280,7 +1325,6 @@
       db.ref('trash/' + trashId).remove();
     }
 
-    // BUILD LABOUR 18-ITEMS GRID
     function buildLabour18ItemsGrid(prefillData = [], prefillCement = 0) {
       const tbody = document.getElementById('labour18ItemsBody');
       tbody.innerHTML = '';
@@ -1357,7 +1401,6 @@
       document.getElementById('labourGrandTotal').value = grandWage.toFixed(2);
     }
 
-    // MULTI-ITEM SALE LOGIC
     function addSaleItemRow(itemVal = '', qtyVal = '', rateVal = '', lineTotalVal = '') {
       const container = document.getElementById('saleItemsContainer');
       const rowId = 'itemRow_' + Date.now() + '_' + Math.random().toString(36).substring(2, 6);
@@ -1491,6 +1534,7 @@
       renderDeliveryDateAlerts();
       refreshPartiesDropdown();
       if (selectedLedgerParty) showClientDetail(selectedLedgerParty);
+      if (currentQuickClient) openClientQuickModal(currentQuickClient);
     }
 
     function switchTab(tabId) {
@@ -1672,7 +1716,96 @@
       addSaleItemRow();
     }
 
-    // BLOCK 6: Save Labour (Single Cement Input at Bottom)
+    // OPEN CLIENT QUICK PROFILE & HISTORY LEDGER
+    function openClientQuickModal(clientName) {
+      currentQuickClient = clientName;
+      const clientSales = sales.filter(s => (s.client || '').trim().toLowerCase() === clientName.trim().toLowerCase());
+
+      const phone = (clientSales[0] && clientSales[0].phone) || '';
+      const address = (clientSales[0] && clientSales[0].address) || '';
+
+      document.getElementById('cqClientName').textContent = clientName;
+      document.getElementById('cqClientMeta').textContent = `${phone ? 'ਫ਼ੋਨ: ' + phone : ''} ${address ? ' | ਪਤਾ: ' + address : ''}`;
+
+      let totalSalesAmount = 0;
+      let totalPaidAmount = 0;
+      let netBal = 0;
+
+      clientSales.forEach(s => {
+        totalSalesAmount += (Number(s.total) || 0);
+        totalPaidAmount += (Number(s.paid) || 0);
+        netBal += (Number(s.balance) || 0);
+      });
+
+      document.getElementById('cqNetBalance').textContent = `₹${netBal.toLocaleString('en-IN')}`;
+
+      const tbody = document.getElementById('cqOrdersTableBody');
+      if (clientSales.length === 0) {
+        tbody.innerHTML = '<tr><td colspan="6" style="text-align:center;">ਕੋਈ ਆਰਡਰ ਨਹੀਂ ਹੈ</td></tr>';
+      } else {
+        clientSales.sort((a, b) => new Date(b.date) - new Date(a.date));
+        tbody.innerHTML = clientSales.map(s => {
+          const items = s.items || [{ item: s.item, qty: s.qty, total: s.total }];
+          const desc = items.map(it => `${it.item} (${it.qty})`).join(', ');
+
+          return `
+            <tr>
+              <td><strong>${s.date}</strong></td>
+              <td>${desc}</td>
+              <td>₹${Number(s.total).toLocaleString('en-IN')}</td>
+              <td style="color:var(--success); font-weight:700;">₹${Number(s.paid).toLocaleString('en-IN')}</td>
+              <td style="color:var(--danger); font-weight:700;">₹${Number(s.balance).toLocaleString('en-IN')}</td>
+              <td>
+                <div style="display:flex; gap:4px;">
+                  ${s.balance > 0 ? `<button class="btn btn-success btn-sm" onclick="openPaymentModal('${s.id}', 'sale')">ਜਮ੍ਹਾਂ</button>` : ''}
+                  <button class="btn btn-edit btn-sm" onclick="closeClientQuickModal(); editSale('${s.id}');">✏️</button>
+                </div>
+              </td>
+            </tr>
+          `;
+        }).join('');
+      }
+
+      document.getElementById('clientQuickModal').classList.add('show');
+    }
+
+    function closeClientQuickModal() {
+      document.getElementById('clientQuickModal').classList.remove('show');
+      currentQuickClient = null;
+    }
+
+    // PREFILL CLIENT DATA TO QUICKLY ADD A NEW SALE ORDER FOR THE SAME CLIENT
+    function quickAddSaleForThisClient() {
+      if (!currentQuickClient) return;
+      const clientSales = sales.filter(s => (s.client || '').trim().toLowerCase() === currentQuickClient.trim().toLowerCase());
+      const last = clientSales[0];
+
+      closeClientQuickModal();
+      cancelSaleEdit();
+
+      document.getElementById('saleClient').value = currentQuickClient;
+      if (last && last.phone) document.getElementById('salePhone').value = last.phone;
+      if (last && last.address) document.getElementById('saleAddress').value = last.address;
+
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    function sendWhatsAppFromQuickModal() {
+      if (!currentQuickClient) return;
+      const clientSales = sales.filter(s => (s.client || '').trim().toLowerCase() === currentQuickClient.trim().toLowerCase());
+      const phone = clientSales[0] && clientSales[0].phone;
+      if (!phone) return alert('ਫ਼ੋਨ ਨੰਬਰ ਦਰਜ ਨਹੀਂ ਹੈ!');
+
+      let total = 0, bal = 0;
+      clientSales.forEach(s => { total += (Number(s.total) || 0); bal += (Number(s.balance) || 0); });
+
+      const txt = `ਸਤਿ ਸ਼੍ਰੀ ਅਕਾਲ ਜੀ, *${currentQuickClient}* 🙏\n\nਤੁਹਾਡੇ ਖਾਤੇ ਦਾ ਕੁੱਲ ਬਕਾਇਆ *₹${Number(bal).toLocaleString('en-IN')}* ਹੈ (ਕੁੱਲ ਕਾਰੋਬਾਰ: ₹${Number(total).toLocaleString('en-IN')})। ਕਿਰਪਾ ਕਰਕੇ ਬਕਾਇਆ ਰਕਮ ਕਲੀਅਰ ਕਰਵਾਉਣ ਦੀ ਕਿਰਪਾਲਤਾ ਕਰੋ ਜੀ।\n\nਧੰਨਵਾਦ ਸਹਿਤ,\n*ਗਿੱਲ ਐਂਟਰਪ੍ਰਾਈਜਿਸ*`;
+      let num = phone.replace(/[^0-9]/g, '');
+      if (num.length === 10) num = '91' + num;
+      window.open(`https://wa.me/${num}?text=${encodeURIComponent(txt)}`, '_blank');
+    }
+
+    // BLOCK 6: Save Labour
     function saveLabour(e) {
       e.preventDefault();
       const editId = document.getElementById('editLabourId').value;
@@ -1742,7 +1875,6 @@
       buildLabour18ItemsGrid([], 0);
     }
 
-    // SOFT DELETE: MOVES TO TRASH MODAL
     function deleteRecord(id, type) {
       if (!confirm('ਕੀ ਤੁਸੀਂ ਇਹ ਰਿਕਾਰਡ ਹਟਾਉਣਾ ਚਾਹੁੰਦੇ ਹੋ? (ਇਹ ਰੀਸਾਈਕਲ ਬਿਨ ☰ ਵਿੱਚ ਚਲਾ ਜਾਵੇਗਾ)')) return;
 
@@ -1846,7 +1978,6 @@
       document.getElementById('labourDetailModal').classList.remove('show');
     }
 
-    // DISPATCH MODAL LOGIC (AUTO-CALCULATES LOADING & UNLOADING WAGE)
     function openDispatchModal(saleId) {
       currentDispatchSaleId = saleId;
       const s = sales.find(item => item.id === saleId);
@@ -1957,7 +2088,6 @@
       alert(`🚚 ${selectedItem.item} ਦੇ ${sendQty} ਪੀਸ ਡਿਸਪੈਚ ਹੋ ਗਏ ਹਨ! (ਲੇਬਰ ਖਾਤੇ ਵਿੱਚ ₹${loadingCost.toFixed(2)} ਜੁੜ ਗਏ ਹਨ)`);
     }
 
-    // RENDER BLOCK 6: 3. LOADING & UNLOADING LEDGER (COMPACT SUMMARY)
     function renderLoadingUnloadingLedger() {
       const tbody = document.querySelector('#loadingUnloadingTable tbody');
       let grandLoadingWage = 0;
@@ -2057,7 +2187,6 @@
       document.getElementById('loadingDetailModal').classList.remove('show');
     }
 
-    // BLOCK 2: Purchases
     function savePurchase(e) {
       e.preventDefault();
       const editId = document.getElementById('editPurId').value;
@@ -2141,12 +2270,10 @@
       alert(`✅ ₹${amount} ਲੇਬਰ ਭੁਗਤਾਨ ਦਰਜ ਹੋ ਗਿਆ ਹੈ!`);
     }
 
-    // 2. LABOUR PAYOUT LEDGER CALCULATION (INCLUDES LOADING & UNLOADING WAGE)
     function renderLabourPayoutLedger() {
       let totalEarned = 0;
       labourLogs.forEach(l => totalEarned += (Number(l.total) || 0));
 
-      // Automatically add loading/unloading wage to total earned
       const loadingWage = window.cachedLoadingWage || 0;
       totalEarned += loadingWage;
 
@@ -2177,7 +2304,6 @@
       `).join('');
     }
 
-    // BLOCK 5: FACTORY STOCK LIVE CALCULATION
     function renderFactoryStock() {
       const tbody = document.querySelector('#stockTable tbody');
       
@@ -2309,6 +2435,7 @@
       alert('ਬਕਾਇਆ ਰਕਮ ਅੱਪਡੇਟ ਹੋ ਗਈ ਹੈ!');
     }
 
+    // RENDER SALES TABLE: TOUCHING CLIENT NAME OPENS CLIENT PROFILE & ALL ORDERS
     function renderSales() {
       const tbody = document.querySelector('#salesTable tbody');
       if (sales.length === 0) {
@@ -2352,8 +2479,9 @@
               <strong>${s.deliveryDate || s.date}</strong>
               ${nextDateDisplay}
             </td>
-            <td>
-              <strong>${s.client}</strong>
+            <!-- CLIENT CELL IS CLICKABLE TO OPEN FULL CLIENT LEDGER -->
+            <td class="clickable-row" onclick="openClientQuickModal('${s.client.replace(/'/g, "\\'")}')" title="ਪੂਰਾ ਖਾਤਾ ਵੇਖਣ ਲਈ ਕਲਿੱਕ ਕਰੋ">
+              <strong style="color:var(--primary); text-decoration:underline;">👤 ${s.client}</strong>
               ${s.phone ? `<br><small>${s.phone}</small>` : ''}
               ${s.address ? `<br><small style="color:var(--text-muted);">📍 ${s.address}</small>` : ''}
             </td>
