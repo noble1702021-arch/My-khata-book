@@ -393,17 +393,14 @@
       <span id="syncText">ਕਨੈਕਟ ਹੋ ਰਿਹਾ ਹੈ...</span>
     </div>
 
-    <!-- 3-LINE BUTTON FOR RECYCLE BIN -->
     <button class="menu-btn" onclick="openTrashModal()" title="ਰੀਸਾਈਕਲ ਬਿਨ (ਡਿਲੀਟ ਕੀਤਾ ਡਾਟਾ)">☰</button>
   </header>
 
-  <!-- PENDING DELIVERY REMINDER BANNER -->
   <div id="deliveryReminderBanner">
     <h4>🔔 ਅੱਜ ਦੇ ਮਾਲ ਡਿਲਿਵਰੀ ਰਿਮਾਈਂਡਰ (Delivery Alerts):</h4>
     <ul id="reminderList"></ul>
   </div>
 
-  <!-- NAVIGATION TABS -->
   <nav class="nav-tabs">
     <button class="tab-btn active" onclick="switchTab('sale')">
       <span>📦</span>
@@ -433,7 +430,7 @@
 
   <div class="container">
     
-    <!-- BLOCK 1: SALES WITH CLIENT ADDRESS & CLIENT QUICK PROFILE -->
+    <!-- BLOCK 1: SALES WITH COMPACT CLIENT ROW + DISPATCH + WA -->
     <section id="tab-sale" class="tab-content active">
       <div class="card">
         <div class="card-title">
@@ -498,19 +495,20 @@
 
       <div class="card">
         <div class="card-title">
-          <span>ਗਾਹਕਾਂ ਦੀ ਸੇਲ ਸੂਚੀ (ਪੂਰਾ ਖਾਤਾ ਵੇਖਣ ਜਾਂ ਨਵਾਂ ਸਮਾਨ ਜੋੜਨ ਲਈ ਨਾਮ 'ਤੇ ਟੈਪ ਕਰੋ)</span>
+          <span>ਗਾਹਕਾਂ ਦੀ ਸੇਲ ਸੂਚੀ (ਪੂਰਾ ਖਾਤਾ ਵੇਖਣ ਲਈ ਨਾਮ 'ਤੇ ਟੈਪ ਕਰੋ)</span>
         </div>
         <div class="table-responsive">
           <table id="salesTable">
             <thead>
               <tr>
-                <th>ਕਲਾਇੰਟ ਦਾ ਨਾਮ (Touch for All Orders)</th>
-                <th>ਆਖ਼ਰੀ ਆਰਡਰ ਤਾਰੀਖ</th>
-                <th>ਕੁੱਲ ਲਿਆ ਸਮਾਨ (ਸਾਰੇ ਆਰਡਰ)</th>
-                <th>ਕੁੱਲ ਰਕਮ (ਸਾਰੇ ਦਿਨਾਂ ਦੀ)</th>
-                <th>ਕੁੱਲ ਮਿਲੇ ਪੈਸੇ</th>
-                <th>ਕੁੱਲ ਨੈੱਟ ਬਕਾਇਆ</th>
-                <th>ਐਕਸ਼ਨ</th>
+                <th>ਕਲਾਇੰਟ ਦਾ ਨਾਮ (Touch for Ledger)</th>
+                <th>ਆਖ਼ਰੀ ਤਾਰੀਖ</th>
+                <th>ਸਮਾਨ ਦਾ ਵੇਰਵਾ</th>
+                <th>ਡਿਸਪੈਚ ਸਥਿਤੀ (Dispatched)</th>
+                <th>ਕੁੱਲ ਰਕਮ</th>
+                <th>ਕੁੱਲ ਮਿਲੇ</th>
+                <th>ਨੈੱਟ ਬਕਾਇਆ</th>
+                <th>ਐਕਸ਼ਨ & ਡਿਸਪੈਚ</th>
               </tr>
             </thead>
             <tbody></tbody>
@@ -854,7 +852,7 @@
               <input type="text" id="lpayTeam" placeholder="ਠੇਕੇਦਾਰ ਦਾ ਨਾਮ" value="YUDHA" required>
             </div>
             <div class="form-group">
-              <label>ਦਿੱਤੀ ਗਈ ਰਕਮ (Amount Paid ₹ - 0 ਵੀ ਚੱਲੇਗਾ)</label>
+              <label>ਦਿੱਤੀ ਗਈ ਰਕਮ (₹)</label>
               <input type="number" step="0.01" id="lpayAmount" min="0" placeholder="0" value="0" required>
             </div>
             <div class="form-group">
@@ -911,12 +909,10 @@
 
   </div>
 
-  <!-- Reusable Datalists -->
   <datalist id="standardItemList"></datalist>
   <datalist id="rawMaterialList"></datalist>
   <datalist id="clientList"></datalist>
 
-  <!-- Quick Balance Settlement Modal -->
   <div class="modal" id="paymentModal">
     <div class="modal-box">
       <div class="modal-header">
@@ -945,7 +941,7 @@
     </div>
   </div>
 
-  <!-- Dispatch Modal with Item Selector -->
+  <!-- DISPATCH MODAL WITH ITEM SELECTOR AND LOADING/UNLOADING CHECKBOXES -->
   <div class="modal" id="dispatchModal">
     <div class="modal-box">
       <div class="modal-header">
@@ -996,7 +992,6 @@
     </div>
   </div>
 
-  <!-- POPUP MODAL: Daily Labour Production Details -->
   <div class="modal" id="labourDetailModal">
     <div class="modal-box">
       <div class="modal-header">
@@ -1033,7 +1028,6 @@
     </div>
   </div>
 
-  <!-- POPUP MODAL: Loading/Unloading Details -->
   <div class="modal" id="loadingDetailModal">
     <div class="modal-box">
       <div class="modal-header">
@@ -1070,7 +1064,6 @@
     </div>
   </div>
 
-  <!-- POPUP MODAL: RECYCLE BIN / TRASH (3-LINE MENU) -->
   <div class="modal" id="trashModal">
     <div class="modal-box">
       <div class="modal-header">
@@ -1101,9 +1094,9 @@
     </div>
   </div>
 
-  <!-- POPUP MODAL: CLIENT DEDICATED PAGE (ADD NEW ORDERS + FULL HISTORY) -->
+  <!-- POPUP MODAL: CLIENT DEDICATED PAGE (ADD NEW ORDERS + FULL HISTORY + DISPATCH) -->
   <div class="modal" id="clientQuickModal">
-    <div class="modal-box" style="max-width: 760px;">
+    <div class="modal-box" style="max-width: 780px;">
       <div class="modal-header">
         <div>
           <h3 style="font-size:1.35rem; font-weight:800; color:var(--primary);" id="cqClientName">ਕਲਾਇੰਟ ਖਾਤਾ</h3>
@@ -1112,7 +1105,6 @@
         <button class="close-modal" onclick="closeClientQuickModal()">×</button>
       </div>
 
-      <!-- Financial Overall Summary Box -->
       <div style="display:flex; justify-content:space-between; align-items:center; background:#eff6ff; border:1.5px solid #bfdbfe; border-radius:10px; padding:14px; margin-bottom:16px; flex-wrap:wrap; gap:10px;">
         <div>
           <span style="font-size:0.82rem; color:#1e40af; font-weight:600;">ਸਾਰੇ ਆਰਡਰਾਂ ਦੀ ਕੁੱਲ ਰਕਮ:</span>
@@ -1987,15 +1979,14 @@
       window.open(`https://wa.me/${num}?text=${encodeURIComponent(txt)}`, '_blank');
     }
 
-    // MAIN PAGE 1: GROUP SALES BY UNIQUE CLIENT SO EACH CLIENT APPEARS ONCE WITH TOTAL AGGREGATES
+    // MAIN PAGE 1: GROUP SALES BY UNIQUE CLIENT WITH DISPATCH & WHATSAPP BUTTONS
     function renderSales() {
       const tbody = document.querySelector('#salesTable tbody');
       if (sales.length === 0) {
-        tbody.innerHTML = '<tr><td colspan="7" style="text-align:center;">ਕੋਈ ਸੇਲ ਰਿਕਾਰਡ ਨਹੀਂ ਹੈ</td></tr>';
+        tbody.innerHTML = '<tr><td colspan="8" style="text-align:center;">ਕੋਈ ਸੇਲ ਰਿਕਾਰਡ ਨਹੀਂ ਹੈ</td></tr>';
         return;
       }
 
-      // Group by client name
       const clientMap = {};
       sales.forEach(s => {
         const clientKey = (s.client || '').trim();
@@ -2011,13 +2002,16 @@
             totalPaid: 0,
             totalBalance: 0,
             itemsCount: {},
+            totalOrderQty: 0,
+            totalDispatchedQty: 0,
             lastSaleId: s.id
           };
         }
 
         const c = clientMap[clientKey];
-        if (s.date && (!c.latestDate || new Date(s.date) > new Date(c.latestDate))) {
+        if (s.date && (!c.latestDate || new Date(s.date) >= new Date(c.latestDate))) {
           c.latestDate = s.date;
+          c.lastSaleId = s.id;
         }
         if (s.phone && !c.phone) c.phone = s.phone;
         if (s.address && !c.address) c.address = s.address;
@@ -2028,7 +2022,14 @@
 
         const items = s.items || [{ item: s.item, qty: s.qty }];
         items.forEach(it => {
-          c.itemsCount[it.item] = (c.itemsCount[it.item] || 0) + (Number(it.qty) || 0);
+          const q = Number(it.qty) || 0;
+          c.itemsCount[it.item] = (c.itemsCount[it.item] || 0) + q;
+          c.totalOrderQty += q;
+        });
+
+        const dispatches = s.dispatches || [];
+        dispatches.forEach(d => {
+          c.totalDispatchedQty += (Number(d.qty) || 0);
         });
       });
 
@@ -2037,22 +2038,30 @@
 
       tbody.innerHTML = clientList.map(c => {
         const itemsSummary = Object.entries(c.itemsCount).map(([name, qty]) => `${name}: ${qty} ਨਗ`).join(', ');
+        const isCompleted = c.totalDispatchedQty >= c.totalOrderQty && c.totalOrderQty > 0;
 
         return `
           <tr class="clickable-row">
-            <td onclick="openClientQuickModal('${c.client.replace(/'/g, "\\'")}')">
+            <td onclick="openClientQuickModal('${c.client.replace(/'/g, "\\'")}')" title="ਪੂਰਾ ਖਾਤਾ ਵੇਖਣ ਲਈ ਕਲਿੱਕ ਕਰੋ">
               <strong style="color:var(--primary); text-decoration:underline; font-size:1rem;">👤 ${c.client}</strong>
               ${c.phone ? `<br><small>${c.phone}</small>` : ''}
               ${c.address ? `<br><small style="color:var(--text-muted);">📍 ${c.address}</small>` : ''}
             </td>
             <td onclick="openClientQuickModal('${c.client.replace(/'/g, "\\'")}')"><strong>${c.latestDate || '-'}</strong></td>
             <td onclick="openClientQuickModal('${c.client.replace(/'/g, "\\'")}')"><small>${itemsSummary}</small></td>
+            <td onclick="openClientQuickModal('${c.client.replace(/'/g, "\\'")}')">
+              <span class="badge ${isCompleted ? 'badge-cleared' : c.totalDispatchedQty > 0 ? 'badge-partial' : 'badge-pending'}">
+                ${isCompleted ? 'ਪੂਰਾ ਡਿਲੀਵਰਡ' : `${c.totalDispatchedQty}/${c.totalOrderQty} ਭੇਜੇ`}
+              </span>
+            </td>
             <td onclick="openClientQuickModal('${c.client.replace(/'/g, "\\'")}')"><strong>₹${c.totalBusiness.toLocaleString('en-IN')}</strong></td>
             <td onclick="openClientQuickModal('${c.client.replace(/'/g, "\\'")}')" style="color:var(--success); font-weight:700;">₹${c.totalPaid.toLocaleString('en-IN')}</td>
             <td onclick="openClientQuickModal('${c.client.replace(/'/g, "\\'")}')"><span class="badge ${c.totalBalance > 0 ? 'badge-pending' : 'badge-cleared'}">₹${c.totalBalance.toLocaleString('en-IN')}</span></td>
             <td>
-              <div style="display:flex; gap:4px;">
-                <button class="btn btn-outline btn-sm" onclick="openClientQuickModal('${c.client.replace(/'/g, "\\'")}')">📂 ਖਾਤਾ ਖੋਲ੍ਹੋ</button>
+              <div style="display:flex; flex-wrap:wrap; gap:4px;">
+                ${!isCompleted ? `<button class="btn btn-warning btn-sm" onclick="openDispatchModal('${c.lastSaleId}')">🚚 ਮਾਲ ਭੇਜੋ</button>` : ''}
+                ${c.phone ? `<button class="btn btn-whatsapp btn-sm" onclick="sendWhatsAppInvoice('${c.lastSaleId}', 'sale')">💬 WA</button>` : ''}
+                <button class="btn btn-outline btn-sm" onclick="openClientQuickModal('${c.client.replace(/'/g, "\\'")}')">📂 ਖਾਤਾ</button>
               </div>
             </td>
           </tr>
@@ -2343,7 +2352,7 @@
       alert(`🚚 ${selectedItem.item} ਦੇ ${sendQty} ਪੀਸ ਡਿਸਪੈਚ ਹੋ ਗਏ ਹਨ! (ਲੇਬਰ ਖਾਤੇ ਵਿੱਚ ₹${loadingCost.toFixed(2)} ਜੁੜ ਗਏ ਹਨ)`);
     }
 
-    // RENDER BLOCK 6: 3. LOADING & UNLOADING LEDGER
+    // RENDER BLOCK 6: 3. LOADING & UNLOADING LEDGER (DYNAMIC RECALCULATION)
     function renderLoadingUnloadingLedger() {
       const tbody = document.querySelector('#loadingUnloadingTable tbody');
       let grandLoadingWage = 0;
@@ -2535,7 +2544,6 @@
       alert(`✅ ਠੇਕੇਦਾਰ ${team} ਲਈ ₹${amount} ਲੇਬਰ ਭੁਗਤਾਨ ਦਰਜ ਹੋ ਗਿਆ ਹੈ!`);
     }
 
-    // 2. LABOUR PAYOUT LEDGER CALCULATION (INCLUDES LOADING & UNLOADING WAGE)
     function renderLabourPayoutLedger() {
       let totalEarned = 0;
       labourLogs.forEach(l => totalEarned += (Number(l.total) || 0));
@@ -2570,7 +2578,6 @@
       `).join('');
     }
 
-    // BLOCK 5: FACTORY STOCK LIVE CALCULATION
     function renderFactoryStock() {
       const tbody = document.querySelector('#stockTable tbody');
       
