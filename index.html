@@ -197,21 +197,29 @@
       margin-bottom: 18px;
       box-shadow: var(--shadow);
       border: 1px solid var(--border);
+      position: relative;
     }
 
-    /* THEMED STYLES FOR SALE (GREENISH) & PURCHASE (REDDISH) */
+    /* THEMED STYLES FOR SALE (VIBRANT GREEN DUAL STRIPES) */
     .card-sale-theme {
       background: #fbfdfb;
-      border: 1.5px solid #86efac;
+      border: 1px solid #bbf7d0;
+      border-left: 8px solid #16a34a;
+      border-right: 8px solid #16a34a;
+      box-shadow: 0 4px 10px -2px rgba(22, 163, 74, 0.12);
     }
     .card-sale-theme .card-title {
       color: #166534;
       border-bottom-color: #dcfce7;
     }
 
+    /* THEMED STYLES FOR PURCHASE (DEEP RED DUAL STRIPES) */
     .card-purchase-theme {
       background: #fffcfc;
-      border: 1.5px solid #fca5a5;
+      border: 1px solid #fecaca;
+      border-left: 8px solid #dc2626;
+      border-right: 8px solid #dc2626;
+      box-shadow: 0 4px 10px -2px rgba(220, 38, 38, 0.12);
     }
     .card-purchase-theme .card-title {
       color: #991b1b;
@@ -336,6 +344,29 @@
     .btn-outline { background: transparent; border: 1.5px solid var(--border); color: var(--text); }
     .btn-whatsapp { background: #25d366; color: white; }
     .btn-sm { padding: 5px 8px; font-size: 0.78rem; border-radius: 6px; }
+
+    /* TOGGLE SLIDE ARROW BUTTON */
+    .slide-toggle-btn {
+      width: 100%;
+      background: #f8fafc;
+      border: 1.5px solid #cbd5e1;
+      padding: 8px;
+      border-radius: 8px;
+      cursor: pointer;
+      font-size: 0.88rem;
+      font-weight: 700;
+      color: var(--primary);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      margin-top: 8px;
+      transition: all 0.2s;
+    }
+    .slide-toggle-btn:hover {
+      background: #eff6ff;
+      border-color: var(--primary-light);
+    }
 
     .table-responsive { overflow-x: auto; margin-top: 12px; }
     table { width: 100%; border-collapse: collapse; font-size: 0.88rem; text-align: left; }
@@ -473,7 +504,7 @@
 
   <div class="container">
     
-    <!-- BLOCK 1: SALES (GREENISH THEMED) -->
+    <!-- BLOCK 1: SALES (GREEN STRIPES) -->
     <section id="tab-sale" class="tab-content active">
       <div class="card card-sale-theme">
         <div class="card-title">
@@ -560,7 +591,7 @@
       </div>
     </section>
 
-    <!-- BLOCK 2: PURCHASE (REDDISH THEMED) -->
+    <!-- BLOCK 2: PURCHASE (RED STRIPES) -->
     <section id="tab-purchase" class="tab-content">
       <div class="card card-purchase-theme">
         <div class="card-title">
@@ -742,7 +773,7 @@
       </div>
     </section>
 
-    <!-- BLOCK 5: FACTORY STOCK (CLICK ITEM TO VIEW COLOR BREAKDOWN) -->
+    <!-- BLOCK 5: FACTORY STOCK -->
     <section id="tab-stock" class="tab-content">
       <div class="card">
         <div class="card-title">
@@ -769,10 +800,10 @@
       </div>
     </section>
 
-    <!-- BLOCK 6: LABOUR PRODUCTION (WITH COLOR SELECTION BLOCK) & PAYOUT LEDGER -->
+    <!-- BLOCK 6: LABOUR PRODUCTION, PAYOUT & LOADING/UNLOADING LEDGER (WITH SLIDE ARROW) -->
     <section id="tab-labour" class="tab-content">
       
-      <!-- 1. Fixed Items Grid Form with Color Dropdown before Pieces (Qty) -->
+      <!-- 1. Fixed Items Grid Form -->
       <div class="card">
         <div class="card-title">
           <span id="labourFormTitle">1. ਲੇਬਰ ਰੋਜ਼ਾਨਾ ਉਤਪਾਦਨ ਐਂਟਰੀ</span>
@@ -842,10 +873,10 @@
         </form>
       </div>
 
-      <!-- Compact Production Summary Rows -->
+      <!-- 1. Production Summary: Today's Entries + Slide Arrow for Past Entries -->
       <div class="card">
         <div class="card-title">
-          <span>ਲੇਬਰ ਉਤਪਾਦਨ ਸਮਰੀ ਰਿਕਾਰਡ (ਵੇਰਵਾ ਵੇਖਣ ਲਈ ਤਾਰੀਖ 'ਤੇ ਕਲਿੱਕ ਕਰੋ)</span>
+          <span>ਲੇਬਰ ਉਤਪਾਦਨ ਸਮਰੀ ਰਿਕਾਰਡ (ਅੱਜ ਦਾ ਦਿਨ)</span>
         </div>
         <div class="table-responsive">
           <table id="labourTable">
@@ -859,12 +890,33 @@
                 <th>ਐਕਸ਼ਨ</th>
               </tr>
             </thead>
-            <tbody></tbody>
+            <tbody id="labourTableTodayBody"></tbody>
+          </table>
+        </div>
+
+        <!-- SLIDE ARROW BUTTON FOR PAST LABOUR PRODUCTION ENTRIES -->
+        <button type="button" class="slide-toggle-btn" id="toggleLabourPastBtn" onclick="togglePastRecords('labourPastContainer', 'toggleLabourPastBtn')">
+          ▼ ਪੁਰਾਣੀਆਂ ਐਂਟਰੀਆਂ ਵੇਖੋ (Past Production Entries)
+        </button>
+
+        <div id="labourPastContainer" style="display:none;" class="table-responsive">
+          <table style="margin-top:8px;">
+            <thead>
+              <tr>
+                <th>ਤਾਰੀਖ</th>
+                <th>ਠੇਕੇਦਾਰ</th>
+                <th>ਕੁੱਲ ਬਣਿਆ ਮਾਲ</th>
+                <th>ਕੁੱਲ ਸੀਮੈਂਟ ਬੋਰੀਆਂ</th>
+                <th>ਕੁੱਲ ਮਜ਼ਦੂਰੀ (₹)</th>
+                <th>ਐਕਸ਼ਨ</th>
+              </tr>
+            </thead>
+            <tbody id="labourTablePastBody"></tbody>
           </table>
         </div>
       </div>
 
-      <!-- 2. Labour Payout Ledger Section -->
+      <!-- 2. Labour Payout Ledger Section + Slide Arrow -->
       <div class="card" style="border-top: 4px solid var(--purple);">
         <div class="card-title">
           <span>2. ਲੇਬਰ ਭੁਗਤਾਨ & ਖਾਤਾ ਰਜਿਸਟਰ (Labour Wages & Payout Ledger)</span>
@@ -920,15 +972,35 @@
                 <th>ਐਕਸ਼ਨ</th>
               </tr>
             </thead>
-            <tbody></tbody>
+            <tbody id="labourPayoutTodayBody"></tbody>
+          </table>
+        </div>
+
+        <!-- SLIDE ARROW BUTTON FOR PAST PAYOUTS -->
+        <button type="button" class="slide-toggle-btn" id="togglePayoutPastBtn" onclick="togglePastRecords('payoutPastContainer', 'togglePayoutPastBtn')">
+          ▼ ਪੁਰਾਣੇ ਭੁਗਤਾਨ ਵੇਖੋ (Past Payouts)
+        </button>
+
+        <div id="payoutPastContainer" style="display:none;" class="table-responsive">
+          <table style="margin-top:8px;">
+            <thead>
+              <tr>
+                <th>ਤਾਰੀਖ</th>
+                <th>ਠੇਕੇਦਾਰ</th>
+                <th>ਦਿੱਤੀ ਰਕਮ (₹)</th>
+                <th>ਵੇਰਵਾ</th>
+                <th>ਐਕਸ਼ਨ</th>
+              </tr>
+            </thead>
+            <tbody id="labourPayoutPastBody"></tbody>
           </table>
         </div>
       </div>
 
-      <!-- 3. LOADING & UNLOADING LABOUR LEDGER -->
+      <!-- 3. LOADING & UNLOADING LABOUR LEDGER + SLIDE ARROW -->
       <div class="card" style="border-top: 4px solid var(--warning);">
         <div class="card-title">
-          <span>3. ਲੇਬਰ ਲੋਡਿੰਗ & ਅਨਲੋਡਿੰਗ ਰਿਕਾਰਡ (ਪੂਰਾ ਵੇਰਵਾ ਵੇਖਣ ਲਈ ਟੱਚ ਕਰੋ)</span>
+          <span>3. ਲੇਬਰ ਲੋਡਿੰਗ & ਅਨਲੋਡਿੰਗ ਰਿਕਾਰਡ (ਅੱਜ ਦਾ ਦਿਨ)</span>
         </div>
         <p style="font-size:0.85rem; color:var(--text-muted); margin-bottom:12px;">
           ℹ️ ਇਹ ਪੇਮੈਂਟ ਉੱਪਰ 2 ਨੰਬਰ ਵਾਲੀ "ਕੁੱਲ ਬਣੀ ਮਜ਼ਦੂਰੀ" ਵਿੱਚ ਆਟੋਮੈਟਿਕ ਸ਼ਾਮਲ ਹੋ ਚੁੱਕੀ ਹੈ।
@@ -944,7 +1016,26 @@
                 <th>ਵੇਰਵਾ</th>
               </tr>
             </thead>
-            <tbody></tbody>
+            <tbody id="loadingTodayBody"></tbody>
+          </table>
+        </div>
+
+        <!-- SLIDE ARROW BUTTON FOR PAST LOADING/UNLOADING -->
+        <button type="button" class="slide-toggle-btn" id="toggleLoadingPastBtn" onclick="togglePastRecords('loadingPastContainer', 'toggleLoadingPastBtn')">
+          ▼ ਪੁਰਾਣੀ ਲੋਡਿੰਗ/ਅਨਲੋਡਿੰਗ ਵੇਖੋ (Past Loading Entries)
+        </button>
+
+        <div id="loadingPastContainer" style="display:none;" class="table-responsive">
+          <table style="margin-top:8px;">
+            <thead>
+              <tr>
+                <th>ਤਾਰੀਖ</th>
+                <th>ਕਲਾਇੰਟ ਦਾ ਨਾਮ</th>
+                <th>ਕੁੱਲ ਲੇਬਰ ਪੇਮੈਂਟ (₹)</th>
+                <th>ਵੇਰਵਾ</th>
+              </tr>
+            </thead>
+            <tbody id="loadingPastBody"></tbody>
           </table>
         </div>
       </div>
@@ -1348,6 +1439,23 @@
       initDataSync();
     });
 
+    function getTodayString() {
+      return new Date().toISOString().split('T')[0];
+    }
+
+    // SLIDE TOGGLE HELPER FOR ACCORDION EXPANSION
+    function togglePastRecords(containerId, btnId) {
+      const container = document.getElementById(containerId);
+      const btn = document.getElementById(btnId);
+      if (container.style.display === 'none' || container.style.display === '') {
+        container.style.display = 'block';
+        btn.textContent = btn.textContent.replace('▼', '▲').replace('ਵੇਖੋ', 'ਛੁਪਾਓ');
+      } else {
+        container.style.display = 'none';
+        btn.textContent = btn.textContent.replace('▲', '▼').replace('ਛੁਪਾਓ', 'ਵੇਖੋ');
+      }
+    }
+
     function getLoadingRateForItem(itemName) {
       if (!itemName) return 0.25;
       const upper = itemName.toUpperCase();
@@ -1477,7 +1585,6 @@
       db.ref('trash/' + trashId).remove();
     }
 
-    // BUILD LABOUR GRID: INCLUDES COLOR SELECT BLOCK BEFORE PIECES (QTY)
     function buildLabour18ItemsGrid(prefillData = [], prefillCement = 0) {
       const tbody = document.getElementById('labour18ItemsBody');
       tbody.innerHTML = '';
@@ -1844,7 +1951,7 @@
     function renderDeliveryDateAlerts() {
       const banner = document.getElementById('deliveryReminderBanner');
       const list = document.getElementById('reminderList');
-      const today = new Date().toISOString().split('T')[0];
+      const today = getTodayString();
       const alerts = [];
 
       sales.forEach(s => {
@@ -1979,7 +2086,7 @@
     function cancelSaleEdit() {
       document.getElementById('editSaleId').value = '';
       document.getElementById('saleForm').reset();
-      const today = new Date().toISOString().split('T')[0];
+      const today = getTodayString();
       document.getElementById('saleDate').value = today;
       document.getElementById('saleDeliveryDate').value = today;
       document.getElementById('saleAddress').value = '';
@@ -1991,7 +2098,94 @@
       addSaleItemRow();
     }
 
-    // MAIN PAGE 1: GROUP SALES BY UNIQUE CLIENT WITH DISPATCH & WHATSAPP BUTTONS
+    function openClientQuickModal(clientName) {
+      currentQuickClient = clientName;
+      const clientSales = sales.filter(s => (s.client || '').trim().toLowerCase() === clientName.trim().toLowerCase());
+
+      const phone = (clientSales[0] && clientSales[0].phone) || '';
+      const address = (clientSales[0] && clientSales[0].address) || '';
+
+      document.getElementById('cqClientName').textContent = `👤 ${clientName}`;
+      document.getElementById('cqClientMeta').textContent = `${phone ? 'ਫ਼ੋਨ: ' + phone : ''} ${address ? ' | ਪਤਾ: ' + address : ''}`;
+
+      let totalSalesAmount = 0;
+      let totalPaidAmount = 0;
+      let netBal = 0;
+
+      clientSales.forEach(s => {
+        totalSalesAmount += (Number(s.total) || 0);
+        totalPaidAmount += (Number(s.paid) || 0);
+        netBal += (Number(s.balance) || 0);
+      });
+
+      document.getElementById('cqTotalBusiness').textContent = `₹${totalSalesAmount.toLocaleString('en-IN')}`;
+      document.getElementById('cqTotalPaid').textContent = `₹${totalPaidAmount.toLocaleString('en-IN')}`;
+      document.getElementById('cqNetBalance').textContent = `₹${netBal.toLocaleString('en-IN')}`;
+
+      const today = getTodayString();
+      document.getElementById('imSaleDate').value = today;
+      document.getElementById('imSaleDeliveryDate').value = today;
+      document.getElementById('imSaleAdvance').value = '0';
+      document.getElementById('inModalSaleItemsContainer').innerHTML = '';
+      addInModalSaleItemRow();
+
+      const tbody = document.getElementById('cqOrdersTableBody');
+      if (clientSales.length === 0) {
+        tbody.innerHTML = '<tr><td colspan="6" style="text-align:center;">ਕੋਈ ਆਰਡਰ ਨਹੀਂ ਹੈ</td></tr>';
+      } else {
+        clientSales.sort((a, b) => new Date(b.date) - new Date(a.date));
+        tbody.innerHTML = clientSales.map(s => {
+          const items = s.items || [{ item: s.item, qty: s.qty, total: s.total }];
+          const desc = items.map(it => `${it.item} (${it.qty})`).join(', ');
+
+          const dispatched = (s.dispatches || []).reduce((acc, cur) => acc + (Number(cur.qty) || 0), 0);
+          let totalItemsQty = 0;
+          items.forEach(it => totalItemsQty += (Number(it.qty) || 0));
+          const isCompleted = dispatched >= totalItemsQty && totalItemsQty > 0;
+
+          return `
+            <tr>
+              <td><strong>${s.date}</strong></td>
+              <td>${desc}</td>
+              <td><strong>₹${Number(s.total).toLocaleString('en-IN')}</strong></td>
+              <td style="color:var(--success); font-weight:700;">₹${Number(s.paid).toLocaleString('en-IN')}</td>
+              <td style="color:var(--danger); font-weight:700;">₹${Number(s.balance).toLocaleString('en-IN')}</td>
+              <td>
+                <div style="display:flex; flex-wrap:wrap; gap:4px;">
+                  ${!isCompleted ? `<button class="btn btn-warning btn-sm" onclick="closeClientQuickModal(); openDispatchModal('${s.id}')">🚚 ਡਿਸਪੈਚ</button>` : ''}
+                  ${s.balance > 0 ? `<button class="btn btn-success btn-sm" onclick="closeClientQuickModal(); openPaymentModal('${s.id}', 'sale')">ਜਮ੍ਹਾਂ</button>` : ''}
+                  <button class="btn btn-edit btn-sm" onclick="closeClientQuickModal(); editSale('${s.id}');">✏️</button>
+                  <button class="btn btn-danger btn-sm" onclick="deleteRecord('${s.id}', 'sale')">🗑️</button>
+                </div>
+              </td>
+            </tr>
+          `;
+        }).join('');
+      }
+
+      document.getElementById('clientQuickModal').classList.add('show');
+    }
+
+    function closeClientQuickModal() {
+      document.getElementById('clientQuickModal').classList.remove('show');
+      currentQuickClient = null;
+    }
+
+    function sendWhatsAppFromQuickModal() {
+      if (!currentQuickClient) return;
+      const clientSales = sales.filter(s => (s.client || '').trim().toLowerCase() === currentQuickClient.trim().toLowerCase());
+      const phone = clientSales[0] && clientSales[0].phone;
+      if (!phone) return alert('ਫ਼ੋਨ ਨੰਬਰ ਦਰਜ ਨਹੀਂ ਹੈ!');
+
+      let total = 0, bal = 0;
+      clientSales.forEach(s => { total += (Number(s.total) || 0); bal += (Number(s.balance) || 0); });
+
+      const txt = `ਸਤਿ ਸ਼੍ਰੀ ਅਕਾਲ ਜੀ, *${currentQuickClient}* 🙏\n\nਤੁਹਾਡੇ ਖਾਤੇ ਦਾ ਕੁੱਲ ਬਕਾਇਆ *₹${Number(bal).toLocaleString('en-IN')}* ਹੈ (ਕੁੱਲ ਕਾਰੋਬਾਰ: ₹${Number(total).toLocaleString('en-IN')})। ਕਿਰਪਾ ਕਰਕੇ ਬਕਾਇਆ ਰਕਮ ਕਲੀਅਰ ਕਰਵਾਉਣ ਦੀ ਕਿਰਪਾਲਤਾ ਕਰੋ ਜੀ।\n\nਧੰਨਵਾਦ ਸਹਿਤ,\n*ਗਿੱਲ ਐਂਟਰਪ੍ਰਾਈਜਿਸ*`;
+      let num = phone.replace(/[^0-9]/g, '');
+      if (num.length === 10) num = '91' + num;
+      window.open(`https://wa.me/${num}?text=${encodeURIComponent(txt)}`, '_blank');
+    }
+
     function renderSales() {
       const tbody = document.querySelector('#salesTable tbody');
       if (sales.length === 0) {
@@ -2144,7 +2338,7 @@
     function cancelLabourEdit() {
       document.getElementById('editLabourId').value = '';
       document.getElementById('labourForm').reset();
-      document.getElementById('labourDate').value = new Date().toISOString().split('T')[0];
+      document.getElementById('labourDate').value = getTodayString();
       document.getElementById('labourTeam').value = 'YUDHA';
       document.getElementById('labourFormTitle').textContent = '1. ਲੇਬਰ ਰੋਜ਼ਾਨਾ ਉਤਪਾਦਨ ਐਂਟਰੀ';
       document.getElementById('labourSubmitBtn').textContent = '➕ ਲੇਬਰ ਐਂਟਰੀ ਸੇਵ ਕਰੋ';
@@ -2190,13 +2384,16 @@
       }
     }
 
+    // RENDER LABOUR PRODUCTION: TODAY ON TOP + PAST IN ACCORDION SLIDE
     function renderLabourTable() {
-      const tbody = document.querySelector('#labourTable tbody');
-      if (labourLogs.length === 0) {
-        tbody.innerHTML = '<tr><td colspan="6" style="text-align:center;">ਕੋਈ ਲੇਬਰ ਰਿਕਾਰਡ ਨਹੀਂ ਹੈ</td></tr>';
-        return;
-      }
-      tbody.innerHTML = labourLogs.slice().reverse().map(l => {
+      const today = getTodayString();
+      const todayBody = document.getElementById('labourTableTodayBody');
+      const pastBody = document.getElementById('labourTablePastBody');
+
+      const todayList = labourLogs.filter(l => l.date === today);
+      const pastList = labourLogs.filter(l => l.date !== today);
+
+      const renderRowHtml = (l) => {
         const items = l.items || [{ item: l.item, color: l.color || 'Grey', qty: l.qty, rate: l.rate, wage: l.total }];
         let totalPieces = 0;
         items.forEach(it => totalPieces += (Number(it.qty) || 0));
@@ -2219,7 +2416,20 @@
             </td>
           </tr>
         `;
-      }).join('');
+      };
+
+      if (todayList.length === 0) {
+        todayBody.innerHTML = '<tr><td colspan="6" style="text-align:center;">ਅੱਜ ਕੋਈ ਉਤਪਾਦਨ ਐਂਟਰੀ ਨਹੀਂ ਹੈ</td></tr>';
+      } else {
+        todayBody.innerHTML = todayList.slice().reverse().map(renderRowHtml).join('');
+      }
+
+      if (pastList.length === 0) {
+        pastBody.innerHTML = '<tr><td colspan="6" style="text-align:center;">ਕੋਈ ਪੁਰਾਣਾ ਉਤਪਾਦਨ ਰਿਕਾਰਡ ਨਹੀਂ ਹੈ</td></tr>';
+      } else {
+        pastList.sort((a, b) => new Date(b.date) - new Date(a.date));
+        pastBody.innerHTML = pastList.map(renderRowHtml).join('');
+      }
     }
 
     function openLabourDetailModal(id) {
@@ -2437,11 +2647,14 @@
       alert(`🚚 ${selectedItem.item} ਦੇ ${sendQty} ਪੀਸ ਡਿਸਪੈਚ ਹੋ ਗਏ ਹਨ! (ਲੇਬਰ ਖਾਤੇ ਵਿੱਚ ₹${loadingCost.toFixed(2)} ਜੁੜ ਗਏ ਹਨ)`);
     }
 
-    // RENDER BLOCK 6: 3. LOADING & UNLOADING LEDGER (DYNAMIC RECALCULATION)
+    // RENDER LOADING & UNLOADING: TODAY ON TOP + PAST ACCORDION SLIDE
     function renderLoadingUnloadingLedger() {
-      const tbody = document.querySelector('#loadingUnloadingTable tbody');
+      const today = getTodayString();
+      const todayBody = document.getElementById('loadingTodayBody');
+      const pastBody = document.getElementById('loadingPastBody');
+
       let grandLoadingWage = 0;
-      const rows = [];
+      const allRows = [];
 
       sales.forEach(s => {
         if (s.dispatches && s.dispatches.length > 0) {
@@ -2459,7 +2672,7 @@
               if (d.loaded) statusText.push('📦 Loaded');
               if (d.unloaded) statusText.push('🚛 Unloaded');
 
-              rows.push({
+              allRows.push({
                 saleId: s.id,
                 dispatchIdx: dIdx,
                 date: d.date || s.date,
@@ -2478,24 +2691,35 @@
       });
 
       window.cachedLoadingWage = grandLoadingWage;
+      window.cachedLoadingRows = allRows;
 
-      if (rows.length === 0) {
-        tbody.innerHTML = '<tr><td colspan="4" style="text-align:center;">ਕੋਈ ਲੋਡਿੰਗ/ਅਨਲੋਡਿੰਗ ਰਿਕਾਰਡ ਨਹੀਂ ਹੈ</td></tr>';
-        return;
+      const todayRows = allRows.filter(r => r.date === today);
+      const pastRows = allRows.filter(r => r.date !== today);
+
+      const renderLoadingRowHtml = (r) => {
+        const globalIdx = allRows.indexOf(r);
+        return `
+          <tr class="clickable-row" onclick="openLoadingDetailModal(${globalIdx})">
+            <td><strong style="color:var(--primary); text-decoration:underline;">📅 ${r.date}</strong></td>
+            <td><strong>${r.client}</strong></td>
+            <td style="color:var(--danger); font-weight:700;">₹${r.cost.toLocaleString('en-IN', {minimumFractionDigits: 2, maximumFractionDigits: 2})}</td>
+            <td><button class="btn btn-outline btn-sm">👁️ ਵੇਰਵਾ ਵੇਖੋ</button></td>
+          </tr>
+        `;
+      };
+
+      if (todayRows.length === 0) {
+        todayBody.innerHTML = '<tr><td colspan="4" style="text-align:center;">ਅੱਜ ਕੋਈ ਲੋਡਿੰਗ/ਅਨਲੋਡਿੰਗ ਰਿਕਾਰਡ ਨਹੀਂ ਹੈ</td></tr>';
+      } else {
+        todayBody.innerHTML = todayRows.map(renderLoadingRowHtml).join('');
       }
 
-      rows.sort((a, b) => new Date(b.date) - new Date(a.date));
-
-      tbody.innerHTML = rows.map((r, idx) => `
-        <tr class="clickable-row" onclick="openLoadingDetailModal(${idx})">
-          <td><strong style="color:var(--primary); text-decoration:underline;">📅 ${r.date}</strong></td>
-          <td><strong>${r.client}</strong></td>
-          <td style="color:var(--danger); font-weight:700;">₹${r.cost.toLocaleString('en-IN', {minimumFractionDigits: 2, maximumFractionDigits: 2})}</td>
-          <td><button class="btn btn-outline btn-sm">👁️ ਵੇਰਵਾ ਵੇਖੋ</button></td>
-        </tr>
-      `).join('');
-
-      window.cachedLoadingRows = rows;
+      if (pastRows.length === 0) {
+        pastBody.innerHTML = '<tr><td colspan="4" style="text-align:center;">ਕੋਈ ਪੁਰਾਣੀ ਲੋਡਿੰਗ ਐਂਟਰੀ ਨਹੀਂ ਹੈ</td></tr>';
+      } else {
+        pastRows.sort((a, b) => new Date(b.date) - new Date(a.date));
+        pastBody.innerHTML = pastRows.map(renderLoadingRowHtml).join('');
+      }
     }
 
     function openLoadingDetailModal(idx) {
@@ -2603,7 +2827,7 @@
     function cancelPurEdit() {
       document.getElementById('editPurId').value = '';
       document.getElementById('purchaseForm').reset();
-      document.getElementById('purDate').value = new Date().toISOString().split('T')[0];
+      document.getElementById('purDate').value = getTodayString();
       document.getElementById('purFormTitle').textContent = 'ਨਵੀਂ ਖਰੀਦ ਐਂਟਰੀ';
       document.getElementById('purSubmitBtn').textContent = '➕ ਖਰੀਦ ਸੇਵ ਕਰੋ';
       document.getElementById('cancelPurEditBtn').style.display = 'none';
@@ -2622,13 +2846,18 @@
 
       db.ref('labourPayouts/' + id).set(record);
       document.getElementById('labourPaymentForm').reset();
-      document.getElementById('lpayDate').value = new Date().toISOString().split('T')[0];
+      document.getElementById('lpayDate').value = getTodayString();
       document.getElementById('lpayTeam').value = 'YUDHA';
       document.getElementById('lpayAmount').value = '0';
       alert(`✅ ਠੇਕੇਦਾਰ ${team} ਲਈ ₹${amount} ਲੇਬਰ ਭੁਗਤਾਨ ਦਰਜ ਹੋ ਗਿਆ ਹੈ!`);
     }
 
+    // 2. LABOUR PAYOUT LEDGER: TODAY ON TOP + PAST ACCORDION SLIDE
     function renderLabourPayoutLedger() {
+      const today = getTodayString();
+      const todayBody = document.getElementById('labourPayoutTodayBody');
+      const pastBody = document.getElementById('labourPayoutPastBody');
+
       let totalEarned = 0;
       labourLogs.forEach(l => totalEarned += (Number(l.total) || 0));
 
@@ -2644,12 +2873,10 @@
       document.getElementById('statLabourPaid').textContent = `₹${totalPaid.toLocaleString('en-IN', {minimumFractionDigits: 2, maximumFractionDigits: 2})}`;
       document.getElementById('statLabourDue').textContent = `₹${balanceDue.toLocaleString('en-IN', {minimumFractionDigits: 2, maximumFractionDigits: 2})}`;
 
-      const tbody = document.querySelector('#labourPayoutTable tbody');
-      if (labourPayouts.length === 0) {
-        tbody.innerHTML = '<tr><td colspan="5" style="text-align:center;">ਕੋਈ ਭੁਗਤਾਨ ਰਿਕਾਰਡ ਨਹੀਂ ਹੈ</td></tr>';
-        return;
-      }
-      tbody.innerHTML = labourPayouts.slice().reverse().map(p => `
+      const todayPayouts = labourPayouts.filter(p => p.date === today);
+      const pastPayouts = labourPayouts.filter(p => p.date !== today);
+
+      const renderPayoutRowHtml = (p) => `
         <tr>
           <td>${p.date}</td>
           <td><strong>${p.team}</strong></td>
@@ -2659,7 +2886,20 @@
             <button class="btn btn-danger btn-sm" onclick="deleteLabourPayout('${p.id}')">🗑️</button>
           </td>
         </tr>
-      `).join('');
+      `;
+
+      if (todayPayouts.length === 0) {
+        todayBody.innerHTML = '<tr><td colspan="5" style="text-align:center;">ਅੱਜ ਕੋਈ ਭੁਗਤਾਨ ਰਿਕਾਰਡ ਨਹੀਂ ਹੈ</td></tr>';
+      } else {
+        todayBody.innerHTML = todayPayouts.slice().reverse().map(renderPayoutRowHtml).join('');
+      }
+
+      if (pastPayouts.length === 0) {
+        pastBody.innerHTML = '<tr><td colspan="5" style="text-align:center;">ਕੋਈ ਪੁਰਾਣਾ ਭੁਗਤਾਨ ਰਿਕਾਰਡ ਨਹੀਂ ਹੈ</td></tr>';
+      } else {
+        pastPayouts.sort((a, b) => new Date(b.date) - new Date(a.date));
+        pastBody.innerHTML = pastPayouts.map(renderPayoutRowHtml).join('');
+      }
     }
 
     // BLOCK 3: MONTHLY SUMMARY CALCULATION
