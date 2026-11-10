@@ -199,6 +199,25 @@
       border: 1px solid var(--border);
     }
 
+    /* THEMED STYLES FOR SALE (GREENISH) & PURCHASE (REDDISH) */
+    .card-sale-theme {
+      background: #fbfdfb;
+      border: 1.5px solid #86efac;
+    }
+    .card-sale-theme .card-title {
+      color: #166534;
+      border-bottom-color: #dcfce7;
+    }
+
+    .card-purchase-theme {
+      background: #fffcfc;
+      border: 1.5px solid #fca5a5;
+    }
+    .card-purchase-theme .card-title {
+      color: #991b1b;
+      border-bottom-color: #fee2e2;
+    }
+
     .card-title {
       font-size: 1.1rem;
       font-weight: 700;
@@ -454,11 +473,11 @@
 
   <div class="container">
     
-    <!-- BLOCK 1: SALES -->
+    <!-- BLOCK 1: SALES (GREENISH THEMED) -->
     <section id="tab-sale" class="tab-content active">
-      <div class="card">
+      <div class="card card-sale-theme">
         <div class="card-title">
-          <span id="saleFormTitle">ਨਵੀਂ ਸੇਲ ਆਰਡਰ ਐਂਟਰੀ</span>
+          <span id="saleFormTitle">📦 ਨਵੀਂ ਸੇਲ ਆਰਡਰ ਐਂਟਰੀ</span>
           <button type="button" id="cancelSaleEditBtn" class="btn btn-outline btn-sm" style="display:none;" onclick="cancelSaleEdit()">ਰੱਦ ਕਰੋ ✖</button>
         </div>
         <form id="saleForm" onsubmit="saveSale(event)">
@@ -487,10 +506,10 @@
             </div>
           </div>
 
-          <div class="items-box">
+          <div class="items-box" style="background:#f0fdf4; border-color:#86efac;">
             <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;">
-              <strong style="color:var(--primary); font-size:0.95rem;">ਸੇਲ ਆਈਟਮਾਂ (Items & Rates)</strong>
-              <button type="button" class="btn btn-primary btn-sm" onclick="addSaleItemRow()">➕ ਹੋਰ ਆਈਟਮ ਜੋੜੋ</button>
+              <strong style="color:#166534; font-size:0.95rem;">ਸੇਲ ਆਈਟਮਾਂ (Items & Rates)</strong>
+              <button type="button" class="btn btn-success btn-sm" onclick="addSaleItemRow()">➕ ਹੋਰ ਆਈਟਮ ਜੋੜੋ</button>
             </div>
             <div id="saleItemsContainer"></div>
           </div>
@@ -511,13 +530,13 @@
           </div>
 
           <div style="margin-top: 14px; display: flex; gap: 10px;">
-            <button type="submit" id="saleSubmitBtn" class="btn btn-primary">➕ ਸੇਲ ਸੇਵ ਕਰੋ</button>
+            <button type="submit" id="saleSubmitBtn" class="btn btn-success">➕ ਸੇਲ ਸੇਵ ਕਰੋ</button>
             <button type="button" class="btn btn-outline" onclick="exportToCSV('sales')">📥 Excel Export</button>
           </div>
         </form>
       </div>
 
-      <div class="card">
+      <div class="card card-sale-theme">
         <div class="card-title">
           <span>ਗਾਹਕਾਂ ਦੀ ਸੇਲ ਸੂਚੀ (ਪੂਰਾ ਖਾਤਾ ਵੇਖਣ ਲਈ ਨਾਮ 'ਤੇ ਟੈਪ ਕਰੋ)</span>
         </div>
@@ -541,11 +560,11 @@
       </div>
     </section>
 
-    <!-- BLOCK 2: PURCHASE -->
+    <!-- BLOCK 2: PURCHASE (REDDISH THEMED) -->
     <section id="tab-purchase" class="tab-content">
-      <div class="card">
+      <div class="card card-purchase-theme">
         <div class="card-title">
-          <span id="purFormTitle">ਨਵੀਂ ਖਰੀਦ ਐਂਟਰੀ (ਕੱਚਾ ਮਾਲ / ਸੀਮਿੰਟ)</span>
+          <span id="purFormTitle">🛒 ਨਵੀਂ ਖਰੀਦ ਐਂਟਰੀ (ਕੱਚਾ ਮਾਲ / ਸੀਮਿੰਟ)</span>
           <button type="button" id="cancelPurEditBtn" class="btn btn-outline btn-sm" style="display:none;" onclick="cancelPurEdit()">ਰੱਦ ਕਰੋ ✖</button>
         </div>
         <form id="purchaseForm" onsubmit="savePurchase(event)">
@@ -589,13 +608,13 @@
             </div>
           </div>
           <div style="margin-top: 14px; display: flex; gap: 10px;">
-            <button type="submit" id="purSubmitBtn" class="btn btn-primary">➕ ਖਰੀਦ ਸੇਵ ਕਰੋ</button>
+            <button type="submit" id="purSubmitBtn" class="btn btn-danger">➕ ਖਰੀਦ ਸੇਵ ਕਰੋ</button>
             <button type="button" class="btn btn-outline" onclick="exportToCSV('purchases')">📥 Excel Export</button>
           </div>
         </form>
       </div>
 
-      <div class="card">
+      <div class="card card-purchase-theme">
         <div class="card-title"><span>ਖਰੀਦ ਹਿਸਾਬ ਸੂਚੀ</span></div>
         <div class="table-responsive">
           <table id="purchaseTable">
@@ -618,7 +637,7 @@
       </div>
     </section>
 
-    <!-- BLOCK 3: MONTHLY (UPDATED WITH BACKWARD COMPATIBILITY) -->
+    <!-- BLOCK 3: MONTHLY -->
     <section id="tab-monthly" class="tab-content">
       <div class="card">
         <div class="card-title">
@@ -669,7 +688,7 @@
       </div>
     </section>
 
-    <!-- BLOCK 4: CLIENTS & PARTIES (FULLY PRESERVED & WORKING) -->
+    <!-- BLOCK 4: CLIENTS & PARTIES -->
     <section id="tab-clients" class="tab-content">
       <div class="card">
         <div class="card-title">
@@ -723,7 +742,7 @@
       </div>
     </section>
 
-    <!-- BLOCK 5: FACTORY STOCK -->
+    <!-- BLOCK 5: FACTORY STOCK (CLICK ITEM TO VIEW COLOR BREAKDOWN) -->
     <section id="tab-stock" class="tab-content">
       <div class="card">
         <div class="card-title">
@@ -731,14 +750,14 @@
           <button class="btn btn-outline btn-sm" onclick="exportToCSV('stock')">📥 Stock Export</button>
         </div>
         <p style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 12px;">
-          ℹ️ ਲੇਬਰ ਬਲੌਕ ਵਿੱਚ ਬਣਿਆ ਮਾਲ ਜੁੜਦਾ ਹੈ (+), ਸੇਲ ਵਿੱਚ ਡਿਸਪੈਚ ਕੀਤਾ ਮਾਲ ਘਟਦਾ ਹੈ (-), ਅਤੇ ਸੀਮੈਂਟ ਵਰਤੋਂ ਸਿੱਧੀ ਸੀਮੈਂਟ ਵਿੱਚੋਂ ਮਾਈਨਸ ਹੁੰਦੀ ਹੈ।
+          ℹ️ ਰੰਗਾਂ ਮੁਤਾਬਕ ਸਟੋਕ (Red, Grey, White, Black) ਵੇਖਣ ਲਈ ਕਿਸੇ ਵੀ ਆਈਟਮ ਦੇ ਨਾਮ 'ਤੇ ਕਲਿੱਕ ਕਰੋ।
         </p>
         <div class="table-responsive">
           <table id="stockTable">
             <thead>
               <tr>
                 <th>ਲੜੀ ਨੰ.</th>
-                <th>ਆਈਟਮ ਦਾ ਨਾਮ</th>
+                <th>ਆਈਟਮ ਦਾ ਨਾਮ (Touch for Color Stock)</th>
                 <th>ਕੁੱਲ ਆਇਆ / ਬਣਿਆ ਮਾਲ (+)</th>
                 <th>ਕੁੱਲ ਵੇਚਿਆ / ਵਰਤਿਆ ਮਾਲ (-)</th>
                 <th>ਮੌਜੂਦਾ ਬਾਕੀ ਸਟੋਕ (Available Balance)</th>
@@ -750,10 +769,10 @@
       </div>
     </section>
 
-    <!-- BLOCK 6: LABOUR PRODUCTION, PAYOUT & LOADING/UNLOADING LEDGER -->
+    <!-- BLOCK 6: LABOUR PRODUCTION (WITH COLOR SELECTION BLOCK) & PAYOUT LEDGER -->
     <section id="tab-labour" class="tab-content">
       
-      <!-- 1. Fixed Items Grid Form -->
+      <!-- 1. Fixed Items Grid Form with Color Dropdown before Pieces (Qty) -->
       <div class="card">
         <div class="card-title">
           <span id="labourFormTitle">1. ਲੇਬਰ ਰੋਜ਼ਾਨਾ ਉਤਪਾਦਨ ਐਂਟਰੀ</span>
@@ -776,7 +795,7 @@
           <div class="items-box">
             <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px; flex-wrap:wrap; gap:8px;">
               <strong style="color:var(--purple); font-size:0.95rem;">
-                ਆਈਟਮਾਂ ਦੀ ਸੂਚੀ (ਜਿਹੜੀ ਆਈਟਮ ਬਣੀ ਹੈ ਸਿਰਫ਼ ਉਸਦੇ ਅੱਗੇ ਨਗ ਭਰੋ; Delete ਕਰਨ ਲਈ ਨਾਮ 'ਤੇ Hold ਕਰੋ):
+                ਆਈਟਮਾਂ ਦੀ ਸੂਚੀ (ਰੰਗ ਚੁਣੋ ਅਤੇ ਬਣੇ ਪੀਸ ਭਰੋ; Delete ਕਰਨ ਲਈ ਨਾਮ 'ਤੇ Hold ਕਰੋ):
               </strong>
               <button type="button" class="btn btn-purple btn-sm" onclick="promptAddNewItem()">➕ ਨਵੀਂ ਆਈਟਮ ਐਡ ਕਰੋ</button>
             </div>
@@ -787,9 +806,10 @@
                   <tr>
                     <th>ਲੜੀ</th>
                     <th>ਆਈਟਮ ਦਾ ਨਾਮ (Hold to Delete)</th>
-                    <th style="min-width:130px;">ਬਣੇ ਪੀਸ (Qty)</th>
-                    <th style="min-width:120px;">ਲੇਬਰ ਰੇਟ (₹)</th>
-                    <th style="min-width:130px;">ਮਜ਼ਦੂਰੀ ਰਕਮ (₹)</th>
+                    <th style="min-width:130px;">ਰੰਗ (Color)</th>
+                    <th style="min-width:120px;">ਬਣੇ ਪੀਸ (Qty)</th>
+                    <th style="min-width:110px;">ਲੇਬਰ ਰੇਟ (₹)</th>
+                    <th style="min-width:120px;">ਮਜ਼ਦੂਰੀ ਰਕਮ (₹)</th>
                   </tr>
                 </thead>
                 <tbody id="labour18ItemsBody"></tbody>
@@ -1017,6 +1037,7 @@
     </div>
   </div>
 
+  <!-- POPUP MODAL: LABOUR PRODUCTION DETAILS -->
   <div class="modal" id="labourDetailModal">
     <div class="modal-box">
       <div class="modal-header">
@@ -1032,6 +1053,7 @@
           <thead>
             <tr>
               <th>ਆਈਟਮ</th>
+              <th>ਰੰਗ (Color)</th>
               <th>ਬਣੇ ਪੀਸ (Qty)</th>
               <th>ਰੇਟ (₹)</th>
               <th>ਮਜ਼ਦੂਰੀ (₹)</th>
@@ -1053,6 +1075,51 @@
     </div>
   </div>
 
+  <!-- POPUP MODAL: STOCK COLOR BREAKDOWN (FROM PAGE 5 CLICK) -->
+  <div class="modal" id="stockColorModal">
+    <div class="modal-box">
+      <div class="modal-header">
+        <div>
+          <h3 style="font-size:1.25rem; font-weight:800; color:var(--primary);" id="scModalTitle">ਆਈਟਮ ਸਟੋਕ ਵੇਰਵਾ</h3>
+          <small style="color:var(--text-muted); font-size:0.85rem;">ਰੰਗਾਂ (Colors) ਮੁਤਾਬਕ ਉਤਪਾਦਨ ਅਤੇ ਮੌਜੂਦਾ ਸਟੋਕ</small>
+        </div>
+        <button class="close-modal" onclick="closeStockColorModal()">×</button>
+      </div>
+
+      <div class="table-responsive">
+        <table>
+          <thead>
+            <tr>
+              <th>ਰੰਗ (Color)</th>
+              <th>ਬਣਿਆ ਮਾਲ (Made Pieces)</th>
+            </tr>
+          </thead>
+          <tbody id="scModalBody"></tbody>
+        </table>
+      </div>
+
+      <div style="margin-top:14px; padding:12px; background:#f0fdf4; border:1px solid #86efac; border-radius:8px; font-weight:700; display:flex; flex-direction:column; gap:6px;">
+        <div style="display:flex; justify-content:space-between;">
+          <span>ਕੁੱਲ ਬਣਿਆ ਮਾਲ:</span>
+          <span id="scTotalMade" style="color:var(--primary);">0</span>
+        </div>
+        <div style="display:flex; justify-content:space-between;">
+          <span>ਕੁੱਲ ਵੇਚਿਆ / ਡਿਸਪੈਚ ਮਾਲ:</span>
+          <span id="scTotalDispatched" style="color:var(--danger);">0</span>
+        </div>
+        <div style="display:flex; justify-content:space-between; border-top:1px dashed #86efac; padding-top:6px; font-size:1.05rem;">
+          <span>ਮੌਜੂਦਾ ਬਾਕੀ ਸਟੋਕ (Total Balance):</span>
+          <span id="scAvailableBalance" style="color:var(--success);">0 ਪੀਸ</span>
+        </div>
+      </div>
+
+      <div style="margin-top:16px; display:flex; justify-content:flex-end;">
+        <button type="button" class="btn btn-outline" onclick="closeStockColorModal()">ਬੰਦ ਕਰੋ ✖</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- POPUP MODAL: Loading/Unloading Details -->
   <div class="modal" id="loadingDetailModal">
     <div class="modal-box">
       <div class="modal-header">
@@ -1410,6 +1477,7 @@
       db.ref('trash/' + trashId).remove();
     }
 
+    // BUILD LABOUR GRID: INCLUDES COLOR SELECT BLOCK BEFORE PIECES (QTY)
     function buildLabour18ItemsGrid(prefillData = [], prefillCement = 0) {
       const tbody = document.getElementById('labour18ItemsBody');
       tbody.innerHTML = '';
@@ -1419,6 +1487,7 @@
         const defaultRate = itemObj.rate !== undefined ? itemObj.rate : 0;
 
         const found = prefillData.find(d => (d.item || '').toLowerCase() === itemName.toLowerCase());
+        const colorVal = found ? (found.color || 'Grey') : 'Grey';
         const qtyVal = found ? found.qty : '';
         const rateVal = found ? found.rate : (defaultRate > 0 ? defaultRate : '');
         const wageVal = found ? (found.qty * found.rate).toFixed(2) : '';
@@ -1432,6 +1501,15 @@
           <td class="hold-hint" title="Hold to delete" style="cursor:pointer;">
             <strong class="item-name-label">${itemName}</strong>
             <small style="display:block; font-size:0.7rem; color:var(--text-muted);">(Hold to delete)</small>
+          </td>
+          <td>
+            <select class="grid-labour-color" style="padding:6px 8px; font-size:0.85rem; border-radius:6px; border:1.5px solid var(--border);">
+              <option value="Grey" ${colorVal === 'Grey' ? 'selected' : ''}>ਗ੍ਰੇ (Grey)</option>
+              <option value="Red" ${colorVal === 'Red' ? 'selected' : ''}>ਰੈੱਡ (Red)</option>
+              <option value="Black" ${colorVal === 'Black' ? 'selected' : ''}>ਬਲੈਕ (Black)</option>
+              <option value="White" ${colorVal === 'White' ? 'selected' : ''}>ਵਾਈਟ (White)</option>
+              <option value="Other" ${colorVal === 'Other' ? 'selected' : ''}>ਅਦਰ (Other)</option>
+            </select>
           </td>
           <td>
             <input type="number" class="grid-labour-qty" min="0" placeholder="0" value="${qtyVal}" oninput="calcLabour18GridTotal()" style="padding:6px 8px; font-size:0.88rem;">
@@ -1777,7 +1855,7 @@
         items.forEach(it => {
           let itemDispatched = 0;
           dispatches.forEach(d => {
-            if ((d.item || '').toLowerCase() === (it.item || '').toLowerCase()) {
+            if ((d.item || '').toLowerCase() === it.item.toLowerCase()) {
               itemDispatched += Number(d.qty) || 0;
             }
           });
@@ -1913,94 +1991,7 @@
       addSaleItemRow();
     }
 
-    function openClientQuickModal(clientName) {
-      currentQuickClient = clientName;
-      const clientSales = sales.filter(s => (s.client || '').trim().toLowerCase() === clientName.trim().toLowerCase());
-
-      const phone = (clientSales[0] && clientSales[0].phone) || '';
-      const address = (clientSales[0] && clientSales[0].address) || '';
-
-      document.getElementById('cqClientName').textContent = `👤 ${clientName}`;
-      document.getElementById('cqClientMeta').textContent = `${phone ? 'ਫ਼ੋਨ: ' + phone : ''} ${address ? ' | ਪਤਾ: ' + address : ''}`;
-
-      let totalSalesAmount = 0;
-      let totalPaidAmount = 0;
-      let netBal = 0;
-
-      clientSales.forEach(s => {
-        totalSalesAmount += (Number(s.total) || 0);
-        totalPaidAmount += (Number(s.paid) || 0);
-        netBal += (Number(s.balance) || 0);
-      });
-
-      document.getElementById('cqTotalBusiness').textContent = `₹${totalSalesAmount.toLocaleString('en-IN')}`;
-      document.getElementById('cqTotalPaid').textContent = `₹${totalPaidAmount.toLocaleString('en-IN')}`;
-      document.getElementById('cqNetBalance').textContent = `₹${netBal.toLocaleString('en-IN')}`;
-
-      const today = new Date().toISOString().split('T')[0];
-      document.getElementById('imSaleDate').value = today;
-      document.getElementById('imSaleDeliveryDate').value = today;
-      document.getElementById('imSaleAdvance').value = '0';
-      document.getElementById('inModalSaleItemsContainer').innerHTML = '';
-      addInModalSaleItemRow();
-
-      const tbody = document.getElementById('cqOrdersTableBody');
-      if (clientSales.length === 0) {
-        tbody.innerHTML = '<tr><td colspan="6" style="text-align:center;">ਕੋਈ ਆਰਡਰ ਨਹੀਂ ਹੈ</td></tr>';
-      } else {
-        clientSales.sort((a, b) => new Date(b.date) - new Date(a.date));
-        tbody.innerHTML = clientSales.map(s => {
-          const items = s.items || [{ item: s.item, qty: s.qty, total: s.total }];
-          const desc = items.map(it => `${it.item} (${it.qty})`).join(', ');
-
-          const dispatched = (s.dispatches || []).reduce((acc, cur) => acc + (Number(cur.qty) || 0), 0);
-          let totalItemsQty = 0;
-          items.forEach(it => totalItemsQty += (Number(it.qty) || 0));
-          const isCompleted = dispatched >= totalItemsQty && totalItemsQty > 0;
-
-          return `
-            <tr>
-              <td><strong>${s.date}</strong></td>
-              <td>${desc}</td>
-              <td><strong>₹${Number(s.total).toLocaleString('en-IN')}</strong></td>
-              <td style="color:var(--success); font-weight:700;">₹${Number(s.paid).toLocaleString('en-IN')}</td>
-              <td style="color:var(--danger); font-weight:700;">₹${Number(s.balance).toLocaleString('en-IN')}</td>
-              <td>
-                <div style="display:flex; flex-wrap:wrap; gap:4px;">
-                  ${!isCompleted ? `<button class="btn btn-warning btn-sm" onclick="closeClientQuickModal(); openDispatchModal('${s.id}')">🚚 ਡਿਸਪੈਚ</button>` : ''}
-                  ${s.balance > 0 ? `<button class="btn btn-success btn-sm" onclick="closeClientQuickModal(); openPaymentModal('${s.id}', 'sale')">ਜਮ੍ਹਾਂ</button>` : ''}
-                  <button class="btn btn-edit btn-sm" onclick="closeClientQuickModal(); editSale('${s.id}');">✏️</button>
-                  <button class="btn btn-danger btn-sm" onclick="deleteRecord('${s.id}', 'sale')">🗑️</button>
-                </div>
-              </td>
-            </tr>
-          `;
-        }).join('');
-      }
-
-      document.getElementById('clientQuickModal').classList.add('show');
-    }
-
-    function closeClientQuickModal() {
-      document.getElementById('clientQuickModal').classList.remove('show');
-      currentQuickClient = null;
-    }
-
-    function sendWhatsAppFromQuickModal() {
-      if (!currentQuickClient) return;
-      const clientSales = sales.filter(s => (s.client || '').trim().toLowerCase() === currentQuickClient.trim().toLowerCase());
-      const phone = clientSales[0] && clientSales[0].phone;
-      if (!phone) return alert('ਫ਼ੋਨ ਨੰਬਰ ਦਰਜ ਨਹੀਂ ਹੈ!');
-
-      let total = 0, bal = 0;
-      clientSales.forEach(s => { total += (Number(s.total) || 0); bal += (Number(s.balance) || 0); });
-
-      const txt = `ਸਤਿ ਸ਼੍ਰੀ ਅਕਾਲ ਜੀ, *${currentQuickClient}* 🙏\n\nਤੁਹਾਡੇ ਖਾਤੇ ਦਾ ਕੁੱਲ ਬਕਾਇਆ *₹${Number(bal).toLocaleString('en-IN')}* ਹੈ (ਕੁੱਲ ਕਾਰੋਬਾਰ: ₹${Number(total).toLocaleString('en-IN')})। ਕਿਰਪਾ ਕਰਕੇ ਬਕਾਇਆ ਰਕਮ ਕਲੀਅਰ ਕਰਵਾਉਣ ਦੀ ਕਿਰਪਾਲਤਾ ਕਰੋ ਜੀ।\n\nਧੰਨਵਾਦ ਸਹਿਤ,\n*ਗਿੱਲ ਐਂਟਰਪ੍ਰਾਈਜਿਸ*`;
-      let num = phone.replace(/[^0-9]/g, '');
-      if (num.length === 10) num = '91' + num;
-      window.open(`https://wa.me/${num}?text=${encodeURIComponent(txt)}`, '_blank');
-    }
-
+    // MAIN PAGE 1: GROUP SALES BY UNIQUE CLIENT WITH DISPATCH & WHATSAPP BUTTONS
     function renderSales() {
       const tbody = document.querySelector('#salesTable tbody');
       if (sales.length === 0) {
@@ -2090,6 +2081,7 @@
       }).join('');
     }
 
+    // BLOCK 6: SAVE LABOUR WITH COLOR FIELD
     function saveLabour(e) {
       e.preventDefault();
       const editId = document.getElementById('editLabourId').value;
@@ -2103,12 +2095,13 @@
 
       rows.forEach(r => {
         const item = r.dataset.item;
+        const color = r.querySelector('.grid-labour-color').value || 'Grey';
         const qty = parseFloat(r.querySelector('.grid-labour-qty').value) || 0;
         const rate = parseFloat(r.querySelector('.grid-labour-rate').value) || 0;
         const lineWage = qty * rate;
 
         if (qty > 0) {
-          itemsList.push({ item, qty, rate, wage: lineWage });
+          itemsList.push({ item, color, qty, rate, wage: lineWage });
           grandWage += lineWage;
         }
       });
@@ -2139,7 +2132,7 @@
       document.getElementById('labourDate').value = l.date;
       document.getElementById('labourTeam').value = l.team || 'YUDHA';
 
-      const items = l.items || [{ item: l.item, qty: l.qty, rate: l.rate, wage: l.total }];
+      const items = l.items || [{ item: l.item, color: l.color || 'Grey', qty: l.qty, rate: l.rate, wage: l.total }];
       buildLabour18ItemsGrid(items, l.totalCement || 0);
 
       document.getElementById('labourFormTitle').textContent = 'ਲੇਬਰ ਉਤਪਾਦਨ ਐਂਟਰੀ ਐਡਿਟ ਕਰੋ';
@@ -2204,7 +2197,7 @@
         return;
       }
       tbody.innerHTML = labourLogs.slice().reverse().map(l => {
-        const items = l.items || [{ item: l.item, qty: l.qty, rate: l.rate, wage: l.total }];
+        const items = l.items || [{ item: l.item, color: l.color || 'Grey', qty: l.qty, rate: l.rate, wage: l.total }];
         let totalPieces = 0;
         items.forEach(it => totalPieces += (Number(it.qty) || 0));
 
@@ -2236,7 +2229,7 @@
       document.getElementById('ldModalTitle').textContent = `ਉਤਪਾਦਨ ਵੇਰਵਾ (${l.date})`;
       document.getElementById('ldModalSubtitle').textContent = `ਠੇਕੇਦਾਰ: ${l.team || 'YUDHA'}`;
 
-      const items = l.items || [{ item: l.item, qty: l.qty, rate: l.rate, wage: l.total }];
+      const items = l.items || [{ item: l.item, color: l.color || 'Grey', qty: l.qty, rate: l.rate, wage: l.total }];
       let totalQty = 0;
 
       const tbody = document.getElementById('ldModalBody');
@@ -2245,6 +2238,7 @@
         return `
           <tr>
             <td><strong>${it.item}</strong></td>
+            <td><span class="badge badge-stock">${it.color || 'Grey'}</span></td>
             <td>${Number(it.qty || 0).toLocaleString('en-IN')}</td>
             <td>₹${Number(it.rate || 0).toFixed(2)}</td>
             <td style="color:var(--purple); font-weight:700;">₹${Number(it.wage || 0).toLocaleString('en-IN')}</td>
@@ -2263,6 +2257,78 @@
       document.getElementById('labourDetailModal').classList.remove('show');
     }
 
+    // OPEN POPUP FOR COLOR-WISE BREAKDOWN IN FACTORY STOCK (PAGE 5)
+    function openStockColorModal(itemName) {
+      const isCement = itemName.includes("ਸੀਮੈਂਟ") || itemName.includes("Cement");
+      if (isCement) {
+        alert("ਸੀਮੈਂਟ ਦਾ ਕੋਈ ਰੰਗ ਨਹੀਂ ਹੁੰਦਾ, ਇਹ ਸਿੱਧਾ ਬੋਰੀਆਂ ਵਿੱਚ ਗਿਣਿਆ ਜਾਂਦਾ ਹੈ!");
+        return;
+      }
+
+      document.getElementById('scModalTitle').textContent = `${itemName} - ਸਟੋਕ ਰੰਗਾਂ ਮੁਤਾਬਕ`;
+
+      const colorMap = {
+        'Grey': 0,
+        'Red': 0,
+        'Black': 0,
+        'White': 0,
+        'Other': 0
+      };
+
+      let totalMade = 0;
+      let totalDispatched = 0;
+
+      labourLogs.forEach(l => {
+        if (l.items && Array.isArray(l.items)) {
+          l.items.forEach(it => {
+            if ((it.item || '').trim().toLowerCase() === itemName.trim().toLowerCase()) {
+              const q = Number(it.qty) || 0;
+              const c = it.color || 'Grey';
+              colorMap[c] = (colorMap[c] || 0) + q;
+              totalMade += q;
+            }
+          });
+        }
+      });
+
+      sales.forEach(s => {
+        if (s.dispatches && s.dispatches.length > 0) {
+          s.dispatches.forEach(d => {
+            if ((d.item || '').toLowerCase() === itemName.toLowerCase()) {
+              totalDispatched += (Number(d.qty) || 0);
+            }
+          });
+        }
+      });
+
+      const tbody = document.getElementById('scModalBody');
+      const colors = [
+        { key: 'Red', label: '🔴 ਰੈੱਡ (Red)' },
+        { key: 'Grey', label: '⚪ ਗ੍ਰੇ (Grey)' },
+        { key: 'Black', label: '⚫ ਬਲੈਕ (Black)' },
+        { key: 'White', label: '🔘 ਵਾਈਟ (White)' },
+        { key: 'Other', label: '🎨 ਅਦਰ (Other)' }
+      ];
+
+      tbody.innerHTML = colors.map(c => `
+        <tr>
+          <td><strong>${c.label}</strong></td>
+          <td style="color:var(--primary); font-weight:700;">${(colorMap[c.key] || 0).toLocaleString('en-IN')} ਪੀਸ</td>
+        </tr>
+      `).join('');
+
+      document.getElementById('scTotalMade').textContent = `${totalMade.toLocaleString('en-IN')} ਪੀਸ`;
+      document.getElementById('scTotalDispatched').textContent = `${totalDispatched.toLocaleString('en-IN')} ਪੀਸ`;
+      document.getElementById('scAvailableBalance').textContent = `${(totalMade - totalDispatched).toLocaleString('en-IN')} ਪੀਸ`;
+
+      document.getElementById('stockColorModal').classList.add('show');
+    }
+
+    function closeStockColorModal() {
+      document.getElementById('stockColorModal').classList.remove('show');
+    }
+
+    // DISPATCH MODAL WITH UPDATED LOADING/UNLOADING RATES
     function openDispatchModal(saleId) {
       currentDispatchSaleId = saleId;
       const s = sales.find(item => item.id === saleId);
@@ -2371,6 +2437,7 @@
       alert(`🚚 ${selectedItem.item} ਦੇ ${sendQty} ਪੀਸ ਡਿਸਪੈਚ ਹੋ ਗਏ ਹਨ! (ਲੇਬਰ ਖਾਤੇ ਵਿੱਚ ₹${loadingCost.toFixed(2)} ਜੁੜ ਗਏ ਹਨ)`);
     }
 
+    // RENDER BLOCK 6: 3. LOADING & UNLOADING LEDGER (DYNAMIC RECALCULATION)
     function renderLoadingUnloadingLedger() {
       const tbody = document.querySelector('#loadingUnloadingTable tbody');
       let grandLoadingWage = 0;
@@ -2595,7 +2662,7 @@
       `).join('');
     }
 
-    // BLOCK 3: MONTHLY SUMMARY CALCULATION (SUPPORTS ALL HISTORICAL DATA)
+    // BLOCK 3: MONTHLY SUMMARY CALCULATION
     function renderMonthlySummary() {
       const selectedMonth = document.getElementById('summaryMonth').value;
       if (!selectedMonth) return;
@@ -2840,7 +2907,9 @@
       tbody.innerHTML = stockSummary.map(row => `
         <tr style="${row.isCement ? 'background:#f0fdf4; font-weight:bold;' : ''}">
           <td><strong>${row.sr})</strong></td>
-          <td><strong>${row.name}</strong></td>
+          <td class="clickable-row" onclick="openStockColorModal('${row.name.replace(/'/g, "\\'")}')" title="ਰੰਗ ਮੁਤਾਬਕ ਸਟੋਕ ਵੇਖਣ ਲਈ ਕਲਿੱਕ ਕਰੋ">
+            <strong style="color:var(--primary); text-decoration:underline;">${row.name}</strong>
+          </td>
           <td style="color:var(--success); font-weight:700;">+ ${row.in.toLocaleString('en-IN')} ${row.isCement ? 'ਬੋਰੀਆਂ' : ''}</td>
           <td style="color:var(--danger); font-weight:700;">- ${row.out.toLocaleString('en-IN')} ${row.isCement ? 'ਬੋਰੀਆਂ' : ''}</td>
           <td>
@@ -2958,7 +3027,7 @@
       } else if (type === 'labour') {
         csv += 'Date,Team,Items,TotalWage,TotalCement\n';
         labourLogs.forEach(l => {
-          const itemSummary = (l.items || [{ item: l.item, qty: l.qty }]).map(i => `${i.item}(${i.qty}pcs)`).join('; ');
+          const itemSummary = (l.items || [{ item: l.item, qty: l.qty }]).map(i => `${i.item}(${i.color||'Grey'}:${i.qty}pcs)`).join('; ');
           csv += `"${l.date}","${l.team || ''}","${itemSummary}",${l.total},${l.totalCement || 0}\n`;
         });
       } else if (type === 'stock') {
