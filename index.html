@@ -1295,7 +1295,7 @@
     </div>
   </div>
 
-  <!-- POPUP MODAL: CLIENT DEDICATED PAGE -->
+  <!-- POPUP MODAL: CLIENT DEDICATED PAGE (CORRECTED ADVANCE SUBTRACTION LOGIC) -->
   <div class="modal" id="clientQuickModal">
     <div class="modal-box" style="max-width: 800px;">
       <div class="modal-header">
@@ -1306,6 +1306,7 @@
         <button class="close-modal" onclick="closeClientQuickModal()">×</button>
       </div>
 
+      <!-- Financial Totals -->
       <div style="display:flex; justify-content:space-between; align-items:center; background:#eff6ff; border:1.5px solid #bfdbfe; border-radius:10px; padding:14px; margin-bottom:14px; flex-wrap:wrap; gap:10px;">
         <div>
           <span style="font-size:0.82rem; color:#1e40af; font-weight:600;">ਸਾਰੇ ਆਰਡਰਾਂ ਦੀ ਕੁੱਲ ਰਕਮ:</span>
@@ -1321,10 +1322,10 @@
         </div>
       </div>
 
-      <!-- DIRECT ADVANCE PAYMENT BLOCK -->
+      <!-- DIRECT ADVANCE PAYMENT BLOCK: SUBTRACTS PROPERLY FROM BALANCE -->
       <div class="card" style="border:1.5px solid #86efac; background:#f0fdf4; margin-bottom:14px; padding:12px;">
         <div style="font-weight:800; color:#166534; font-size:0.95rem; margin-bottom:8px;">
-          💵 ਸਿੱਧੀ ਪੇਮੈਂਟ / ਰਕਮ ਜਮ੍ਹਾਂ ਕਰੋ (ਕੁੱਲ ਬਕਾਏ ਵਿੱਚੋਂ ਮਾਈਨਸ ਕਰੋ):
+          💵 ਸਿੱਧੀ ਪੇਮੈਂਟ / ਰਕਮ ਜਮ੍ਹਾਂ ਕਰੋ (ਕੁੱਲ ਬਕਾਏ ਵਿੱਚੋਂ ਮਾਈਨਸ ਹੋਵੇਗੀ):
         </div>
         <form onsubmit="handleDirectClientPayment(event)">
           <div class="horizontal-row" style="align-items:flex-end;">
@@ -1334,7 +1335,7 @@
             </div>
             <div class="form-group" style="flex:1;">
               <label>ਜਮ੍ਹਾਂ ਰਕਮ (₹)</label>
-              <input type="number" step="0.01" id="directPayAmount" min="1" placeholder="ਜਿਵੇਂ 40000" required>
+              <input type="number" step="0.01" id="directPayAmount" min="1" placeholder="ਜਿਵੇਂ 20000" required>
             </div>
             <div class="form-group" style="flex:1.2;">
               <label>ਵੇਰਵਾ / ਨੋਟ</label>
@@ -1463,7 +1464,6 @@
     let trashItems = [];
     let rawMaterials = ['Cement Bags', 'ਸੀਮੈਂਟ', 'ਰੇਤ / ਡਸਟ', 'ਫਲਾਈ ਐਸ਼', 'ਕੈਮੀਕਲ'];
 
-    // In-memory queue for multi-color production staging
     let stagedLabourQueue = [];
 
     let currentSettlement = null;
@@ -1471,7 +1471,6 @@
     let selectedLedgerParty = null;
     let currentQuickClient = null;
 
-    // Helper for reliable local date string YYYY-MM-DD
     function getTodayString() {
       const now = new Date();
       const year = now.getFullYear();
@@ -1953,13 +1952,14 @@
       openClientQuickModal(currentQuickClient);
     }
 
+    // DIRECT ADVANCE SUBTRACTION: DEDUCTS PROPERLY FROM OLD BALANCES
     function handleDirectClientPayment(e) {
       e.preventDefault();
       if (!currentQuickClient) return;
 
       const payAmount = parseFloat(document.getElementById('directPayAmount').value) || 0;
       const payDate = document.getElementById('directPayDate').value || getTodayString();
-      const note = document.getElementById('directPayNote').value.trim() || 'ਸਿੱਧੀ ਪੇਮੈਂਟ';
+      const note = document.getElementById('directPayNote').value.trim() || 'ਸਿੱਧੀ ਪੇਮੈਂਟ (ਐਡਵਾਂਸ ਕਟੌਤੀ)';
 
       if (payAmount <= 0) return alert('ਕਿਰਪਾ ਕਰਕੇ ਸਹੀ ਰਕਮ ਭਰੋ!');
 
@@ -1969,11 +1969,11 @@
       let remainingToDeduct = payAmount;
 
       for (let s of clientSales) {
-        const bal = Number(s.balance) || 0;
-        if (bal > 0 && remainingToDeduct > 0) {
-          const deduct = Math.min(bal, remainingToDeduct);
+        const curBal = Number(s.balance) || 0;
+        if (curBal > 0 && remainingToDeduct > 0) {
+          const deduct = Math.min(curBal, remainingToDeduct);
           s.paid = (Number(s.paid) || 0) + deduct;
-          s.balance = bal - deduct;
+          s.balance = curBal - deduct;
           if (!s.payments) s.payments = [];
           s.payments.push({ amount: deduct, date: payDate, note: note });
           remainingToDeduct -= deduct;
@@ -2541,7 +2541,6 @@
       }
     }
 
-    // RELIABLE LABOUR PRODUCTION RENDERER: TODAY'S LOGS SHOWN PROPERLY
     function renderLabourTable() {
       const today = getTodayString();
       const todayBody = document.getElementById('labourTableTodayBody');
