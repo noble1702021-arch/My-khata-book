@@ -501,7 +501,7 @@
 
   <div class="container">
     
-    <!-- BLOCK 1: SALES WITH COLOR FIELD PER ITEM -->
+    <!-- BLOCK 1: SALES -->
     <section id="tab-sale" class="tab-content active">
       <div class="card card-sale-theme">
         <div class="card-title">
@@ -1295,7 +1295,7 @@
     </div>
   </div>
 
-  <!-- POPUP MODAL: CLIENT DEDICATED PAGE (WITH DIRECT ADVANCE / PAYMENT BLOCK) -->
+  <!-- POPUP MODAL: CLIENT DEDICATED PAGE -->
   <div class="modal" id="clientQuickModal">
     <div class="modal-box" style="max-width: 800px;">
       <div class="modal-header">
@@ -1306,7 +1306,6 @@
         <button class="close-modal" onclick="closeClientQuickModal()">×</button>
       </div>
 
-      <!-- Financial Totals -->
       <div style="display:flex; justify-content:space-between; align-items:center; background:#eff6ff; border:1.5px solid #bfdbfe; border-radius:10px; padding:14px; margin-bottom:14px; flex-wrap:wrap; gap:10px;">
         <div>
           <span style="font-size:0.82rem; color:#1e40af; font-weight:600;">ਸਾਰੇ ਆਰਡਰਾਂ ਦੀ ਕੁੱਲ ਰਕਮ:</span>
@@ -1322,7 +1321,7 @@
         </div>
       </div>
 
-      <!-- DIRECT ADVANCE PAYMENT BLOCK: GIVES LUMP-SUM PAYMENT TO DEDUCT ACROSS ORDERS -->
+      <!-- DIRECT ADVANCE PAYMENT BLOCK -->
       <div class="card" style="border:1.5px solid #86efac; background:#f0fdf4; margin-bottom:14px; padding:12px;">
         <div style="font-weight:800; color:#166534; font-size:0.95rem; margin-bottom:8px;">
           💵 ਸਿੱਧੀ ਪੇਮੈਂਟ / ਰਕਮ ਜਮ੍ਹਾਂ ਕਰੋ (ਕੁੱਲ ਬਕਾਏ ਵਿੱਚੋਂ ਮਾਈਨਸ ਕਰੋ):
@@ -1472,8 +1471,17 @@
     let selectedLedgerParty = null;
     let currentQuickClient = null;
 
+    // Helper for reliable local date string YYYY-MM-DD
+    function getTodayString() {
+      const now = new Date();
+      const year = now.getFullYear();
+      const month = String(now.getMonth() + 1).padStart(2, '0');
+      const day = String(now.getDate()).padStart(2, '0');
+      return `${year}-${month}-${day}`;
+    }
+
     window.addEventListener('DOMContentLoaded', () => {
-      const today = new Date().toISOString().split('T')[0];
+      const today = getTodayString();
       document.getElementById('saleDate').value = today;
       document.getElementById('saleDeliveryDate').value = today;
       document.getElementById('purDate').value = today;
@@ -1488,10 +1496,6 @@
       buildLabour18ItemsGrid();
       initDataSync();
     });
-
-    function getTodayString() {
-      return new Date().toISOString().split('T')[0];
-    }
 
     function togglePastRecords(containerId, btnId) {
       const container = document.getElementById(containerId);
@@ -1634,7 +1638,6 @@
       db.ref('trash/' + trashId).remove();
     }
 
-    // BUILD LABOUR ITEMS GRID: ALLOWS QUICK ENTRY + "➕ ਜੋੜੋ" PER ROW
     function buildLabour18ItemsGrid() {
       const tbody = document.getElementById('labour18ItemsBody');
       tbody.innerHTML = '';
@@ -1698,7 +1701,6 @@
       });
     }
 
-    // STAGES A PRODUCTION ITEM INTO THE IN-MEMORY QUEUE
     function stageLabourItem(rowId, itemName) {
       const row = document.getElementById(rowId);
       if (!row) return;
@@ -1721,9 +1723,7 @@
         wage: wage
       });
 
-      // Clear the qty box for next entry of another color
       row.querySelector('.grid-labour-qty').value = '';
-
       renderStagedLabourQueue();
     }
 
@@ -1760,7 +1760,6 @@
       document.getElementById('labourGrandTotal').value = grandTotalWage.toFixed(2);
     }
 
-    // ADD SALE ROW WITH DYNAMIC COLOR DROPDOWN (PAGE 1)
     function addSaleItemRow(itemVal = '', colorVal = 'Grey', qtyVal = '', rateVal = '', lineTotalVal = '') {
       const container = document.getElementById('saleItemsContainer');
       const rowId = 'itemRow_' + Date.now() + '_' + Math.random().toString(36).substring(2, 6);
@@ -1831,7 +1830,6 @@
       document.getElementById('saleBalance').value = Math.max(0, grandTotal - advance).toFixed(2);
     }
 
-    // IN-MODAL SALE ITEM ROW (WITH COLOR)
     function addInModalSaleItemRow(itemVal = '', colorVal = 'Grey', qtyVal = '', rateVal = '', lineTotalVal = '') {
       const container = document.getElementById('inModalSaleItemsContainer');
       const rowId = 'imItemRow_' + Date.now() + '_' + Math.random().toString(36).substring(2, 6);
@@ -1955,7 +1953,6 @@
       openClientQuickModal(currentQuickClient);
     }
 
-    // DIRECT LUMP-SUM PAYMENT DEDUCTION ACROSS CLIENT'S BALANCE
     function handleDirectClientPayment(e) {
       e.preventDefault();
       if (!currentQuickClient) return;
@@ -1966,7 +1963,6 @@
 
       if (payAmount <= 0) return alert('ਕਿਰਪਾ ਕਰਕੇ ਸਹੀ ਰਕਮ ਭਰੋ!');
 
-      // Find all unpaid sales of this client sorted by oldest date
       const clientSales = sales.filter(s => (s.client || '').trim().toLowerCase() === currentQuickClient.trim().toLowerCase());
       clientSales.sort((a, b) => new Date(a.date) - new Date(b.date));
 
@@ -1986,7 +1982,6 @@
         }
       }
 
-      // If amount still remains, add as advance to the newest sale or record payment
       if (remainingToDeduct > 0 && clientSales.length > 0) {
         const newest = clientSales[clientSales.length - 1];
         newest.paid = (Number(newest.paid) || 0) + remainingToDeduct;
@@ -2156,7 +2151,6 @@
       `).join('');
     }
 
-    // BLOCK 1: SAVE SALE (INCLUDES ITEM COLOR)
     function saveSale(e) {
       e.preventDefault();
       const editId = document.getElementById('editSaleId').value;
@@ -2258,7 +2252,6 @@
       addSaleItemRow();
     }
 
-    // OPEN DEDICATED CLIENT PROFILE WITH IN-MODAL ORDER FORM & HISTORICAL ORDERS
     function openClientQuickModal(clientName) {
       currentQuickClient = clientName;
       const clientSales = sales.filter(s => (s.client || '').trim().toLowerCase() === clientName.trim().toLowerCase());
@@ -2442,7 +2435,7 @@
     function saveLabour(e) {
       e.preventDefault();
       const editId = document.getElementById('editLabourId').value;
-      const date = document.getElementById('labourDate').value;
+      const date = document.getElementById('labourDate').value || getTodayString();
       const team = document.getElementById('labourTeam').value.trim() || 'YUDHA';
       const totalCement = parseFloat(document.getElementById('labourSingleCementBags').value) || 0;
 
@@ -2464,7 +2457,6 @@
 
       db.ref('labourLogs/' + id).set(record);
       
-      // Clear staged queue and reset form
       stagedLabourQueue = [];
       renderStagedLabourQueue();
       cancelLabourEdit();
@@ -2549,13 +2541,16 @@
       }
     }
 
+    // RELIABLE LABOUR PRODUCTION RENDERER: TODAY'S LOGS SHOWN PROPERLY
     function renderLabourTable() {
       const today = getTodayString();
       const todayBody = document.getElementById('labourTableTodayBody');
       const pastBody = document.getElementById('labourTablePastBody');
 
-      const todayList = labourLogs.filter(l => l.date === today);
-      const pastList = labourLogs.filter(l => l.date !== today);
+      if (!todayBody || !pastBody) return;
+
+      const todayList = labourLogs.filter(l => (l.date || '').trim() === today);
+      const pastList = labourLogs.filter(l => (l.date || '').trim() !== today);
 
       const renderRowHtml = (l) => {
         const items = l.items || [{ item: l.item, color: l.color || 'Grey', qty: l.qty, rate: l.rate, wage: l.total }];
@@ -2631,7 +2626,6 @@
       document.getElementById('labourDetailModal').classList.remove('show');
     }
 
-    // OPEN POPUP FOR COLOR-WISE BREAKDOWN IN FACTORY STOCK (PAGE 5)
     function openStockColorModal(itemName) {
       const isCement = itemName.includes("ਸੀਮੈਂਟ") || itemName.includes("Cement");
       if (isCement) {
@@ -2702,7 +2696,6 @@
       document.getElementById('stockColorModal').classList.remove('show');
     }
 
-    // DISPATCH MODAL
     function openDispatchModal(saleId) {
       currentDispatchSaleId = saleId;
       const s = sales.find(item => item.id === saleId);
@@ -2856,8 +2849,8 @@
       window.cachedLoadingWage = grandLoadingWage;
       window.cachedLoadingRows = allRows;
 
-      const todayRows = allRows.filter(r => r.date === today);
-      const pastRows = allRows.filter(r => r.date !== today);
+      const todayRows = allRows.filter(r => (r.date || '').trim() === today);
+      const pastRows = allRows.filter(r => (r.date || '').trim() !== today);
 
       const renderLoadingRowHtml = (r) => {
         const globalIdx = allRows.indexOf(r);
@@ -2999,7 +2992,7 @@
 
     function saveLabourPayment(e) {
       e.preventDefault();
-      const date = document.getElementById('lpayDate').value;
+      const date = document.getElementById('lpayDate').value || getTodayString();
       const team = document.getElementById('lpayTeam').value.trim() || 'YUDHA';
       const amount = parseFloat(document.getElementById('lpayAmount').value) || 0;
       const remarks = document.getElementById('lpayRemarks').value.trim();
@@ -3035,8 +3028,8 @@
       document.getElementById('statLabourPaid').textContent = `₹${totalPaid.toLocaleString('en-IN', {minimumFractionDigits: 2, maximumFractionDigits: 2})}`;
       document.getElementById('statLabourDue').textContent = `₹${balanceDue.toLocaleString('en-IN', {minimumFractionDigits: 2, maximumFractionDigits: 2})}`;
 
-      const todayPayouts = labourPayouts.filter(p => p.date === today);
-      const pastPayouts = labourPayouts.filter(p => p.date !== today);
+      const todayPayouts = labourPayouts.filter(p => (p.date || '').trim() === today);
+      const pastPayouts = labourPayouts.filter(p => (p.date || '').trim() !== today);
 
       const renderPayoutRowHtml = (p) => `
         <tr>
