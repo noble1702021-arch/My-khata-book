@@ -1089,59 +1089,88 @@
     </div>
   </div>
 
-  <!-- MULTI-ITEM BATCH DISPATCH MODAL -->
+  <!-- MULTI-ITEM STAGED DISPATCH MODAL (SUPPORTS NEW & EDIT) -->
   <div class="modal" id="dispatchModal">
-    <div class="modal-box" style="max-width: 760px;">
+    <div class="modal-box" style="max-width: 740px;">
       <div class="modal-header">
         <div>
-          <h3 style="font-size:1.2rem; font-weight:800; color:var(--primary);">🚚 ਮਾਲ ਡਿਸਪੈਚ (ਇੱਕੋ ਵਾਰ ਕਈ ਆਈਟਮਾਂ ਭੇਜੋ)</h3>
+          <h3 style="font-size:1.2rem; font-weight:800; color:var(--primary);" id="dispatchModalTitle">🚚 ਮਾਲ ਡਿਸਪੈਚ (ਕਈ ਆਈਟਮਾਂ ਇਕੱਠੀਆਂ ਭੇਜੋ)</h3>
           <p id="dispatchSub" style="font-size: 0.85rem; color: var(--text-muted); margin-top:2px;"></p>
         </div>
         <button class="close-modal" onclick="closeDispatchModal()">×</button>
       </div>
 
-      <form onsubmit="handleBatchDispatchSubmit(event)">
+      <form onsubmit="handleStagedDispatchSubmit(event)">
         <div class="horizontal-row" style="margin-bottom:10px;">
           <div class="form-group" style="flex:1;">
             <label>ਮਾਲ ਭੇਜਣ ਦੀ ਤਾਰੀਖ (Dispatch Date)</label>
             <input type="date" id="dispatchDate" required>
           </div>
-          <div class="form-group" style="flex:1;" id="nextDeliveryDateGroup">
-            <label style="color:var(--danger);">ਬਾਕੀ ਮਾਲ ਲਈ ਅਗਲੀ ਡਿਲਿਵਰੀ ਤਾਰੀਖ (ਜੇ ਕੁਝ ਬਚੇ)</label>
+          <div class="form-group" style="flex:1;">
+            <label style="color:var(--danger);">ਅਗਲੀ ਡਿਲਿਵਰੀ ਤਾਰੀਖ (Optional)</label>
             <input type="date" id="dispatchNextDate">
           </div>
         </div>
 
-        <div class="items-box" style="padding:10px; background:#f8fafc;">
-          <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px; flex-wrap:wrap; gap:6px;">
-            <strong style="font-size:0.9rem; color:var(--primary);">ਬਾਕੀ ਆਈਟਮਾਂ (ਜਿਹੜੀਆਂ ਭੇਜਣੀਆਂ ਹਨ ਉਹਨਾਂ ਦੇ ਨਗ ਭਰੋ):</strong>
-            <div style="display:flex; gap:6px;">
-              <button type="button" class="btn btn-outline btn-sm" onclick="toggleAllDispatchCheckboxes('loaded')">☑️ ਸਭ Loaded</button>
-              <button type="button" class="btn btn-outline btn-sm" onclick="toggleAllDispatchCheckboxes('unloaded')">☑️ ਸਭ Unloaded</button>
+        <!-- Item Selector + Loading Checkboxes + Add to List Button -->
+        <div class="items-box" style="background:#f8fafc; padding:12px;">
+          <strong style="font-size:0.9rem; color:var(--primary); display:block; margin-bottom:8px;">
+            1. ਆਈਟਮ ਚੁਣੋ, ਨਗ ਭਰੋ ਅਤੇ ਲੋਡਿੰਗ/ਅਨਲੋਡਿੰਗ ਟਿੱਕ ਕਰਕੇ ਲਿਸਟ ਵਿੱਚ ਜੋੜੋ:
+          </strong>
+
+          <div class="horizontal-row" style="align-items:flex-end;">
+            <div class="form-group" style="flex:2; min-width:210px;">
+              <label>ਕਿਹੜੀ ਆਈਟਮ ਭੇਜਣੀ ਹੈ?</label>
+              <select id="dispatchItemSelect" onchange="updateSelectedPendingQty()"></select>
+            </div>
+            <div class="form-group" style="flex:0.8; min-width:95px;">
+              <label>ਬਾਕੀ ਪਈ</label>
+              <input type="number" id="dispatchSelectedPending" readonly>
+            </div>
+            <div class="form-group" style="flex:0.9; min-width:105px;">
+              <label>ਭੇਜਣੇ (Qty)</label>
+              <input type="number" id="dispatchSelectedQty" min="1" placeholder="ਨਗ">
             </div>
           </div>
 
-          <div class="table-responsive" style="margin-top:4px;">
-            <table>
-              <thead>
-                <tr>
-                  <th>ਆਈਟਮ & ਰੰਗ</th>
-                  <th>ਬਾਕੀ ਮਾਲ</th>
-                  <th style="min-width:110px;">ਭੇਜਣੇ (Qty)</th>
-                  <th style="min-width:175px;">ਲੇਬਰ (Load / Unload)</th>
-                </tr>
-              </thead>
-              <tbody id="dispatchItemsTableBody"></tbody>
-            </table>
+          <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:10px; margin-top:8px;">
+            <div class="checkbox-row">
+              <label class="checkbox-label">
+                <input type="checkbox" id="dispatchSelectedLoaded"> 📦 Loaded (ਲੋਡ ਹੋਇਆ)
+              </label>
+              <label class="checkbox-label">
+                <input type="checkbox" id="dispatchSelectedUnloaded"> 🚛 Unloaded (ਅਨਲੋਡ ਹੋਇਆ)
+              </label>
+            </div>
+            <button type="button" class="btn btn-primary btn-sm" onclick="addDispatchItemToQueue()">➕ ਲਿਸਟ ਵਿੱਚ ਜੋੜੋ</button>
           </div>
-          <small style="color:var(--text-muted); display:block; margin-top:6px;">
-            ℹ️ Crave: ₹1.25, ਚੌਖਟ: ₹0.50, 4*4 dabi/Cement: ₹0, ਬਾਕੀ ਸਭ: ₹0.25 ਪ੍ਰਤੀ ਪੀਸ (ਲੇਬਰ ਖਾਤੇ ਵਿੱਚ ਆਟੋ ਜੁੜੇਗਾ)
-          </small>
+
+          <!-- Staged Dispatch Queue -->
+          <div style="margin-top:12px; background:white; border:1.5px solid #cbd5e1; border-radius:8px; padding:10px;">
+            <strong style="font-size:0.88rem; color:var(--text); display:block; margin-bottom:6px;">
+              📋 ਅੱਜ ਭੇਜੀਆਂ ਜਾਣ ਵਾਲੀਆਂ ਆਈਟਮਾਂ (Dispatch List):
+            </strong>
+            <div class="table-responsive" style="margin-top:0;">
+              <table>
+                <thead>
+                  <tr>
+                    <th>ਆਈਟਮ & ਰੰਗ</th>
+                    <th>ਭੇਜਣ ਵਾਲੇ ਨਗ</th>
+                    <th>ਲੇਬਰ ਸਟੇਟਸ</th>
+                    <th>ਹਟਾਓ</th>
+                  </tr>
+                </thead>
+                <tbody id="dispatchQueueBody">
+                  <tr><td colspan="4" style="text-align:center; color:var(--text-muted);">ਅਜੇ ਕੋਈ ਆਈਟਮ ਨਹੀਂ ਜੋੜੀ ਗਈ</td></tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
         </div>
 
         <div style="display: flex; justify-content: flex-end; gap: 8px; margin-top:12px;">
           <button type="button" class="btn btn-outline" onclick="closeDispatchModal()">ਰੱਦ ਕਰੋ</button>
-          <button type="submit" class="btn btn-warning">🚚 ਸਾਰਾ ਮਾਲ ਡਿਸਪੈਚ ਦਰਜ ਕਰੋ</button>
+          <button type="submit" id="dispatchSaveBtn" class="btn btn-warning">🚚 ਡਿਸਪੈਚ ਸੇਵ ਕਰੋ</button>
         </div>
       </form>
     </div>
@@ -1185,7 +1214,7 @@
     </div>
   </div>
 
-  <!-- POPUP MODAL: STOCK COLOR BREAKDOWN (PAGE 5) -->
+  <!-- POPUP MODAL: STOCK COLOR BREAKDOWN -->
   <div class="modal" id="stockColorModal">
     <div class="modal-box">
       <div class="modal-header">
@@ -1296,7 +1325,7 @@
     </div>
   </div>
 
-  <!-- POPUP MODAL: CLIENT DEDICATED PAGE (WITH DISPATCH HISTORY + DIRECT PAYMENT + ORDERS) -->
+  <!-- POPUP MODAL: CLIENT DEDICATED PAGE (WITH DISPATCH HISTORY EDIT/DELETE + PENDING ORDERS DISPATCH) -->
   <div class="modal" id="clientQuickModal">
     <div class="modal-box" style="max-width: 820px;">
       <div class="modal-header">
@@ -1398,10 +1427,10 @@
         </form>
       </div>
 
-      <!-- NEW: DISPATCH HISTORY SECTION INSIDE CLIENT ENTRY -->
+      <!-- DISPATCH HISTORY SECTION WITH EDIT & DELETE -->
       <div class="card" style="border:1.5px solid #fde047; background:#fefce8; margin-bottom:16px; padding:12px;">
         <strong style="font-size:0.95rem; color:#854d0e; display:block; margin-bottom:6px;">
-          🚚 ਡਿਸਪੈਚ / ਮਾਲ ਭੇਜਣ ਦਾ ਵੇਰਵਾ (ਕਿਸ ਤਾਰੀਖ ਨੂੰ ਕਿੰਨਾ ਮਾਲ ਭੇਜਿਆ ਗਿਆ):
+          🚚 ਡਿਸਪੈਚ / ਮਾਲ ਭੇਜਣ ਦਾ ਵੇਰਵਾ (Edit ਜਾਂ Delete ਕਰਨ ਦੀ ਸੁਵਿਧਾ ਸਮੇਤ):
         </strong>
         <div class="table-responsive" style="margin-top:4px; background:white; border-radius:8px;">
           <table>
@@ -1410,6 +1439,7 @@
                 <th>ਡਿਸਪੈਚ ਤਾਰੀਖ</th>
                 <th>ਭੇਜਿਆ ਗਿਆ ਸਮਾਨ & ਨਗ</th>
                 <th>ਲੇਬਰ ਸਟੇਟਸ</th>
+                <th>ਐਕਸ਼ਨ</th>
               </tr>
             </thead>
             <tbody id="cqDispatchHistoryBody"></tbody>
@@ -1417,9 +1447,9 @@
         </div>
       </div>
 
-      <!-- Past Orders List for this Customer -->
+      <!-- Past Orders List for this Customer (With Deliver Button for Pending Orders) -->
       <strong style="font-size:0.92rem; color:var(--text); display:block; margin-bottom:6px;">
-        ਇਸ ਗਾਹਕ ਦੇ ਸਾਰੇ ਪੁਰਾਣੇ ਆਰਡਰ ਅਤੇ ਲੈਣ-ਦੇਣ ਦੀ ਸੂਚੀ:
+        ਇਸ ਗਾਹਕ ਦੇ ਸਾਰੇ ਆਰਡਰ (ਪੈਂਡਿੰਗ ਆਰਡਰ ਭੇਜਣ ਲਈ '🚚 ਡਿਸਪੈਚ' ਦਬਾਓ):
       </strong>
       <div class="table-responsive">
         <table>
@@ -1430,7 +1460,7 @@
               <th>ਆਰਡਰ ਰਕਮ</th>
               <th>ਮਿਲੇ</th>
               <th>ਬਕਾਇਆ</th>
-              <th>ਐਕਸ਼ਨ</th>
+              <th>ਐਕਸ਼ਨ & ਡਿਸਪੈਚ</th>
             </tr>
           </thead>
           <tbody id="cqOrdersTableBody"></tbody>
@@ -1488,9 +1518,12 @@
     let rawMaterials = ['Cement Bags', 'ਸੀਮੈਂਟ', 'ਰੇਤ / ਡਸਟ', 'ਫਲਾਈ ਐਸ਼', 'ਕੈਮੀਕਲ'];
 
     let stagedLabourQueue = [];
+    let stagedDispatchQueue = [];
+    let availablePendingDispatchItems = [];
 
     let currentSettlement = null;
     let currentDispatchClientName = null;
+    let editingDispatchBatchId = null;
     let selectedLedgerParty = null;
     let currentQuickClient = null;
 
@@ -2274,7 +2307,7 @@
       addSaleItemRow();
     }
 
-    // OPEN CLIENT QUICK PROFILE WITH DISPATCH HISTORY + ORDERS
+    // OPEN CLIENT QUICK PROFILE WITH DISPATCH HISTORY (EDIT/DELETE) + PENDING ORDERS DISPATCH
     function openClientQuickModal(clientName) {
       currentQuickClient = clientName;
       const clientSales = sales.filter(s => (s.client || '').trim().toLowerCase() === clientName.trim().toLowerCase());
@@ -2307,23 +2340,27 @@
       document.getElementById('inModalSaleItemsContainer').innerHTML = '';
       addInModalSaleItemRow();
 
-      // Render Dispatch History grouped by batchId or date
+      // Render Dispatch History grouped by batchId with Edit & Delete buttons
       const dispatchHistoryBody = document.getElementById('cqDispatchHistoryBody');
       const allDispatches = [];
       clientSales.forEach(s => {
-        (s.dispatches || []).forEach(d => {
-          allDispatches.push(d);
+        (s.dispatches || []).forEach((d, idx) => {
+          allDispatches.push({ ...d, _saleId: s.id, _idx: idx });
         });
       });
 
       if (allDispatches.length === 0) {
-        dispatchHistoryBody.innerHTML = '<tr><td colspan="3" style="text-align:center; color:var(--text-muted);">ਅਜੇ ਤੱਕ ਕੋਈ ਮਾਲ ਡਿਸਪੈਚ ਨਹੀਂ ਹੋਇਆ</td></tr>';
+        dispatchHistoryBody.innerHTML = '<tr><td colspan="4" style="text-align:center; color:var(--text-muted);">ਅਜੇ ਤੱਕ ਕੋਈ ਮਾਲ ਡਿਸਪੈਚ ਨਹੀਂ ਹੋਇਆ</td></tr>';
       } else {
         const groupedDispatches = {};
         allDispatches.forEach((d, i) => {
-          const key = d.batchId || `${d.date}_${i}`;
+          const key = d.batchId || `${d._saleId}_${d.date}_${i}`;
           if (!groupedDispatches[key]) {
             groupedDispatches[key] = {
+              batchKey: key,
+              isExplicitBatch: !!d.batchId,
+              saleId: d._saleId,
+              dispatchIdx: d._idx,
               date: d.date,
               items: [],
               hasLoad: false,
@@ -2336,6 +2373,8 @@
         });
 
         const dispatchGroupsList = Object.values(groupedDispatches).sort((a, b) => new Date(b.date) - new Date(a.date));
+        const safeClient = clientName.replace(/'/g, "\\'");
+
         dispatchHistoryBody.innerHTML = dispatchGroupsList.map(g => {
           const tags = [];
           if (g.hasLoad) tags.push('📦 Loaded');
@@ -2345,20 +2384,34 @@
               <td><strong>📅 ${g.date}</strong></td>
               <td><strong>${g.items.join(', ')}</strong></td>
               <td><span class="badge badge-stock">${tags.length > 0 ? tags.join(' + ') : 'ਸਿੱਧੀ ਡਿਲਿਵਰੀ'}</span></td>
+              <td>
+                <div style="display:flex; gap:4px;">
+                  <button class="btn btn-edit btn-sm" onclick="closeClientQuickModal(); editDispatchBatch('${safeClient}', '${g.batchKey}', ${g.isExplicitBatch}, '${g.saleId}', ${g.dispatchIdx})" title="ਐਡਿਟ ਕਰੋ">✏️</button>
+                  <button class="btn btn-danger btn-sm" onclick="deleteDispatchBatch('${safeClient}', '${g.batchKey}', ${g.isExplicitBatch}, '${g.saleId}', ${g.dispatchIdx})" title="ਡਿਲੀਟ ਕਰੋ">🗑️</button>
+                </div>
+              </td>
             </tr>
           `;
         }).join('');
       }
 
-      // Render Orders List
+      // Render Orders List with Deliver Button for Pending Orders
       const tbody = document.getElementById('cqOrdersTableBody');
       if (clientSales.length === 0) {
         tbody.innerHTML = '<tr><td colspan="6" style="text-align:center;">ਕੋਈ ਆਰਡਰ ਨਹੀਂ ਹੈ</td></tr>';
       } else {
         clientSales.sort((a, b) => new Date(b.date) - new Date(a.date));
+        const safeClient = clientName.replace(/'/g, "\\'");
+
         tbody.innerHTML = clientSales.map(s => {
           const items = s.items || [{ item: s.item, color: s.color || 'Grey', qty: s.qty, total: s.total }];
           const desc = items.map(it => `${it.item} [${it.color || 'Grey'}] (${it.qty})`).join(', ');
+
+          let totalOrderQty = 0;
+          items.forEach(it => totalOrderQty += (Number(it.qty) || 0));
+
+          const dispatchedQty = (s.dispatches || []).reduce((acc, cur) => acc + (Number(cur.qty) || 0), 0);
+          const isCompleted = dispatchedQty >= totalOrderQty && totalOrderQty > 0;
 
           return `
             <tr>
@@ -2369,6 +2422,7 @@
               <td style="color:var(--danger); font-weight:700;">₹${Number(s.balance).toLocaleString('en-IN')}</td>
               <td>
                 <div style="display:flex; flex-wrap:wrap; gap:4px;">
+                  ${!isCompleted ? `<button class="btn btn-warning btn-sm" onclick="closeClientQuickModal(); openClientDispatchModal('${safeClient}', '${s.id}')">🚚 ਡਿਸਪੈਚ</button>` : `<span class="badge badge-cleared">ਡਿਲੀਵਰਡ</span>`}
                   ${s.balance > 0 ? `<button class="btn btn-success btn-sm" onclick="closeClientQuickModal(); openPaymentModal('${s.id}', 'sale')">ਜਮ੍ਹਾਂ</button>` : ''}
                   <button class="btn btn-edit btn-sm" onclick="closeClientQuickModal(); editSale('${s.id}');">✏️</button>
                   <button class="btn btn-danger btn-sm" onclick="deleteRecord('${s.id}', 'sale')">🗑️</button>
@@ -2493,31 +2547,51 @@
       }).join('');
     }
 
-    // MULTI-ITEM BATCH DISPATCH MODAL FOR CLIENT
-    function openClientDispatchModal(clientName) {
+    // STAGED MULTI-ITEM DISPATCH MODAL (BUILD PENDING OPTIONS + ADD-TO-QUEUE)
+    function openClientDispatchModal(clientName, preselectSaleId = null) {
       currentDispatchClientName = clientName;
+      editingDispatchBatchId = null;
+      stagedDispatchQueue = [];
+
+      document.getElementById('dispatchModalTitle').textContent = '🚚 ਮਾਲ ਡਿਸਪੈਚ (ਕਈ ਆਈਟਮਾਂ ਇਕੱਠੀਆਂ ਭੇਜੋ)';
+      document.getElementById('dispatchSaveBtn').textContent = '🚚 ਡਿਸਪੈਚ ਸੇਵ ਕਰੋ';
+      document.getElementById('dispatchSub').textContent = `ਕਲਾਇੰਟ: ${clientName}`;
+      document.getElementById('dispatchDate').value = getTodayString();
+      document.getElementById('dispatchNextDate').value = '';
+      document.getElementById('dispatchSelectedLoaded').checked = false;
+      document.getElementById('dispatchSelectedUnloaded').checked = false;
+
+      buildPendingDispatchDropdown(clientName, preselectSaleId);
+      renderDispatchQueue();
+      document.getElementById('dispatchModal').classList.add('show');
+    }
+
+    function buildPendingDispatchDropdown(clientName, preselectSaleId = null, excludedBatchKey = null) {
       const clientSales = sales.filter(s => (s.client || '').trim().toLowerCase() === clientName.trim().toLowerCase());
       clientSales.sort((a, b) => new Date(a.date) - new Date(b.date));
 
-      document.getElementById('dispatchSub').textContent = `ਕਲਾਇੰਟ: ${clientName} (ਸਾਰੇ ਬਾਕੀ ਆਰਡਰਾਂ ਦੀਆਂ ਆਈਟਮਾਂ)`;
-      document.getElementById('dispatchDate').value = getTodayString();
-      document.getElementById('dispatchNextDate').value = '';
+      availablePendingDispatchItems = [];
 
-      const pendingRows = [];
       clientSales.forEach(s => {
         const items = s.items || [{ item: s.item, color: s.color || 'Grey', qty: s.qty }];
         const dispatches = s.dispatches || [];
 
-        items.forEach((it, itemIdx) => {
+        items.forEach(it => {
           let alreadySent = 0;
-          dispatches.forEach(d => {
+          dispatches.forEach((d, dIdx) => {
+            const dKey = d.batchId || `${s.id}_${d.date}_${dIdx}`;
+            if (excludedBatchKey && dKey === excludedBatchKey) return; // Exclude batch currently being edited
+
             if ((d.item || '').toLowerCase() === (it.item || '').toLowerCase() && (d.color || 'Grey') === (it.color || 'Grey')) {
               alreadySent += Number(d.qty) || 0;
             }
           });
-          // Fallback match without color if old dispatch had no color
+
           if (alreadySent === 0) {
-            dispatches.forEach(d => {
+            dispatches.forEach((d, dIdx) => {
+              const dKey = d.batchId || `${s.id}_${d.date}_${dIdx}`;
+              if (excludedBatchKey && dKey === excludedBatchKey) return;
+
               if (!d.color && (d.item || '').toLowerCase() === (it.item || '').toLowerCase()) {
                 alreadySent += Number(d.qty) || 0;
               }
@@ -2526,7 +2600,7 @@
 
           const rem = Math.max(0, (Number(it.qty) || 0) - alreadySent);
           if (rem > 0) {
-            pendingRows.push({
+            availablePendingDispatchItems.push({
               saleId: s.id,
               saleDate: s.date,
               item: it.item,
@@ -2537,121 +2611,257 @@
         });
       });
 
-      const tbody = document.getElementById('dispatchItemsTableBody');
-      if (pendingRows.length === 0) {
-        tbody.innerHTML = '<tr><td colspan="4" style="text-align:center;">ਇਸ ਗਾਹਕ ਦਾ ਸਾਰਾ ਮਾਲ ਡਿਲੀਵਰ ਹੋ ਚੁੱਕਾ ਹੈ!</td></tr>';
-      } else {
-        tbody.innerHTML = pendingRows.map((p, idx) => `
-          <tr class="batch-dispatch-row" data-sale-id="${p.saleId}" data-item="${p.item}" data-color="${p.color}" data-pending="${p.pending}">
-            <td>
-              <strong>${p.item}</strong> <span class="badge badge-stock">${p.color}</span>
-              <br><small style="color:var(--text-muted);">ਆਰਡਰ: ${p.saleDate}</small>
-            </td>
-            <td><strong style="color:var(--danger);">${p.pending.toLocaleString('en-IN')}</strong></td>
-            <td>
-              <input type="number" class="batch-send-qty" min="0" max="${p.pending}" placeholder="0" style="padding:6px 8px; width:95px;">
-            </td>
-            <td>
-              <div class="checkbox-row">
-                <label class="checkbox-label"><input type="checkbox" class="batch-loaded"> 📦 Load</label>
-                <label class="checkbox-label"><input type="checkbox" class="batch-unloaded"> 🚛 Unload</label>
-              </div>
-            </td>
-          </tr>
-        `).join('');
+      const select = document.getElementById('dispatchItemSelect');
+      if (availablePendingDispatchItems.length === 0) {
+        select.innerHTML = '<option value="">ਕੋਈ ਪੈਂਡਿੰਗ ਆਈਟਮ ਨਹੀਂ ਬਚੀ</option>';
+        document.getElementById('dispatchSelectedPending').value = 0;
+        document.getElementById('dispatchSelectedQty').value = '';
+        return;
       }
 
-      document.getElementById('dispatchModal').classList.add('show');
+      select.innerHTML = availablePendingDispatchItems.map((p, idx) => 
+        `<option value="${idx}" ${preselectSaleId && p.saleId === preselectSaleId ? 'selected' : ''}>${p.item} [${p.color}] (ਆਰਡਰ: ${p.saleDate})</option>`
+      ).join('');
+
+      updateSelectedPendingQty();
     }
 
-    function toggleAllDispatchCheckboxes(type) {
-      const selector = type === 'loaded' ? '.batch-loaded' : '.batch-unloaded';
-      const boxes = document.querySelectorAll(selector);
-      const anyUnchecked = Array.from(boxes).some(b => !b.checked);
-      boxes.forEach(b => b.checked = anyUnchecked);
+    function updateSelectedPendingQty() {
+      const idx = parseInt(document.getElementById('dispatchItemSelect').value);
+      if (isNaN(idx) || !availablePendingDispatchItems[idx]) {
+        document.getElementById('dispatchSelectedPending').value = 0;
+        document.getElementById('dispatchSelectedQty').value = '';
+        return;
+      }
+
+      const selected = availablePendingDispatchItems[idx];
+      // Subtract whatever is already staged in queue for this exact saleId + item + color
+      const alreadyStaged = stagedDispatchQueue
+        .filter(q => q.saleId === selected.saleId && q.item === selected.item && q.color === selected.color)
+        .reduce((sum, cur) => sum + cur.qty, 0);
+
+      const rem = Math.max(0, selected.pending - alreadyStaged);
+      document.getElementById('dispatchSelectedPending').value = rem;
+      document.getElementById('dispatchSelectedQty').value = rem > 0 ? rem : '';
+    }
+
+    function addDispatchItemToQueue() {
+      const idx = parseInt(document.getElementById('dispatchItemSelect').value);
+      if (isNaN(idx) || !availablePendingDispatchItems[idx]) {
+        return alert('ਕਿਰਪਾ ਕਰਕੇ ਕੋਈ ਆਈਟਮ ਚੁਣੋ!');
+      }
+
+      const selected = availablePendingDispatchItems[idx];
+      const maxAvailable = parseFloat(document.getElementById('dispatchSelectedPending').value) || 0;
+      const qty = parseFloat(document.getElementById('dispatchSelectedQty').value) || 0;
+      const loaded = document.getElementById('dispatchSelectedLoaded').checked;
+      const unloaded = document.getElementById('dispatchSelectedUnloaded').checked;
+
+      if (qty <= 0) {
+        return alert('ਕਿਰਪਾ ਕਰਕੇ ਭੇਜਣ ਵਾਲੇ ਨਗ (Qty) ਭਰੋ!');
+      }
+      if (qty > maxAvailable) {
+        return alert(`ਇਸ ਆਈਟਮ ਦੇ ਸਿਰਫ਼ ${maxAvailable} ਨਗ ਹੀ ਬਾਕੀ ਹਨ!`);
+      }
+
+      stagedDispatchQueue.push({
+        saleId: selected.saleId,
+        item: selected.item,
+        color: selected.color,
+        qty: qty,
+        loaded: loaded,
+        unloaded: unloaded
+      });
+
+      document.getElementById('dispatchSelectedLoaded').checked = false;
+      document.getElementById('dispatchSelectedUnloaded').checked = false;
+
+      renderDispatchQueue();
+      updateSelectedPendingQty();
+    }
+
+    function removeDispatchItemFromQueue(qIdx) {
+      stagedDispatchQueue.splice(qIdx, 1);
+      renderDispatchQueue();
+      updateSelectedPendingQty();
+    }
+
+    function renderDispatchQueue() {
+      const tbody = document.getElementById('dispatchQueueBody');
+      if (stagedDispatchQueue.length === 0) {
+        tbody.innerHTML = '<tr><td colspan="4" style="text-align:center; color:var(--text-muted);">ਅਜੇ ਕੋਈ ਆਈਟਮ ਨਹੀਂ ਜੋੜੀ ਗਈ</td></tr>';
+        return;
+      }
+
+      tbody.innerHTML = stagedDispatchQueue.map((q, idx) => {
+        const tags = [];
+        if (q.loaded) tags.push('📦 Loaded');
+        if (q.unloaded) tags.push('🚛 Unloaded');
+        return `
+          <tr>
+            <td><strong>${q.item}</strong> <span class="badge badge-stock">${q.color}</span></td>
+            <td><strong>${q.qty.toLocaleString('en-IN')} ਨਗ</strong></td>
+            <td><span class="badge badge-partial">${tags.length > 0 ? tags.join(' + ') : 'No Load/Unload'}</span></td>
+            <td><button type="button" class="btn btn-danger btn-sm" onclick="removeDispatchItemFromQueue(${idx})">✖</button></td>
+          </tr>
+        `;
+      }).join('');
     }
 
     function closeDispatchModal() {
       document.getElementById('dispatchModal').classList.remove('show');
       currentDispatchClientName = null;
+      editingDispatchBatchId = null;
+      stagedDispatchQueue = [];
     }
 
-    function handleBatchDispatchSubmit(e) {
+    function handleStagedDispatchSubmit(e) {
       e.preventDefault();
       if (!currentDispatchClientName) return;
 
+      if (stagedDispatchQueue.length === 0) {
+        return alert('ਕਿਰਪਾ ਕਰਕੇ ਪਹਿਲਾਂ ਘੱਟੋ-ਘੱਟ ਇੱਕ ਆਈਟਮ "➕ ਲਿਸਟ ਵਿੱਚ ਜੋੜੋ"!');
+      }
+
       const date = document.getElementById('dispatchDate').value || getTodayString();
       const nextDate = document.getElementById('dispatchNextDate').value;
-      const rows = document.querySelectorAll('.batch-dispatch-row');
+      const batchId = editingDispatchBatchId ? editingDispatchBatchId.batchId : ('B_' + Date.now());
 
-      const batchId = 'B_' + Date.now();
       const updatedSalesMap = {};
+
+      // If editing an existing dispatch batch, remove its old entries first
+      if (editingDispatchBatchId) {
+        const { batchKey, isExplicitBatch, saleId, dispatchIdx } = editingDispatchBatchId;
+        const clientSales = sales.filter(s => (s.client || '').trim().toLowerCase() === currentDispatchClientName.trim().toLowerCase());
+        clientSales.forEach(s => {
+          if (s.dispatches && s.dispatches.length > 0) {
+            const origLen = s.dispatches.length;
+            if (isExplicitBatch) {
+              s.dispatches = s.dispatches.filter(d => d.batchId !== batchKey);
+            } else if (s.id === saleId) {
+              s.dispatches.splice(dispatchIdx, 1);
+            }
+            if (s.dispatches.length !== origLen) {
+              updatedSalesMap[s.id] = s;
+            }
+          }
+        });
+      }
+
       let totalItemsDispatched = 0;
       let totalLoadingWageAdded = 0;
-      let anyRemaining = false;
 
-      rows.forEach(r => {
-        const saleId = r.dataset.saleId;
-        const item = r.dataset.item;
-        const color = r.dataset.color || 'Grey';
-        const pending = parseFloat(r.dataset.pending) || 0;
-        const sendQty = parseFloat(r.querySelector('.batch-send-qty').value) || 0;
-        const loaded = r.querySelector('.batch-loaded').checked;
-        const unloaded = r.querySelector('.batch-unloaded').checked;
+      stagedDispatchQueue.forEach(q => {
+        const saleObj = updatedSalesMap[q.saleId] || sales.find(s => s.id === q.saleId);
+        if (saleObj) {
+          const ratePerAction = getLoadingRateForItem(q.item);
+          let loadingCost = 0;
+          if (q.loaded) loadingCost += q.qty * ratePerAction;
+          if (q.unloaded) loadingCost += q.qty * ratePerAction;
 
-        if (sendQty < pending) {
-          anyRemaining = true;
-        }
+          if (!saleObj.dispatches) saleObj.dispatches = [];
+          saleObj.dispatches.push({
+            batchId: batchId,
+            item: q.item,
+            color: q.color,
+            qty: q.qty,
+            date: date,
+            loaded: q.loaded,
+            unloaded: q.unloaded,
+            ratePerAction: ratePerAction,
+            loadingCost: loadingCost
+          });
 
-        if (sendQty > 0) {
-          if (sendQty > pending) {
-            alert(`${item} [${color}] ਦੇ ਭੇਜਣ ਵਾਲੇ ਨਗ (${sendQty}) ਬਾਕੀ ਮਾਲ (${pending}) ਤੋਂ ਵੱਧ ਨਹੀਂ ਹੋ ਸਕਦੇ!`);
-            throw new Error('Invalid quantity');
+          if (nextDate) {
+            saleObj.nextDeliveryDate = nextDate;
           }
 
-          const saleObj = updatedSalesMap[saleId] || sales.find(s => s.id === saleId);
-          if (saleObj) {
-            const ratePerAction = getLoadingRateForItem(item);
-            let loadingCost = 0;
-            if (loaded) loadingCost += sendQty * ratePerAction;
-            if (unloaded) loadingCost += sendQty * ratePerAction;
-
-            if (!saleObj.dispatches) saleObj.dispatches = [];
-            saleObj.dispatches.push({
-              batchId: batchId,
-              item: item,
-              color: color,
-              qty: sendQty,
-              date: date,
-              loaded: loaded,
-              unloaded: unloaded,
-              ratePerAction: ratePerAction,
-              loadingCost: loadingCost
-            });
-
-            if (nextDate) {
-              saleObj.nextDeliveryDate = nextDate;
-            }
-
-            updatedSalesMap[saleId] = saleObj;
-            totalItemsDispatched += sendQty;
-            totalLoadingWageAdded += loadingCost;
-          }
+          updatedSalesMap[saleObj.id] = saleObj;
+          totalItemsDispatched += q.qty;
+          totalLoadingWageAdded += loadingCost;
         }
       });
-
-      if (totalItemsDispatched === 0) {
-        return alert('ਕਿਰਪਾ ਕਰਕੇ ਘੱਟੋ-ਘੱਟ ਇੱਕ ਆਈਟਮ ਦੇ ਭੇਜਣ ਵਾਲੇ ਨਗ (Qty) ਭਰੋ!');
-      }
 
       Object.values(updatedSalesMap).forEach(s => {
         db.ref('sales/' + s.id).set(s);
       });
 
       const savedClient = currentDispatchClientName;
+      const wasEdit = !!editingDispatchBatchId;
       closeDispatchModal();
-      alert(`🚚 ਕੁੱਲ ${totalItemsDispatched.toLocaleString('en-IN')} ਪੀਸ ਡਿਸਪੈਚ ਹੋ ਗਏ ਹਨ! (ਲੇਬਰ ਖਾਤੇ ਵਿੱਚ ₹${totalLoadingWageAdded.toFixed(2)} ਜੁੜ ਗਏ ਹਨ)`);
+      alert(wasEdit
+        ? `✅ ਡਿਸਪੈਚ ਐਂਟਰੀ ਅੱਪਡੇਟ ਹੋ ਗਈ ਹੈ!`
+        : `🚚 ਕੁੱਲ ${totalItemsDispatched.toLocaleString('en-IN')} ਪੀਸ ਡਿਸਪੈਚ ਹੋ ਗਏ ਹਨ! (ਲੇਬਰ ਖਾਤੇ ਵਿੱਚ ₹${totalLoadingWageAdded.toFixed(2)} ਜੁੜ ਗਏ ਹਨ)`
+      );
       openClientQuickModal(savedClient);
+    }
+
+    // EDIT EXISTING DISPATCH BATCH ENTRY
+    function editDispatchBatch(clientName, batchKey, isExplicitBatch, saleId, dispatchIdx) {
+      currentDispatchClientName = clientName;
+      const clientSales = sales.filter(s => (s.client || '').trim().toLowerCase() === clientName.trim().toLowerCase());
+
+      const entriesToEdit = [];
+      clientSales.forEach(s => {
+        (s.dispatches || []).forEach((d, idx) => {
+          if (isExplicitBatch && d.batchId === batchKey) {
+            entriesToEdit.push({ saleId: s.id, ...d });
+          } else if (!isExplicitBatch && s.id === saleId && idx === dispatchIdx) {
+            entriesToEdit.push({ saleId: s.id, ...d });
+          }
+        });
+      });
+
+      if (entriesToEdit.length === 0) return;
+
+      editingDispatchBatchId = {
+        batchId: isExplicitBatch ? batchKey : ('B_' + Date.now()),
+        batchKey: batchKey,
+        isExplicitBatch: isExplicitBatch,
+        saleId: saleId,
+        dispatchIdx: dispatchIdx
+      };
+
+      stagedDispatchQueue = entriesToEdit.map(e => ({
+        saleId: e.saleId,
+        item: e.item,
+        color: e.color || 'Grey',
+        qty: Number(e.qty) || 0,
+        loaded: !!e.loaded,
+        unloaded: !!e.unloaded
+      }));
+
+      document.getElementById('dispatchModalTitle').textContent = '✏️ ਡਿਸਪੈਚ ਐਂਟਰੀ ਐਡਿਟ ਕਰੋ';
+      document.getElementById('dispatchSaveBtn').textContent = '💾 ਬਦਲਾਅ ਸੇਵ ਕਰੋ';
+      document.getElementById('dispatchSub').textContent = `ਕਲਾਇੰਟ: ${clientName}`;
+      document.getElementById('dispatchDate').value = entriesToEdit[0].date || getTodayString();
+
+      buildPendingDispatchDropdown(clientName, null, batchKey);
+      renderDispatchQueue();
+      document.getElementById('dispatchModal').classList.add('show');
+    }
+
+    // DELETE DISPATCH BATCH ENTRY (RESTORES PENDING QTY & STOCK AUTOMATICALLY)
+    function deleteDispatchBatch(clientName, batchKey, isExplicitBatch, saleId, dispatchIdx) {
+      if (!confirm('ਕੀ ਤੁਸੀਂ ਇਹ ਡਿਸਪੈਚ ਐਂਟਰੀ ਡਿਲੀਟ ਕਰਨਾ ਚਾਹੁੰਦੇ ਹੋ? (ਇਸ ਨਾਲ ਮਾਲ ਵਾਪਸ ਪੈਂਡਿੰਗ ਅਤੇ ਸਟੋਕ ਵਿੱਚ ਜੁੜ ਜਾਵੇਗਾ)')) return;
+
+      const clientSales = sales.filter(s => (s.client || '').trim().toLowerCase() === clientName.trim().toLowerCase());
+      clientSales.forEach(s => {
+        if (s.dispatches && s.dispatches.length > 0) {
+          const origLen = s.dispatches.length;
+          if (isExplicitBatch) {
+            s.dispatches = s.dispatches.filter(d => d.batchId !== batchKey);
+          } else if (s.id === saleId) {
+            s.dispatches.splice(dispatchIdx, 1);
+          }
+          if (s.dispatches.length !== origLen) {
+            db.ref('sales/' + s.id).set(s);
+          }
+        }
+      });
+
+      alert('🗑️ ਡਿਸਪੈਚ ਐਂਟਰੀ ਹਟਾ ਦਿੱਤੀ ਗਈ ਹੈ!');
+      openClientQuickModal(clientName);
     }
 
     // BLOCK 6: SAVE LABOUR FROM STAGED QUEUE
