@@ -307,14 +307,14 @@
     .checkbox-row {
       display: flex;
       align-items: center;
-      gap: 16px;
-      margin-top: 6px;
+      gap: 12px;
     }
     .checkbox-label {
       display: inline-flex;
       align-items: center;
-      gap: 6px;
-      font-size: 0.85rem;
+      gap: 5px;
+      font-size: 0.84rem;
+      font-weight: 600;
       cursor: pointer;
       user-select: none;
     }
@@ -417,7 +417,7 @@
     .modal-box {
       background: white;
       border-radius: var(--radius);
-      max-width: 580px;
+      max-width: 680px;
       width: 100%;
       padding: 20px;
       box-shadow: var(--shadow);
@@ -566,7 +566,7 @@
 
       <div class="card card-sale-theme">
         <div class="card-title">
-          <span>ਗਾਹਕਾਂ ਦੀ ਸੇਲ ਸੂਚੀ (ਪੂਰਾ ਖਾਤਾ ਵੇਖਣ ਲਈ ਨਾਮ 'ਤੇ ਟੈਪ ਕਰੋ)</span>
+          <span>ਗਾਹਕਾਂ ਦੀ ਸੇਲ ਸੂਚੀ (ਪੂਰਾ ਖਾਤਾ ਤੇ ਡਿਸਪੈਚ ਵੇਰਵਾ ਵੇਖਣ ਲਈ ਨਾਮ 'ਤੇ ਟੈਪ ਕਰੋ)</span>
         </div>
         <div class="table-responsive">
           <table id="salesTable">
@@ -797,10 +797,9 @@
       </div>
     </section>
 
-    <!-- BLOCK 6: LABOUR PRODUCTION (WITH ADD-BUTTON PER ROW) & PAYOUT LEDGER -->
+    <!-- BLOCK 6: LABOUR PRODUCTION & PAYOUT LEDGER -->
     <section id="tab-labour" class="tab-content">
       
-      <!-- 1. Fixed Items Grid Form with ➕ Row Button -->
       <div class="card">
         <div class="card-title">
           <span id="labourFormTitle">1. ਲੇਬਰ ਰੋਜ਼ਾਨਾ ਉਤਪਾਦਨ ਐਂਟਰੀ (ਰੰਗ-ਵਾਰ ਆਈਟਮਾਂ ਜੋੜੋ)</span>
@@ -844,7 +843,6 @@
               </table>
             </div>
 
-            <!-- Staged Queue of Selected Production Items -->
             <div style="margin-top:14px; background:white; border:1.5px solid #e2e8f0; border-radius:8px; padding:12px;">
               <strong style="color:var(--primary); font-size:0.92rem; display:block; margin-bottom:8px;">
                 📋 ਅੱਜ ਲਈ ਚੁਣੀਆਂ ਗਈਆਂ ਆਈਟਮਾਂ ਦੀ ਸੂਚੀ (Staged Items):
@@ -868,7 +866,6 @@
               </div>
             </div>
 
-            <!-- Single Consolidated Cement Block -->
             <div style="margin-top:14px; background:#f0fdf4; border:1.5px solid #86efac; border-radius:8px; padding:12px; display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:10px;">
               <div>
                 <strong style="color:#166534; font-size:0.95rem;">🏗️ ਅੱਜ ਕੁੱਲ ਵਰਤੀਆਂ ਸੀਮੈਂਟ ਬੋਰੀਆਂ (Total Cement Bags Used):</strong>
@@ -894,7 +891,6 @@
         </form>
       </div>
 
-      <!-- 1. Production Summary: Today's Entries + Slide Arrow for Past Entries -->
       <div class="card">
         <div class="card-title">
           <span>ਲੇਬਰ ਉਤਪਾਦਨ ਸਮਰੀ ਰਿਕਾਰਡ (ਅੱਜ ਦਾ ਦਿਨ)</span>
@@ -936,7 +932,6 @@
         </div>
       </div>
 
-      <!-- 2. Labour Payout Ledger Section + Slide Arrow -->
       <div class="card" style="border-top: 4px solid var(--purple);">
         <div class="card-title">
           <span>2. ਲੇਬਰ ਭੁਗਤਾਨ & ਖਾਤਾ ਰਜਿਸਟਰ (Labour Wages & Payout Ledger)</span>
@@ -1016,7 +1011,6 @@
         </div>
       </div>
 
-      <!-- 3. LOADING & UNLOADING LABOUR LEDGER + SLIDE ARROW -->
       <div class="card" style="border-top: 4px solid var(--warning);">
         <div class="card-title">
           <span>3. ਲੇਬਰ ਲੋਡਿੰਗ & ਅਨਲੋਡਿੰਗ ਰਿਕਾਰਡ (ਅੱਜ ਦਾ ਦਿਨ)</span>
@@ -1095,52 +1089,59 @@
     </div>
   </div>
 
-  <!-- DISPATCH MODAL -->
+  <!-- MULTI-ITEM BATCH DISPATCH MODAL -->
   <div class="modal" id="dispatchModal">
-    <div class="modal-box">
+    <div class="modal-box" style="max-width: 760px;">
       <div class="modal-header">
-        <h3 style="font-size:1.1rem; font-weight:800;">ਮਾਲ ਡਿਸਪੈਚ & ਅਗਲੀ ਡਿਲਿਵਰੀ</h3>
+        <div>
+          <h3 style="font-size:1.2rem; font-weight:800; color:var(--primary);">🚚 ਮਾਲ ਡਿਸਪੈਚ (ਇੱਕੋ ਵਾਰ ਕਈ ਆਈਟਮਾਂ ਭੇਜੋ)</h3>
+          <p id="dispatchSub" style="font-size: 0.85rem; color: var(--text-muted); margin-top:2px;"></p>
+        </div>
         <button class="close-modal" onclick="closeDispatchModal()">×</button>
       </div>
-      <p id="dispatchSub" style="margin-bottom: 12px; font-size: 0.85rem; color: var(--text-muted);"></p>
-      <form onsubmit="handleDispatchSubmit(event)">
-        <div class="form-group" style="margin-bottom: 12px;">
-          <label>ਕਿਹੜੀ ਆਈਟਮ ਭੇਜਣੀ ਹੈ?</label>
-          <select id="dispatchItemSelect" onchange="updateDispatchItemPending()" required></select>
-        </div>
-        <div class="form-group" style="margin-bottom: 12px;">
-          <label>ਇਸ ਆਈਟਮ ਦਾ ਬਾਕੀ ਮਾਲ (Pending Qty)</label>
-          <input type="number" id="dispatchPendingQty" readonly>
-        </div>
-        <div class="form-group" style="margin-bottom: 12px;">
-          <label>ਹੁਣ ਭੇਜੀ ਜਾ ਰਹੀ ਕੁਆਂਟਿਟੀ (Sending Qty)</label>
-          <input type="number" id="dispatchSendQty" min="1" placeholder="ਜਿਵੇਂ 50 ਜਾਂ 1000" oninput="checkRemainingForNextDate()" required>
-        </div>
-        <div class="form-group" style="margin-bottom: 12px;">
-          <label>ਮਾਲ ਭੇਜਣ ਦੀ ਤਾਰੀਖ</label>
-          <input type="date" id="dispatchDate" required>
-        </div>
-        <div class="form-group" style="margin-bottom: 12px;" id="nextDeliveryDateGroup">
-          <label style="color:var(--danger);">ਬਾਕੀ ਮਾਲ ਲਈ ਅਗਲੀ ਡਿਲਿਵਰੀ ਤਾਰੀਖ (Next Delivery Date)</label>
-          <input type="date" id="dispatchNextDate">
-        </div>
-        <div class="form-group" style="margin-bottom: 14px;">
-          <label>ਲੋਡਿੰਗ / ਅਨਲੋਡਿੰਗ (ਆਟੋ ਲੇਬਰ ਕੈਲਕੁਲੇਸ਼ਨ):</label>
-          <div class="checkbox-row">
-            <label class="checkbox-label">
-              <input type="checkbox" id="dispatchLoaded"> 📦 Loaded (ਲੋਡ ਹੋਇਆ)
-            </label>
-            <label class="checkbox-label">
-              <input type="checkbox" id="dispatchUnloaded"> 🚛 Unloaded (ਅਨਲੋਡ ਹੋਇਆ)
-            </label>
+
+      <form onsubmit="handleBatchDispatchSubmit(event)">
+        <div class="horizontal-row" style="margin-bottom:10px;">
+          <div class="form-group" style="flex:1;">
+            <label>ਮਾਲ ਭੇਜਣ ਦੀ ਤਾਰੀਖ (Dispatch Date)</label>
+            <input type="date" id="dispatchDate" required>
           </div>
-          <small style="color:var(--text-muted); display:block; margin-top:4px;">
-            (Crave: ₹1.25, ਚੌਖਟ: ₹0.50, 4*4 dabi/Cement: ₹0, ਬਾਕੀ ਸਭ: ₹0.25 ਪ੍ਰਤੀ ਪੀਸ)
+          <div class="form-group" style="flex:1;" id="nextDeliveryDateGroup">
+            <label style="color:var(--danger);">ਬਾਕੀ ਮਾਲ ਲਈ ਅਗਲੀ ਡਿਲਿਵਰੀ ਤਾਰੀਖ (ਜੇ ਕੁਝ ਬਚੇ)</label>
+            <input type="date" id="dispatchNextDate">
+          </div>
+        </div>
+
+        <div class="items-box" style="padding:10px; background:#f8fafc;">
+          <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px; flex-wrap:wrap; gap:6px;">
+            <strong style="font-size:0.9rem; color:var(--primary);">ਬਾਕੀ ਆਈਟਮਾਂ (ਜਿਹੜੀਆਂ ਭੇਜਣੀਆਂ ਹਨ ਉਹਨਾਂ ਦੇ ਨਗ ਭਰੋ):</strong>
+            <div style="display:flex; gap:6px;">
+              <button type="button" class="btn btn-outline btn-sm" onclick="toggleAllDispatchCheckboxes('loaded')">☑️ ਸਭ Loaded</button>
+              <button type="button" class="btn btn-outline btn-sm" onclick="toggleAllDispatchCheckboxes('unloaded')">☑️ ਸਭ Unloaded</button>
+            </div>
+          </div>
+
+          <div class="table-responsive" style="margin-top:4px;">
+            <table>
+              <thead>
+                <tr>
+                  <th>ਆਈਟਮ & ਰੰਗ</th>
+                  <th>ਬਾਕੀ ਮਾਲ</th>
+                  <th style="min-width:110px;">ਭੇਜਣੇ (Qty)</th>
+                  <th style="min-width:175px;">ਲੇਬਰ (Load / Unload)</th>
+                </tr>
+              </thead>
+              <tbody id="dispatchItemsTableBody"></tbody>
+            </table>
+          </div>
+          <small style="color:var(--text-muted); display:block; margin-top:6px;">
+            ℹ️ Crave: ₹1.25, ਚੌਖਟ: ₹0.50, 4*4 dabi/Cement: ₹0, ਬਾਕੀ ਸਭ: ₹0.25 ਪ੍ਰਤੀ ਪੀਸ (ਲੇਬਰ ਖਾਤੇ ਵਿੱਚ ਆਟੋ ਜੁੜੇਗਾ)
           </small>
         </div>
-        <div style="display: flex; justify-content: flex-end; gap: 8px;">
+
+        <div style="display: flex; justify-content: flex-end; gap: 8px; margin-top:12px;">
           <button type="button" class="btn btn-outline" onclick="closeDispatchModal()">ਰੱਦ ਕਰੋ</button>
-          <button type="submit" class="btn btn-warning">🚚 ਡਿਸਪੈਚ ਦਰਜ ਕਰੋ</button>
+          <button type="submit" class="btn btn-warning">🚚 ਸਾਰਾ ਮਾਲ ਡਿਸਪੈਚ ਦਰਜ ਕਰੋ</button>
         </div>
       </form>
     </div>
@@ -1295,9 +1296,9 @@
     </div>
   </div>
 
-  <!-- POPUP MODAL: CLIENT DEDICATED PAGE (CORRECTED ADVANCE SUBTRACTION LOGIC) -->
+  <!-- POPUP MODAL: CLIENT DEDICATED PAGE (WITH DISPATCH HISTORY + DIRECT PAYMENT + ORDERS) -->
   <div class="modal" id="clientQuickModal">
-    <div class="modal-box" style="max-width: 800px;">
+    <div class="modal-box" style="max-width: 820px;">
       <div class="modal-header">
         <div>
           <h3 style="font-size:1.35rem; font-weight:800; color:var(--primary);" id="cqClientName">ਕਲਾਇੰਟ ਖਾਤਾ</h3>
@@ -1320,9 +1321,12 @@
           <span style="font-size:0.82rem; color:#991b1b; font-weight:600;">ਕੁੱਲ ਲੈਣ ਵਾਲਾ ਬਕਾਇਆ (Net Due):</span>
           <div style="font-size:1.35rem; font-weight:800; color:var(--danger);" id="cqNetBalance">₹0</div>
         </div>
+        <div>
+          <button type="button" class="btn btn-warning btn-sm" onclick="const c = currentQuickClient; closeClientQuickModal(); openClientDispatchModal(c);">🚚 ਮਾਲ ਡਿਸਪੈਚ ਕਰੋ</button>
+        </div>
       </div>
 
-      <!-- DIRECT ADVANCE PAYMENT BLOCK: SUBTRACTS PROPERLY FROM BALANCE -->
+      <!-- DIRECT ADVANCE PAYMENT BLOCK -->
       <div class="card" style="border:1.5px solid #86efac; background:#f0fdf4; margin-bottom:14px; padding:12px;">
         <div style="font-weight:800; color:#166534; font-size:0.95rem; margin-bottom:8px;">
           💵 ਸਿੱਧੀ ਪੇਮੈਂਟ / ਰਕਮ ਜਮ੍ਹਾਂ ਕਰੋ (ਕੁੱਲ ਬਕਾਏ ਵਿੱਚੋਂ ਮਾਈਨਸ ਹੋਵੇਗੀ):
@@ -1394,6 +1398,25 @@
         </form>
       </div>
 
+      <!-- NEW: DISPATCH HISTORY SECTION INSIDE CLIENT ENTRY -->
+      <div class="card" style="border:1.5px solid #fde047; background:#fefce8; margin-bottom:16px; padding:12px;">
+        <strong style="font-size:0.95rem; color:#854d0e; display:block; margin-bottom:6px;">
+          🚚 ਡਿਸਪੈਚ / ਮਾਲ ਭੇਜਣ ਦਾ ਵੇਰਵਾ (ਕਿਸ ਤਾਰੀਖ ਨੂੰ ਕਿੰਨਾ ਮਾਲ ਭੇਜਿਆ ਗਿਆ):
+        </strong>
+        <div class="table-responsive" style="margin-top:4px; background:white; border-radius:8px;">
+          <table>
+            <thead>
+              <tr>
+                <th>ਡਿਸਪੈਚ ਤਾਰੀਖ</th>
+                <th>ਭੇਜਿਆ ਗਿਆ ਸਮਾਨ & ਨਗ</th>
+                <th>ਲੇਬਰ ਸਟੇਟਸ</th>
+              </tr>
+            </thead>
+            <tbody id="cqDispatchHistoryBody"></tbody>
+          </table>
+        </div>
+      </div>
+
       <!-- Past Orders List for this Customer -->
       <strong style="font-size:0.92rem; color:var(--text); display:block; margin-bottom:6px;">
         ਇਸ ਗਾਹਕ ਦੇ ਸਾਰੇ ਪੁਰਾਣੇ ਆਰਡਰ ਅਤੇ ਲੈਣ-ਦੇਣ ਦੀ ਸੂਚੀ:
@@ -1407,7 +1430,7 @@
               <th>ਆਰਡਰ ਰਕਮ</th>
               <th>ਮਿਲੇ</th>
               <th>ਬਕਾਇਆ</th>
-              <th>ਐਕਸ਼ਨ & ਡਿਸਪੈਚ</th>
+              <th>ਐਕਸ਼ਨ</th>
             </tr>
           </thead>
           <tbody id="cqOrdersTableBody"></tbody>
@@ -1467,7 +1490,7 @@
     let stagedLabourQueue = [];
 
     let currentSettlement = null;
-    let currentDispatchSaleId = null;
+    let currentDispatchClientName = null;
     let selectedLedgerParty = null;
     let currentQuickClient = null;
 
@@ -1952,7 +1975,6 @@
       openClientQuickModal(currentQuickClient);
     }
 
-    // DIRECT ADVANCE SUBTRACTION: DEDUCTS PROPERLY FROM OLD BALANCES
     function handleDirectClientPayment(e) {
       e.preventDefault();
       if (!currentQuickClient) return;
@@ -2252,6 +2274,7 @@
       addSaleItemRow();
     }
 
+    // OPEN CLIENT QUICK PROFILE WITH DISPATCH HISTORY + ORDERS
     function openClientQuickModal(clientName) {
       currentQuickClient = clientName;
       const clientSales = sales.filter(s => (s.client || '').trim().toLowerCase() === clientName.trim().toLowerCase());
@@ -2284,6 +2307,50 @@
       document.getElementById('inModalSaleItemsContainer').innerHTML = '';
       addInModalSaleItemRow();
 
+      // Render Dispatch History grouped by batchId or date
+      const dispatchHistoryBody = document.getElementById('cqDispatchHistoryBody');
+      const allDispatches = [];
+      clientSales.forEach(s => {
+        (s.dispatches || []).forEach(d => {
+          allDispatches.push(d);
+        });
+      });
+
+      if (allDispatches.length === 0) {
+        dispatchHistoryBody.innerHTML = '<tr><td colspan="3" style="text-align:center; color:var(--text-muted);">ਅਜੇ ਤੱਕ ਕੋਈ ਮਾਲ ਡਿਸਪੈਚ ਨਹੀਂ ਹੋਇਆ</td></tr>';
+      } else {
+        const groupedDispatches = {};
+        allDispatches.forEach((d, i) => {
+          const key = d.batchId || `${d.date}_${i}`;
+          if (!groupedDispatches[key]) {
+            groupedDispatches[key] = {
+              date: d.date,
+              items: [],
+              hasLoad: false,
+              hasUnload: false
+            };
+          }
+          groupedDispatches[key].items.push(`${d.item} [${d.color || 'Grey'}] (${Number(d.qty || 0).toLocaleString('en-IN')} ਨਗ)`);
+          if (d.loaded) groupedDispatches[key].hasLoad = true;
+          if (d.unloaded) groupedDispatches[key].hasUnload = true;
+        });
+
+        const dispatchGroupsList = Object.values(groupedDispatches).sort((a, b) => new Date(b.date) - new Date(a.date));
+        dispatchHistoryBody.innerHTML = dispatchGroupsList.map(g => {
+          const tags = [];
+          if (g.hasLoad) tags.push('📦 Loaded');
+          if (g.hasUnload) tags.push('🚛 Unloaded');
+          return `
+            <tr>
+              <td><strong>📅 ${g.date}</strong></td>
+              <td><strong>${g.items.join(', ')}</strong></td>
+              <td><span class="badge badge-stock">${tags.length > 0 ? tags.join(' + ') : 'ਸਿੱਧੀ ਡਿਲਿਵਰੀ'}</span></td>
+            </tr>
+          `;
+        }).join('');
+      }
+
+      // Render Orders List
       const tbody = document.getElementById('cqOrdersTableBody');
       if (clientSales.length === 0) {
         tbody.innerHTML = '<tr><td colspan="6" style="text-align:center;">ਕੋਈ ਆਰਡਰ ਨਹੀਂ ਹੈ</td></tr>';
@@ -2292,11 +2359,6 @@
         tbody.innerHTML = clientSales.map(s => {
           const items = s.items || [{ item: s.item, color: s.color || 'Grey', qty: s.qty, total: s.total }];
           const desc = items.map(it => `${it.item} [${it.color || 'Grey'}] (${it.qty})`).join(', ');
-
-          const dispatched = (s.dispatches || []).reduce((acc, cur) => acc + (Number(cur.qty) || 0), 0);
-          let totalItemsQty = 0;
-          items.forEach(it => totalItemsQty += (Number(it.qty) || 0));
-          const isCompleted = dispatched >= totalItemsQty && totalItemsQty > 0;
 
           return `
             <tr>
@@ -2307,7 +2369,6 @@
               <td style="color:var(--danger); font-weight:700;">₹${Number(s.balance).toLocaleString('en-IN')}</td>
               <td>
                 <div style="display:flex; flex-wrap:wrap; gap:4px;">
-                  ${!isCompleted ? `<button class="btn btn-warning btn-sm" onclick="closeClientQuickModal(); openDispatchModal('${s.id}')">🚚 ਡਿਸਪੈਚ</button>` : ''}
                   ${s.balance > 0 ? `<button class="btn btn-success btn-sm" onclick="closeClientQuickModal(); openPaymentModal('${s.id}', 'sale')">ਜਮ੍ਹਾਂ</button>` : ''}
                   <button class="btn btn-edit btn-sm" onclick="closeClientQuickModal(); editSale('${s.id}');">✏️</button>
                   <button class="btn btn-danger btn-sm" onclick="deleteRecord('${s.id}', 'sale')">🗑️</button>
@@ -2401,34 +2462,196 @@
       tbody.innerHTML = clientList.map(c => {
         const itemsSummary = Object.entries(c.itemsCount).map(([label, qty]) => `${label}: ${qty} ਨਗ`).join(', ');
         const isCompleted = c.totalDispatchedQty >= c.totalOrderQty && c.totalOrderQty > 0;
+        const safeName = c.client.replace(/'/g, "\\'");
 
         return `
           <tr class="clickable-row">
-            <td onclick="openClientQuickModal('${c.client.replace(/'/g, "\\'")}')" title="ਪੂਰਾ ਖਾਤਾ ਵੇਖਣ ਲਈ ਕਲਿੱਕ ਕਰੋ">
+            <td onclick="openClientQuickModal('${safeName}')" title="ਪੂਰਾ ਖਾਤਾ ਵੇਖਣ ਲਈ ਕਲਿੱਕ ਕਰੋ">
               <strong style="color:var(--primary); text-decoration:underline; font-size:1rem;">👤 ${c.client}</strong>
               ${c.phone ? `<br><small>${c.phone}</small>` : ''}
               ${c.address ? `<br><small style="color:var(--text-muted);">📍 ${c.address}</small>` : ''}
             </td>
-            <td onclick="openClientQuickModal('${c.client.replace(/'/g, "\\'")}')"><strong>${c.latestDate || '-'}</strong></td>
-            <td onclick="openClientQuickModal('${c.client.replace(/'/g, "\\'")}')"><small>${itemsSummary}</small></td>
-            <td onclick="openClientQuickModal('${c.client.replace(/'/g, "\\'")}')">
+            <td onclick="openClientQuickModal('${safeName}')"><strong>${c.latestDate || '-'}</strong></td>
+            <td onclick="openClientQuickModal('${safeName}')"><small>${itemsSummary}</small></td>
+            <td onclick="openClientQuickModal('${safeName}')">
               <span class="badge ${isCompleted ? 'badge-cleared' : c.totalDispatchedQty > 0 ? 'badge-partial' : 'badge-pending'}">
                 ${isCompleted ? 'ਪੂਰਾ ਡਿਲੀਵਰਡ' : `${c.totalDispatchedQty}/${c.totalOrderQty} ਭੇਜੇ`}
               </span>
             </td>
-            <td onclick="openClientQuickModal('${c.client.replace(/'/g, "\\'")}')"><strong>₹${c.totalBusiness.toLocaleString('en-IN')}</strong></td>
-            <td onclick="openClientQuickModal('${c.client.replace(/'/g, "\\'")}')" style="color:var(--success); font-weight:700;">₹${c.totalPaid.toLocaleString('en-IN')}</td>
-            <td onclick="openClientQuickModal('${c.client.replace(/'/g, "\\'")}')"><span class="badge ${c.totalBalance > 0 ? 'badge-pending' : 'badge-cleared'}">₹${c.totalBalance.toLocaleString('en-IN')}</span></td>
+            <td onclick="openClientQuickModal('${safeName}')"><strong>₹${c.totalBusiness.toLocaleString('en-IN')}</strong></td>
+            <td onclick="openClientQuickModal('${safeName}')" style="color:var(--success); font-weight:700;">₹${c.totalPaid.toLocaleString('en-IN')}</td>
+            <td onclick="openClientQuickModal('${safeName}')"><span class="badge ${c.totalBalance > 0 ? 'badge-pending' : 'badge-cleared'}">₹${c.totalBalance.toLocaleString('en-IN')}</span></td>
             <td>
               <div style="display:flex; flex-wrap:wrap; gap:4px;">
-                ${!isCompleted ? `<button class="btn btn-warning btn-sm" onclick="openDispatchModal('${c.lastSaleId}')">🚚 ਮਾਲ ਭੇਜੋ</button>` : ''}
+                ${!isCompleted ? `<button class="btn btn-warning btn-sm" onclick="openClientDispatchModal('${safeName}')">🚚 ਮਾਲ ਭੇਜੋ</button>` : ''}
                 ${c.phone ? `<button class="btn btn-whatsapp btn-sm" onclick="sendWhatsAppInvoice('${c.lastSaleId}', 'sale')">💬 WA</button>` : ''}
-                <button class="btn btn-outline btn-sm" onclick="openClientQuickModal('${c.client.replace(/'/g, "\\'")}')">📂 ਖਾਤਾ</button>
+                <button class="btn btn-outline btn-sm" onclick="openClientQuickModal('${safeName}')">📂 ਖਾਤਾ</button>
               </div>
             </td>
           </tr>
         `;
       }).join('');
+    }
+
+    // MULTI-ITEM BATCH DISPATCH MODAL FOR CLIENT
+    function openClientDispatchModal(clientName) {
+      currentDispatchClientName = clientName;
+      const clientSales = sales.filter(s => (s.client || '').trim().toLowerCase() === clientName.trim().toLowerCase());
+      clientSales.sort((a, b) => new Date(a.date) - new Date(b.date));
+
+      document.getElementById('dispatchSub').textContent = `ਕਲਾਇੰਟ: ${clientName} (ਸਾਰੇ ਬਾਕੀ ਆਰਡਰਾਂ ਦੀਆਂ ਆਈਟਮਾਂ)`;
+      document.getElementById('dispatchDate').value = getTodayString();
+      document.getElementById('dispatchNextDate').value = '';
+
+      const pendingRows = [];
+      clientSales.forEach(s => {
+        const items = s.items || [{ item: s.item, color: s.color || 'Grey', qty: s.qty }];
+        const dispatches = s.dispatches || [];
+
+        items.forEach((it, itemIdx) => {
+          let alreadySent = 0;
+          dispatches.forEach(d => {
+            if ((d.item || '').toLowerCase() === (it.item || '').toLowerCase() && (d.color || 'Grey') === (it.color || 'Grey')) {
+              alreadySent += Number(d.qty) || 0;
+            }
+          });
+          // Fallback match without color if old dispatch had no color
+          if (alreadySent === 0) {
+            dispatches.forEach(d => {
+              if (!d.color && (d.item || '').toLowerCase() === (it.item || '').toLowerCase()) {
+                alreadySent += Number(d.qty) || 0;
+              }
+            });
+          }
+
+          const rem = Math.max(0, (Number(it.qty) || 0) - alreadySent);
+          if (rem > 0) {
+            pendingRows.push({
+              saleId: s.id,
+              saleDate: s.date,
+              item: it.item,
+              color: it.color || 'Grey',
+              pending: rem
+            });
+          }
+        });
+      });
+
+      const tbody = document.getElementById('dispatchItemsTableBody');
+      if (pendingRows.length === 0) {
+        tbody.innerHTML = '<tr><td colspan="4" style="text-align:center;">ਇਸ ਗਾਹਕ ਦਾ ਸਾਰਾ ਮਾਲ ਡਿਲੀਵਰ ਹੋ ਚੁੱਕਾ ਹੈ!</td></tr>';
+      } else {
+        tbody.innerHTML = pendingRows.map((p, idx) => `
+          <tr class="batch-dispatch-row" data-sale-id="${p.saleId}" data-item="${p.item}" data-color="${p.color}" data-pending="${p.pending}">
+            <td>
+              <strong>${p.item}</strong> <span class="badge badge-stock">${p.color}</span>
+              <br><small style="color:var(--text-muted);">ਆਰਡਰ: ${p.saleDate}</small>
+            </td>
+            <td><strong style="color:var(--danger);">${p.pending.toLocaleString('en-IN')}</strong></td>
+            <td>
+              <input type="number" class="batch-send-qty" min="0" max="${p.pending}" placeholder="0" style="padding:6px 8px; width:95px;">
+            </td>
+            <td>
+              <div class="checkbox-row">
+                <label class="checkbox-label"><input type="checkbox" class="batch-loaded"> 📦 Load</label>
+                <label class="checkbox-label"><input type="checkbox" class="batch-unloaded"> 🚛 Unload</label>
+              </div>
+            </td>
+          </tr>
+        `).join('');
+      }
+
+      document.getElementById('dispatchModal').classList.add('show');
+    }
+
+    function toggleAllDispatchCheckboxes(type) {
+      const selector = type === 'loaded' ? '.batch-loaded' : '.batch-unloaded';
+      const boxes = document.querySelectorAll(selector);
+      const anyUnchecked = Array.from(boxes).some(b => !b.checked);
+      boxes.forEach(b => b.checked = anyUnchecked);
+    }
+
+    function closeDispatchModal() {
+      document.getElementById('dispatchModal').classList.remove('show');
+      currentDispatchClientName = null;
+    }
+
+    function handleBatchDispatchSubmit(e) {
+      e.preventDefault();
+      if (!currentDispatchClientName) return;
+
+      const date = document.getElementById('dispatchDate').value || getTodayString();
+      const nextDate = document.getElementById('dispatchNextDate').value;
+      const rows = document.querySelectorAll('.batch-dispatch-row');
+
+      const batchId = 'B_' + Date.now();
+      const updatedSalesMap = {};
+      let totalItemsDispatched = 0;
+      let totalLoadingWageAdded = 0;
+      let anyRemaining = false;
+
+      rows.forEach(r => {
+        const saleId = r.dataset.saleId;
+        const item = r.dataset.item;
+        const color = r.dataset.color || 'Grey';
+        const pending = parseFloat(r.dataset.pending) || 0;
+        const sendQty = parseFloat(r.querySelector('.batch-send-qty').value) || 0;
+        const loaded = r.querySelector('.batch-loaded').checked;
+        const unloaded = r.querySelector('.batch-unloaded').checked;
+
+        if (sendQty < pending) {
+          anyRemaining = true;
+        }
+
+        if (sendQty > 0) {
+          if (sendQty > pending) {
+            alert(`${item} [${color}] ਦੇ ਭੇਜਣ ਵਾਲੇ ਨਗ (${sendQty}) ਬਾਕੀ ਮਾਲ (${pending}) ਤੋਂ ਵੱਧ ਨਹੀਂ ਹੋ ਸਕਦੇ!`);
+            throw new Error('Invalid quantity');
+          }
+
+          const saleObj = updatedSalesMap[saleId] || sales.find(s => s.id === saleId);
+          if (saleObj) {
+            const ratePerAction = getLoadingRateForItem(item);
+            let loadingCost = 0;
+            if (loaded) loadingCost += sendQty * ratePerAction;
+            if (unloaded) loadingCost += sendQty * ratePerAction;
+
+            if (!saleObj.dispatches) saleObj.dispatches = [];
+            saleObj.dispatches.push({
+              batchId: batchId,
+              item: item,
+              color: color,
+              qty: sendQty,
+              date: date,
+              loaded: loaded,
+              unloaded: unloaded,
+              ratePerAction: ratePerAction,
+              loadingCost: loadingCost
+            });
+
+            if (nextDate) {
+              saleObj.nextDeliveryDate = nextDate;
+            }
+
+            updatedSalesMap[saleId] = saleObj;
+            totalItemsDispatched += sendQty;
+            totalLoadingWageAdded += loadingCost;
+          }
+        }
+      });
+
+      if (totalItemsDispatched === 0) {
+        return alert('ਕਿਰਪਾ ਕਰਕੇ ਘੱਟੋ-ਘੱਟ ਇੱਕ ਆਈਟਮ ਦੇ ਭੇਜਣ ਵਾਲੇ ਨਗ (Qty) ਭਰੋ!');
+      }
+
+      Object.values(updatedSalesMap).forEach(s => {
+        db.ref('sales/' + s.id).set(s);
+      });
+
+      const savedClient = currentDispatchClientName;
+      closeDispatchModal();
+      alert(`🚚 ਕੁੱਲ ${totalItemsDispatched.toLocaleString('en-IN')} ਪੀਸ ਡਿਸਪੈਚ ਹੋ ਗਏ ਹਨ! (ਲੇਬਰ ਖਾਤੇ ਵਿੱਚ ₹${totalLoadingWageAdded.toFixed(2)} ਜੁੜ ਗਏ ਹਨ)`);
+      openClientQuickModal(savedClient);
     }
 
     // BLOCK 6: SAVE LABOUR FROM STAGED QUEUE
@@ -2693,114 +2916,6 @@
 
     function closeStockColorModal() {
       document.getElementById('stockColorModal').classList.remove('show');
-    }
-
-    function openDispatchModal(saleId) {
-      currentDispatchSaleId = saleId;
-      const s = sales.find(item => item.id === saleId);
-      if (!s) return;
-
-      document.getElementById('dispatchSub').textContent = `ਕਲਾਇੰਟ: ${s.client} | ਆਰਡਰ ਤਾਰੀਖ: ${s.date}`;
-      
-      const items = s.items || [{ item: s.item, qty: s.qty }];
-      const select = document.getElementById('dispatchItemSelect');
-      select.innerHTML = items.map((it, idx) => `<option value="${idx}">${it.item} [${it.color || 'Grey'}] (ਕੁੱਲ: ${it.qty})</option>`).join('');
-
-      document.getElementById('dispatchLoaded').checked = false;
-      document.getElementById('dispatchUnloaded').checked = false;
-      document.getElementById('dispatchNextDate').value = '';
-
-      updateDispatchItemPending();
-      document.getElementById('dispatchModal').classList.add('show');
-    }
-
-    function updateDispatchItemPending() {
-      if (!currentDispatchSaleId) return;
-      const s = sales.find(item => item.id === currentDispatchSaleId);
-      if (!s) return;
-
-      const items = s.items || [{ item: s.item, qty: s.qty }];
-      const idx = parseInt(document.getElementById('dispatchItemSelect').value) || 0;
-      const selectedItem = items[idx];
-
-      const dispatches = s.dispatches || [];
-      let itemDispatched = 0;
-      dispatches.forEach(d => {
-        if ((d.item || '').toLowerCase() === (selectedItem.item || '').toLowerCase()) {
-          itemDispatched += Number(d.qty) || 0;
-        }
-      });
-
-      const remaining = (Number(selectedItem.qty) || 0) - itemDispatched;
-      document.getElementById('dispatchPendingQty').value = remaining;
-      document.getElementById('dispatchSendQty').value = remaining;
-      document.getElementById('dispatchSendQty').max = remaining;
-
-      checkRemainingForNextDate();
-    }
-
-    function checkRemainingForNextDate() {
-      const pending = parseFloat(document.getElementById('dispatchPendingQty').value) || 0;
-      const sending = parseFloat(document.getElementById('dispatchSendQty').value) || 0;
-      const remGroup = document.getElementById('nextDeliveryDateGroup');
-
-      if (sending < pending) {
-        remGroup.style.display = 'block';
-        document.getElementById('dispatchNextDate').required = true;
-      } else {
-        remGroup.style.display = 'none';
-        document.getElementById('dispatchNextDate').required = false;
-      }
-    }
-
-    function closeDispatchModal() {
-      document.getElementById('dispatchModal').classList.remove('show');
-      currentDispatchSaleId = null;
-    }
-
-    function handleDispatchSubmit(e) {
-      e.preventDefault();
-      if (!currentDispatchSaleId) return;
-
-      const s = sales.find(item => item.id === currentDispatchSaleId);
-      if (!s) return;
-
-      const items = s.items || [{ item: s.item, qty: s.qty }];
-      const idx = parseInt(document.getElementById('dispatchItemSelect').value) || 0;
-      const selectedItem = items[idx];
-
-      const sendQty = parseFloat(document.getElementById('dispatchSendQty').value) || 0;
-      const date = document.getElementById('dispatchDate').value;
-      const nextDate = document.getElementById('dispatchNextDate').value;
-      const loaded = document.getElementById('dispatchLoaded').checked;
-      const unloaded = document.getElementById('dispatchUnloaded').checked;
-
-      if (sendQty <= 0) return alert('ਕਿਰਪਾ ਕਰਕੇ ਸਹੀ ਕੁਆਂਟਿਟੀ ਭਰੋ!');
-
-      const ratePerAction = getLoadingRateForItem(selectedItem.item);
-
-      let loadingCost = 0;
-      if (loaded) loadingCost += sendQty * ratePerAction;
-      if (unloaded) loadingCost += sendQty * ratePerAction;
-
-      if (!s.dispatches) s.dispatches = [];
-      s.dispatches.push({
-        item: selectedItem.item,
-        qty: sendQty,
-        date: date,
-        loaded: loaded,
-        unloaded: unloaded,
-        ratePerAction: ratePerAction,
-        loadingCost: loadingCost
-      });
-
-      if (nextDate) {
-        s.nextDeliveryDate = nextDate;
-      }
-
-      db.ref('sales/' + s.id).set(s);
-      closeDispatchModal();
-      alert(`🚚 ${selectedItem.item} ਦੇ ${sendQty} ਪੀਸ ਡਿਸਪੈਚ ਹੋ ਗਏ ਹਨ! (ਲੇਬਰ ਖਾਤੇ ਵਿੱਚ ₹${loadingCost.toFixed(2)} ਜੁੜ ਗਏ ਹਨ)`);
     }
 
     function renderLoadingUnloadingLedger() {
