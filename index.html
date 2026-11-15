@@ -770,7 +770,7 @@
       </div>
     </section>
 
-    <!-- BLOCK 5: FACTORY STOCK (INCLUDES RETURNS BACK TO STOCK) -->
+    <!-- BLOCK 5: FACTORY STOCK -->
     <section id="tab-stock" class="tab-content">
       <div class="card">
         <div class="card-title">
@@ -1323,7 +1323,7 @@
     </div>
   </div>
 
-  <!-- POPUP MODAL: CLIENT DEDICATED PAGE (WITH DIRECT PAYMENT LOG + RETURNS BLOCK AT BOTTOM) -->
+  <!-- POPUP MODAL: CLIENT DEDICATED PAGE -->
   <div class="modal" id="clientQuickModal">
     <div class="modal-box" style="max-width: 820px;">
       <div class="modal-header">
@@ -1378,7 +1378,6 @@
           </div>
         </form>
 
-        <!-- LIST OF RECEIVED PAYMENTS WITH DATE & MODE -->
         <div style="margin-top:10px; background:white; border-radius:8px; padding:8px; border:1px solid #bbf7d0;">
           <strong style="font-size:0.84rem; color:#166534; display:block; margin-bottom:4px;">📋 ਜਮ੍ਹਾਂ ਹੋਈਆਂ ਰਕਮਾਂ ਦਾ ਵੇਰਵਾ (Payment History):</strong>
           <div class="table-responsive" style="margin-top:2px;">
@@ -1492,7 +1491,6 @@
           ℹ️ ਵਾਪਸ ਆਇਆ ਸਮਾਨ ਫੈਕਟਰੀ ਸਟੋਕ ਵਿੱਚ ਆਪਣੇ ਆਪ ਵਾਪਸ ਜੁੜ ਜਾਵੇਗਾ ਅਤੇ ਗਾਹਕ ਨੂੰ ਵਾਪਸ ਜਾਣ ਵਾਲੀ ਰਕਮ ਹੇਠਾਂ ਦਿਖੇਗੀ।
         </p>
 
-        <!-- Form to Add Returned Item -->
         <form onsubmit="handleClientItemReturn(event)" style="margin-bottom:12px;">
           <div class="horizontal-row" style="align-items:flex-end;">
             <div class="form-group" style="flex:1;">
@@ -1531,7 +1529,6 @@
           </div>
         </form>
 
-        <!-- Return Summary & Refund Settlement -->
         <div style="background:white; border-radius:8px; padding:10px; border:1px solid #fecdd3; margin-bottom:10px;">
           <div style="display:flex; justify-content:space-between; flex-wrap:wrap; gap:8px; font-weight:700; margin-bottom:8px; padding-bottom:6px; border-bottom:1px dashed #fecdd3;">
             <span>ਕੁੱਲ ਵਾਪਸ ਆਏ ਸਮਾਨ ਦੀ ਕੀਮਤ: <strong id="cqTotalReturnAmount" style="color:var(--danger);">₹0</strong></span>
@@ -1539,7 +1536,6 @@
             <span>ਬਾਕੀ ਵਾਪਸ ਕਰਨ ਵਾਲੀ ਰਕਮ: <strong id="cqPendingRefundAmount" style="color:#9f1239;">₹0</strong></span>
           </div>
 
-          <!-- Form to Adjust / Refund Return Money (Automatically Deducts from Top Balance) -->
           <form onsubmit="handleRefundSettlement(event)">
             <div class="horizontal-row" style="align-items:flex-end;">
               <div class="form-group" style="flex:1;">
@@ -1561,7 +1557,6 @@
           </form>
         </div>
 
-        <!-- Table of Returned Items & Refund Logs -->
         <div class="table-responsive" style="background:white; border-radius:8px;">
           <table>
             <thead>
@@ -1638,6 +1633,7 @@
     let editingDispatchBatchId = null;
     let selectedLedgerParty = null;
     let currentQuickClient = null;
+    let roparPaymentNormalized = false;
 
     function getTodayString() {
       const now = new Date();
@@ -2120,7 +2116,6 @@
       openClientQuickModal(currentQuickClient);
     }
 
-    // DIRECT ADVANCE PAYMENT WITH PAYMENT GROUP ID FOR HISTORY LOGGING
     function handleDirectClientPayment(e) {
       e.preventDefault();
       if (!currentQuickClient) return;
@@ -2197,7 +2192,6 @@
       openClientQuickModal(clientName);
     }
 
-    // ITEM RETURN CALCULATION & SUBMISSION
     function calcReturnTotal() {
       const qty = parseFloat(document.getElementById('retQty').value) || 0;
       const rate = parseFloat(document.getElementById('retRate').value) || 0;
@@ -2240,7 +2234,7 @@
       openClientQuickModal(currentQuickClient);
     }
 
-    // REFUND SETTLEMENT: DEDUCTS RETURN MONEY AUTOMATICALLY FROM CLIENT'S TOP BALANCE
+    // REFUND SETTLEMENT: DEDUCTS RETURN MONEY FROM TOP BALANCE & SAVES DEDUCTION BREAKDOWN FOR UNDO ON DELETE
     function handleRefundSettlement(e) {
       e.preventDefault();
       if (!currentQuickClient) return;
@@ -2251,23 +2245,12 @@
 
       if (refundAmt <= 0) return alert('ਕਿਰਪਾ ਕਰਕੇ ਸਹੀ ਰਕਮ ਭਰੋ!');
 
-      // 1. Log the refund adjustment in salesReturns
-      const retId = 'REF_' + Date.now();
-      const refundRecord = {
-        id: retId,
-        type: 'refund_settled',
-        client: currentQuickClient,
-        date: refundDate,
-        total: refundAmt,
-        note: note
-      };
-      db.ref('salesReturns/' + retId).set(refundRecord);
-
-      // 2. Automatically deduct this return amount from the client's top sales balance
       const clientSales = sales.filter(s => (s.client || '').trim().toLowerCase() === currentQuickClient.trim().toLowerCase());
       clientSales.sort((a, b) => new Date(a.date) - new Date(b.date));
 
       let remainingToReduce = refundAmt;
+      const deductionBreakdown = [];
+
       for (let s of clientSales) {
         const curBal = Number(s.balance) || 0;
         if (curBal > 0 && remainingToReduce > 0) {
@@ -2275,6 +2258,7 @@
           s.total = Math.max(0, (Number(s.total) || 0) - reduce);
           s.balance = curBal - reduce;
           remainingToReduce -= reduce;
+          deductionBreakdown.push({ saleId: s.id, amount: reduce });
           db.ref('sales/' + s.id).set(s);
         }
       }
@@ -2283,8 +2267,21 @@
         const newest = clientSales[clientSales.length - 1];
         newest.total = Math.max(0, (Number(newest.total) || 0) - remainingToReduce);
         newest.balance = Math.max(0, (Number(newest.balance) || 0) - remainingToReduce);
+        deductionBreakdown.push({ saleId: newest.id, amount: remainingToReduce });
         db.ref('sales/' + newest.id).set(newest);
       }
+
+      const retId = 'REF_' + Date.now();
+      const refundRecord = {
+        id: retId,
+        type: 'refund_settled',
+        client: currentQuickClient,
+        date: refundDate,
+        total: refundAmt,
+        note: note,
+        deductionBreakdown: deductionBreakdown
+      };
+      db.ref('salesReturns/' + retId).set(refundRecord);
 
       document.getElementById('refundPayAmount').value = '';
       document.getElementById('refundPayNote').value = '';
@@ -2292,10 +2289,101 @@
       openClientQuickModal(currentQuickClient);
     }
 
+    // DELETE RETURN / REFUND ENTRY: AUTOMATICALLY RESTORES DEDUCTED AMOUNT BACK TO TOP NET DUE!
     function deleteSalesReturnEntry(id) {
-      if (!confirm('ਕੀ ਤੁਸੀਂ ਇਹ ਵਾਪਸੀ/ਰਿਫੰਡ ਐਂਟਰੀ ਹਟਾਉਣਾ ਚਾਹੁੰਦੇ ਹੋ?')) return;
+      const entry = salesReturns.find(r => r.id === id);
+      if (!entry) return;
+
+      if (!confirm('ਕੀ ਤੁਸੀਂ ਇਹ ਵਾਪਸੀ/ਰਿਫੰਡ ਐਂਟਰੀ ਹਟਾਉਣਾ ਚਾਹੁੰਦੇ ਹੋ? (ਘਟਾਈ ਗਈ ਰਕਮ ਵਾਪਸ ਨੈੱਟ ਬਕਾਏ ਵਿੱਚ ਜੁੜ ਜਾਵੇਗੀ)')) return;
+
+      if (entry.type === 'refund_settled') {
+        const restoreAmt = Number(entry.total) || 0;
+        const clientSales = sales.filter(s => (s.client || '').trim().toLowerCase() === (entry.client || '').trim().toLowerCase());
+
+        if (entry.deductionBreakdown && Array.isArray(entry.deductionBreakdown) && entry.deductionBreakdown.length > 0) {
+          entry.deductionBreakdown.forEach(item => {
+            const s = clientSales.find(sale => sale.id === item.saleId);
+            if (s) {
+              s.total = (Number(s.total) || 0) + (Number(item.amount) || 0);
+              s.balance = (Number(s.balance) || 0) + (Number(item.amount) || 0);
+              db.ref('sales/' + s.id).set(s);
+            }
+          });
+        } else if (clientSales.length > 0) {
+          // Fallback if entry had no breakdown stored: restore directly to latest sale
+          clientSales.sort((a, b) => new Date(b.date) - new Date(a.date));
+          const newest = clientSales[0];
+          newest.total = (Number(newest.total) || 0) + restoreAmt;
+          newest.balance = (Number(newest.balance) || 0) + restoreAmt;
+          db.ref('sales/' + newest.id).set(newest);
+        }
+      }
+
       db.ref('salesReturns/' + id).remove();
+      alert('✅ ਐਂਟਰੀ ਹਟਾ ਦਿੱਤੀ ਗਈ ਹੈ ਅਤੇ ਰਕਮ ਵਾਪਸ ਨੈੱਟ ਬਕਾਏ (Net Due) ਵਿੱਚ ਸ਼ਾਮਲ ਹੋ ਗਈ ਹੈ!');
       if (currentQuickClient) openClientQuickModal(currentQuickClient);
+    }
+
+    // AUTOMATIC ONE-TIME NORMALIZATION FOR ROPAR PAYMENT HISTORY TO SINGLE 2026-11-05 (₹1,00,000) ENTRY
+    function normalizeRoparPaymentHistoryIfNeeded() {
+      if (roparPaymentNormalized || sales.length === 0) return;
+
+      const roparSales = sales.filter(s => {
+        const name = (s.client || '').toLowerCase();
+        return name.includes('ropar') || name.includes('ਰੋਪੜ');
+      });
+
+      if (roparSales.length === 0) return;
+
+      const hasAlreadyNormalized = roparSales.some(s =>
+        (s.payments || []).some(p => p.payGroupId === 'PAY_ROPAR_FIXED_05112026')
+      );
+
+      if (hasAlreadyNormalized) {
+        roparPaymentNormalized = true;
+        return;
+      }
+
+      roparPaymentNormalized = true;
+      roparSales.sort((a, b) => new Date(a.date) - new Date(b.date));
+
+      let remainingToAllocate = 100000;
+      const fixedGroupId = 'PAY_ROPAR_FIXED_05112026';
+
+      roparSales.forEach(s => {
+        const orderTotal = Number(s.total) || 0;
+        const payForThisOrder = Math.min(orderTotal, remainingToAllocate);
+        remainingToAllocate -= payForThisOrder;
+
+        s.paid = payForThisOrder;
+        s.balance = Math.max(0, orderTotal - payForThisOrder);
+        if (payForThisOrder > 0) {
+          s.payments = [{
+            payGroupId: fixedGroupId,
+            amount: payForThisOrder,
+            date: '2026-11-05',
+            note: 'ਜਮ੍ਹਾਂ ਰਕਮ (05/11/2026)',
+            isDirect: true
+          }];
+        } else {
+          s.payments = [];
+        }
+        db.ref('sales/' + s.id).set(s);
+      });
+
+      if (remainingToAllocate > 0 && roparSales.length > 0) {
+        const lastSale = roparSales[roparSales.length - 1];
+        lastSale.paid = (Number(lastSale.paid) || 0) + remainingToAllocate;
+        if (!lastSale.payments) lastSale.payments = [];
+        lastSale.payments.push({
+          payGroupId: fixedGroupId,
+          amount: remainingToAllocate,
+          date: '2026-11-05',
+          note: 'ਜਮ੍ਹਾਂ ਰਕਮ (05/11/2026)',
+          isDirect: true
+        });
+        db.ref('sales/' + lastSale.id).set(lastSale);
+      }
     }
 
     function initDataSync() {
@@ -2325,6 +2413,7 @@
       db.ref('sales').on('value', snapshot => {
         const val = snapshot.val();
         sales = val ? Object.values(val) : [];
+        normalizeRoparPaymentHistoryIfNeeded();
         updateAllViews();
       });
 
@@ -2559,7 +2648,6 @@
       addSaleItemRow();
     }
 
-    // OPEN CLIENT QUICK PROFILE WITH ALL SECTIONS (PAYMENTS LOG, DISPATCHES, ORDERS & RETURNS)
     function openClientQuickModal(clientName) {
       currentQuickClient = clientName;
       const clientSales = sales.filter(s => (s.client || '').trim().toLowerCase() === clientName.trim().toLowerCase());
@@ -2874,7 +2962,6 @@
       }).join('');
     }
 
-    // STAGED MULTI-ITEM DISPATCH MODAL
     function openClientDispatchModal(clientName, preselectSaleId = null) {
       currentDispatchClientName = clientName;
       editingDispatchBatchId = null;
@@ -3414,7 +3501,6 @@
         }
       });
 
-      // Include returned items back into color-wise stock
       salesReturns.forEach(r => {
         if (r.type === 'item_return' && (r.item || '').trim().toLowerCase() === itemName.trim().toLowerCase()) {
           const q = Number(r.qty) || 0;
@@ -3899,7 +3985,7 @@
       selectedLedgerParty = null;
     }
 
-    // FACTORY STOCK CALCULATION (INCLUDES RETURNED ITEMS BACK TO STOCK)
+    // FACTORY STOCK CALCULATION
     function renderFactoryStock() {
       const tbody = document.querySelector('#stockTable tbody');
       const allItemsWithCement = [...currentItemsData.map(i => i.name), "ਸੀਮੈਂਟ (Cement Bags)"];
@@ -3933,7 +4019,6 @@
             }
           });
 
-          // Returned items add back to available stock (+)
           salesReturns.forEach(r => {
             if (r.type === 'item_return' && (r.item || '').trim().toLowerCase() === itemName.trim().toLowerCase()) {
               totalMadeOrIn += Number(r.qty) || 0;
