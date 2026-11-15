@@ -566,7 +566,7 @@
 
       <div class="card card-sale-theme">
         <div class="card-title">
-          <span>ਗਾਹਕਾਂ ਦੀ ਸੇਲ ਸੂਚੀ (ਪੂਰਾ ਖਾਤਾ ਤੇ ਡਿਸਪੈਚ ਵੇਰਵਾ ਵੇਖਣ ਲਈ ਨਾਮ 'ਤੇ ਟੈਪ ਕਰੋ)</span>
+          <span>ਗਾਹਕਾਂ ਦੀ ਸੇਲ ਸੂਚੀ (ਪੂਰਾ ਖਾਤਾ, ਡਿਸਪੈਚ ਤੇ ਵਾਪਸੀ ਵੇਖਣ ਲਈ ਨਾਮ 'ਤੇ ਟੈਪ ਕਰੋ)</span>
         </div>
         <div class="table-responsive">
           <table id="salesTable">
@@ -770,7 +770,7 @@
       </div>
     </section>
 
-    <!-- BLOCK 5: FACTORY STOCK -->
+    <!-- BLOCK 5: FACTORY STOCK (INCLUDES RETURNS BACK TO STOCK) -->
     <section id="tab-stock" class="tab-content">
       <div class="card">
         <div class="card-title">
@@ -778,7 +778,7 @@
           <button class="btn btn-outline btn-sm" onclick="exportToCSV('stock')">📥 Stock Export</button>
         </div>
         <p style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 12px;">
-          ℹ️ ਰੰਗਾਂ ਮੁਤਾਬਕ ਸਟੋਕ (Red, Grey, White, Black) ਵੇਖਣ ਲਈ ਕਿਸੇ ਵੀ ਆਈਟਮ ਦੇ ਨਾਮ 'ਤੇ ਕਲਿੱਕ ਕਰੋ।
+          ℹ️ ਰੰਗਾਂ ਮੁਤਾਬਕ ਸਟੋਕ (Red, Grey, White, Black) ਵੇਖਣ ਲਈ ਕਿਸੇ ਵੀ ਆਈਟਮ ਦੇ ਨਾਮ 'ਤੇ ਕਲਿੱਕ ਕਰੋ। ਵਾਪਸ ਆਇਆ (Return) ਮਾਲ ਵੀ ਸਟੋਕ ਵਿੱਚ ਜੁੜਦਾ ਹੈ।
         </p>
         <div class="table-responsive">
           <table id="stockTable">
@@ -1089,7 +1089,7 @@
     </div>
   </div>
 
-  <!-- MULTI-ITEM STAGED DISPATCH MODAL (SUPPORTS NEW & EDIT) -->
+  <!-- MULTI-ITEM STAGED DISPATCH MODAL -->
   <div class="modal" id="dispatchModal">
     <div class="modal-box" style="max-width: 740px;">
       <div class="modal-header">
@@ -1112,7 +1112,6 @@
           </div>
         </div>
 
-        <!-- Item Selector + Loading Checkboxes + Add to List Button -->
         <div class="items-box" style="background:#f8fafc; padding:12px;">
           <strong style="font-size:0.9rem; color:var(--primary); display:block; margin-bottom:8px;">
             1. ਆਈਟਮ ਚੁਣੋ, ਨਗ ਭਰੋ ਅਤੇ ਲੋਡਿੰਗ/ਅਨਲੋਡਿੰਗ ਟਿੱਕ ਕਰਕੇ ਲਿਸਟ ਵਿੱਚ ਜੋੜੋ:
@@ -1145,7 +1144,6 @@
             <button type="button" class="btn btn-primary btn-sm" onclick="addDispatchItemToQueue()">➕ ਲਿਸਟ ਵਿੱਚ ਜੋੜੋ</button>
           </div>
 
-          <!-- Staged Dispatch Queue -->
           <div style="margin-top:12px; background:white; border:1.5px solid #cbd5e1; border-radius:8px; padding:10px;">
             <strong style="font-size:0.88rem; color:var(--text); display:block; margin-bottom:6px;">
               📋 ਅੱਜ ਭੇਜੀਆਂ ਜਾਣ ਵਾਲੀਆਂ ਆਈਟਮਾਂ (Dispatch List):
@@ -1325,7 +1323,7 @@
     </div>
   </div>
 
-  <!-- POPUP MODAL: CLIENT DEDICATED PAGE (WITH DISPATCH HISTORY EDIT/DELETE + PENDING ORDERS DISPATCH) -->
+  <!-- POPUP MODAL: CLIENT DEDICATED PAGE (WITH DIRECT PAYMENT LOG + RETURNS BLOCK AT BOTTOM) -->
   <div class="modal" id="clientQuickModal">
     <div class="modal-box" style="max-width: 820px;">
       <div class="modal-header">
@@ -1355,7 +1353,7 @@
         </div>
       </div>
 
-      <!-- DIRECT ADVANCE PAYMENT BLOCK -->
+      <!-- DIRECT ADVANCE PAYMENT BLOCK + RECEIVED PAYMENT HISTORY -->
       <div class="card" style="border:1.5px solid #86efac; background:#f0fdf4; margin-bottom:14px; padding:12px;">
         <div style="font-weight:800; color:#166534; font-size:0.95rem; margin-bottom:8px;">
           💵 ਸਿੱਧੀ ਪੇਮੈਂਟ / ਰਕਮ ਜਮ੍ਹਾਂ ਕਰੋ (ਕੁੱਲ ਬਕਾਏ ਵਿੱਚੋਂ ਮਾਈਨਸ ਹੋਵੇਗੀ):
@@ -1371,14 +1369,32 @@
               <input type="number" step="0.01" id="directPayAmount" min="1" placeholder="ਜਿਵੇਂ 20000" required>
             </div>
             <div class="form-group" style="flex:1.2;">
-              <label>ਵੇਰਵਾ / ਨੋਟ</label>
-              <input type="text" id="directPayNote" placeholder="ਨਕਦ, UPI ਜਾਂ ਬੈਂਕ">
+              <label>ਵੇਰਵਾ / ਨੋਟ (Cash / UPI / Bank)</label>
+              <input type="text" id="directPayNote" placeholder="ਕੈਸ਼, UPI ਜਾਂ ਬੈਂਕ">
             </div>
             <div style="margin-bottom:2px;">
               <button type="submit" class="btn btn-success">✅ ਰਕਮ ਜਮ੍ਹਾਂ ਕਰੋ</button>
             </div>
           </div>
         </form>
+
+        <!-- LIST OF RECEIVED PAYMENTS WITH DATE & MODE -->
+        <div style="margin-top:10px; background:white; border-radius:8px; padding:8px; border:1px solid #bbf7d0;">
+          <strong style="font-size:0.84rem; color:#166534; display:block; margin-bottom:4px;">📋 ਜਮ੍ਹਾਂ ਹੋਈਆਂ ਰਕਮਾਂ ਦਾ ਵੇਰਵਾ (Payment History):</strong>
+          <div class="table-responsive" style="margin-top:2px;">
+            <table>
+              <thead>
+                <tr>
+                  <th>ਤਾਰੀਖ</th>
+                  <th>ਜਮ੍ਹਾਂ ਰਕਮ (₹)</th>
+                  <th>ਵੇਰਵਾ (Cash / UPI)</th>
+                  <th>ਹਟਾਓ</th>
+                </tr>
+              </thead>
+              <tbody id="cqDirectPaymentsHistoryBody"></tbody>
+            </table>
+          </div>
+        </div>
       </div>
 
       <!-- IN-MODAL FORM TO DIRECTLY ADD NEXT DAY'S SALE ORDER WITH COLOR -->
@@ -1447,11 +1463,11 @@
         </div>
       </div>
 
-      <!-- Past Orders List for this Customer (With Deliver Button for Pending Orders) -->
+      <!-- Past Orders List for this Customer -->
       <strong style="font-size:0.92rem; color:var(--text); display:block; margin-bottom:6px;">
         ਇਸ ਗਾਹਕ ਦੇ ਸਾਰੇ ਆਰਡਰ (ਪੈਂਡਿੰਗ ਆਰਡਰ ਭੇਜਣ ਲਈ '🚚 ਡਿਸਪੈਚ' ਦਬਾਓ):
       </strong>
-      <div class="table-responsive">
+      <div class="table-responsive" style="margin-bottom:16px;">
         <table>
           <thead>
             <tr>
@@ -1465,6 +1481,101 @@
           </thead>
           <tbody id="cqOrdersTableBody"></tbody>
         </table>
+      </div>
+
+      <!-- SEPARATE BOTTOM BLOCK: ITEM RETURN & REFUND SETTLEMENT -->
+      <div class="card" style="border:1.5px solid #fca5a5; background:#fff1f2; margin-bottom:14px; padding:14px;">
+        <div style="font-weight:800; color:#9f1239; font-size:1rem; margin-bottom:8px;">
+          🔄 ਸਮਾਨ ਵਾਪਸੀ (Item Return) ਅਤੇ ਰਿਟਰਨ ਪੇਮੈਂਟ ਹਿਸਾਬ:
+        </div>
+        <p style="font-size:0.8rem; color:#881337; margin-bottom:10px;">
+          ℹ️ ਵਾਪਸ ਆਇਆ ਸਮਾਨ ਫੈਕਟਰੀ ਸਟੋਕ ਵਿੱਚ ਆਪਣੇ ਆਪ ਵਾਪਸ ਜੁੜ ਜਾਵੇਗਾ ਅਤੇ ਗਾਹਕ ਨੂੰ ਵਾਪਸ ਜਾਣ ਵਾਲੀ ਰਕਮ ਹੇਠਾਂ ਦਿਖੇਗੀ।
+        </p>
+
+        <!-- Form to Add Returned Item -->
+        <form onsubmit="handleClientItemReturn(event)" style="margin-bottom:12px;">
+          <div class="horizontal-row" style="align-items:flex-end;">
+            <div class="form-group" style="flex:1;">
+              <label>ਵਾਪਸੀ ਤਾਰੀਖ</label>
+              <input type="date" id="retDate" required>
+            </div>
+            <div class="form-group" style="flex:1.5;">
+              <label>ਵਾਪਸ ਆਈ ਆਈਟਮ</label>
+              <input type="text" id="retItemName" list="standardItemList" placeholder="ਆਈਟਮ ਚੁਣੋ" required>
+            </div>
+            <div class="form-group" style="flex:1;">
+              <label>ਰੰਗ (Color)</label>
+              <select id="retItemColor">
+                <option value="Grey">ਗ੍ਰੇ (Grey)</option>
+                <option value="Red">ਰੈੱਡ (Red)</option>
+                <option value="Black">ਬਲੈਕ (Black)</option>
+                <option value="White">ਵਾਈਟ (White)</option>
+                <option value="Other">ਅਦਰ (Other)</option>
+              </select>
+            </div>
+            <div class="form-group" style="flex:0.8;">
+              <label>ਨਗ (Qty)</label>
+              <input type="number" id="retQty" min="1" placeholder="ਨਗ" oninput="calcReturnTotal()" required>
+            </div>
+            <div class="form-group" style="flex:0.9;">
+              <label>ਰੇਟ (₹)</label>
+              <input type="number" step="0.01" id="retRate" min="0" placeholder="ਰੇਟ" oninput="calcReturnTotal()" required>
+            </div>
+            <div class="form-group" style="flex:1;">
+              <label>ਕੁੱਲ ਵਾਪਸੀ ਰਕਮ</label>
+              <input type="number" id="retTotalVal" readonly>
+            </div>
+            <div style="margin-bottom:2px;">
+              <button type="submit" class="btn btn-danger btn-sm">➕ ਵਾਪਸੀ ਦਰਜ ਕਰੋ</button>
+            </div>
+          </div>
+        </form>
+
+        <!-- Return Summary & Refund Settlement -->
+        <div style="background:white; border-radius:8px; padding:10px; border:1px solid #fecdd3; margin-bottom:10px;">
+          <div style="display:flex; justify-content:space-between; flex-wrap:wrap; gap:8px; font-weight:700; margin-bottom:8px; padding-bottom:6px; border-bottom:1px dashed #fecdd3;">
+            <span>ਕੁੱਲ ਵਾਪਸ ਆਏ ਸਮਾਨ ਦੀ ਕੀਮਤ: <strong id="cqTotalReturnAmount" style="color:var(--danger);">₹0</strong></span>
+            <span>ਹੁਣ ਤੱਕ ਵਾਪਸ ਕੀਤੀ / ਘਟਾਈ ਰਕਮ: <strong id="cqTotalRefundedAmount" style="color:var(--success);">₹0</strong></span>
+            <span>ਬਾਕੀ ਵਾਪਸ ਕਰਨ ਵਾਲੀ ਰਕਮ: <strong id="cqPendingRefundAmount" style="color:#9f1239;">₹0</strong></span>
+          </div>
+
+          <!-- Form to Adjust / Refund Return Money (Automatically Deducts from Top Balance) -->
+          <form onsubmit="handleRefundSettlement(event)">
+            <div class="horizontal-row" style="align-items:flex-end;">
+              <div class="form-group" style="flex:1;">
+                <label>ਰਿਫੰਡ ਤਾਰੀਖ</label>
+                <input type="date" id="refundPayDate" required>
+              </div>
+              <div class="form-group" style="flex:1.2;">
+                <label style="color:#9f1239;">ਰਿਟਰਨ ਰਕਮ ਵਾਪਸ / ਖਾਤੇ 'ਚੋਂ ਘਟਾਓ (₹)</label>
+                <input type="number" step="0.01" id="refundPayAmount" min="1" placeholder="ਰਕਮ ਭਰੋ" required>
+              </div>
+              <div class="form-group" style="flex:1.2;">
+                <label>ਵੇਰਵਾ (Cash Refund / Bill Adjust)</label>
+                <input type="text" id="refundPayNote" placeholder="ਬਿੱਲ ਵਿੱਚੋਂ ਘਟਾਏ ਜਾਂ ਨਕਦ ਦਿੱਤੇ">
+              </div>
+              <div style="margin-bottom:2px;">
+                <button type="submit" class="btn btn-warning btn-sm">✅ ਰਿਟਰਨ ਰਕਮ ਘਟਾਓ</button>
+              </div>
+            </div>
+          </form>
+        </div>
+
+        <!-- Table of Returned Items & Refund Logs -->
+        <div class="table-responsive" style="background:white; border-radius:8px;">
+          <table>
+            <thead>
+              <tr>
+                <th>ਤਾਰੀਖ</th>
+                <th>ਕਿਸਮ</th>
+                <th>ਵੇਰਵਾ (ਆਈਟਮ, ਰੰਗ, ਨਗ)</th>
+                <th>ਰਕਮ (₹)</th>
+                <th>ਹਟਾਓ</th>
+              </tr>
+            </thead>
+            <tbody id="cqReturnsTableBody"></tbody>
+          </table>
+        </div>
       </div>
 
       <div style="margin-top:16px; display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:8px;">
@@ -1513,6 +1624,7 @@
     let purchases = [];
     let labourLogs = [];
     let labourPayouts = [];
+    let salesReturns = [];
     let parties = [];
     let trashItems = [];
     let rawMaterials = ['Cement Bags', 'ਸੀਮੈਂਟ', 'ਰੇਤ / ਡਸਟ', 'ਫਲਾਈ ਐਸ਼', 'ਕੈਮੀਕਲ'];
@@ -1991,7 +2103,7 @@
 
       const id = 'S_' + Date.now();
       let existingPayments = [];
-      if (advance > 0) existingPayments = [{ amount: advance, date }];
+      if (advance > 0) existingPayments = [{ amount: advance, date, note: 'ਐਡਵਾਂਸ (ਆਰਡਰ ਨਾਲ)' }];
 
       const record = {
         id, client: currentQuickClient, phone, address, date, deliveryDate, nextDeliveryDate: deliveryDate,
@@ -2008,13 +2120,14 @@
       openClientQuickModal(currentQuickClient);
     }
 
+    // DIRECT ADVANCE PAYMENT WITH PAYMENT GROUP ID FOR HISTORY LOGGING
     function handleDirectClientPayment(e) {
       e.preventDefault();
       if (!currentQuickClient) return;
 
       const payAmount = parseFloat(document.getElementById('directPayAmount').value) || 0;
       const payDate = document.getElementById('directPayDate').value || getTodayString();
-      const note = document.getElementById('directPayNote').value.trim() || 'ਸਿੱਧੀ ਪੇਮੈਂਟ (ਐਡਵਾਂਸ ਕਟੌਤੀ)';
+      const note = document.getElementById('directPayNote').value.trim() || 'ਕੈਸ਼ / ਸਿੱਧੀ ਪੇਮੈਂਟ';
 
       if (payAmount <= 0) return alert('ਕਿਰਪਾ ਕਰਕੇ ਸਹੀ ਰਕਮ ਭਰੋ!');
 
@@ -2022,6 +2135,7 @@
       clientSales.sort((a, b) => new Date(a.date) - new Date(b.date));
 
       let remainingToDeduct = payAmount;
+      const payGroupId = 'PAY_' + Date.now();
 
       for (let s of clientSales) {
         const curBal = Number(s.balance) || 0;
@@ -2030,7 +2144,7 @@
           s.paid = (Number(s.paid) || 0) + deduct;
           s.balance = curBal - deduct;
           if (!s.payments) s.payments = [];
-          s.payments.push({ amount: deduct, date: payDate, note: note });
+          s.payments.push({ payGroupId: payGroupId, amount: deduct, date: payDate, note: note, isDirect: true });
           remainingToDeduct -= deduct;
 
           db.ref('sales/' + s.id).set(s);
@@ -2042,7 +2156,7 @@
         newest.paid = (Number(newest.paid) || 0) + remainingToDeduct;
         newest.balance = Math.max(0, (Number(newest.balance) || 0) - remainingToDeduct);
         if (!newest.payments) newest.payments = [];
-        newest.payments.push({ amount: remainingToDeduct, date: payDate, note: note });
+        newest.payments.push({ payGroupId: payGroupId, amount: remainingToDeduct, date: payDate, note: note, isDirect: true });
         db.ref('sales/' + newest.id).set(newest);
       }
 
@@ -2050,6 +2164,138 @@
       document.getElementById('directPayNote').value = '';
       alert(`✅ ₹${payAmount} ਦੀ ਪੇਮੈਂਟ ਖਾਤੇ ਵਿੱਚ ਜਮ੍ਹਾਂ ਹੋ ਗਈ ਹੈ ਅਤੇ ਬਕਾਇਆ ਮਾਈਨਸ ਹੋ ਗਿਆ ਹੈ!`);
       openClientQuickModal(currentQuickClient);
+    }
+
+    function deleteClientDirectPayment(clientName, payGroupId, saleId, payIdx) {
+      if (!confirm('ਕੀ ਤੁਸੀਂ ਇਹ ਪੇਮੈਂਟ ਐਂਟਰੀ ਹਟਾਉਣਾ ਚਾਹੁੰਦੇ ਹੋ? (ਇਸ ਨਾਲ ਬਕਾਇਆ ਵਾਪਸ ਜੁੜ ਜਾਵੇਗਾ)')) return;
+
+      const clientSales = sales.filter(s => (s.client || '').trim().toLowerCase() === clientName.trim().toLowerCase());
+      clientSales.forEach(s => {
+        if (s.payments && s.payments.length > 0) {
+          let removedAmount = 0;
+          if (payGroupId && payGroupId !== 'null') {
+            s.payments = s.payments.filter(p => {
+              if (p.payGroupId === payGroupId) {
+                removedAmount += (Number(p.amount) || 0);
+                return false;
+              }
+              return true;
+            });
+          } else if (s.id === saleId && s.payments[payIdx]) {
+            removedAmount += (Number(s.payments[payIdx].amount) || 0);
+            s.payments.splice(payIdx, 1);
+          }
+
+          if (removedAmount > 0) {
+            s.paid = Math.max(0, (Number(s.paid) || 0) - removedAmount);
+            s.balance = (Number(s.balance) || 0) + removedAmount;
+            db.ref('sales/' + s.id).set(s);
+          }
+        }
+      });
+
+      openClientQuickModal(clientName);
+    }
+
+    // ITEM RETURN CALCULATION & SUBMISSION
+    function calcReturnTotal() {
+      const qty = parseFloat(document.getElementById('retQty').value) || 0;
+      const rate = parseFloat(document.getElementById('retRate').value) || 0;
+      document.getElementById('retTotalVal').value = (qty * rate).toFixed(2);
+    }
+
+    function handleClientItemReturn(e) {
+      e.preventDefault();
+      if (!currentQuickClient) return;
+
+      const date = document.getElementById('retDate').value || getTodayString();
+      const item = document.getElementById('retItemName').value.trim();
+      const color = document.getElementById('retItemColor').value || 'Grey';
+      const qty = parseFloat(document.getElementById('retQty').value) || 0;
+      const rate = parseFloat(document.getElementById('retRate').value) || 0;
+      const total = qty * rate;
+
+      if (!item || qty <= 0) return alert('ਕਿਰਪਾ ਕਰਕੇ ਆਈਟਮ ਅਤੇ ਵਾਪਸ ਆਏ ਨਗ (Qty) ਭਰੋ!');
+
+      const id = 'RET_' + Date.now();
+      const record = {
+        id,
+        type: 'item_return',
+        client: currentQuickClient,
+        date,
+        item,
+        color,
+        qty,
+        rate,
+        total
+      };
+
+      db.ref('salesReturns/' + id).set(record);
+      document.getElementById('retItemName').value = '';
+      document.getElementById('retQty').value = '';
+      document.getElementById('retRate').value = '';
+      document.getElementById('retTotalVal').value = '';
+
+      alert(`✅ ${item} [${color}] ਦੇ ${qty} ਨਗ ਵਾਪਸੀ ਵਿੱਚ ਦਰਜ ਹੋ ਗਏ ਹਨ ਅਤੇ ਫੈਕਟਰੀ ਸਟੋਕ ਵਿੱਚ ਵਾਪਸ ਜੁੜ ਗਏ ਹਨ!`);
+      openClientQuickModal(currentQuickClient);
+    }
+
+    // REFUND SETTLEMENT: DEDUCTS RETURN MONEY AUTOMATICALLY FROM CLIENT'S TOP BALANCE
+    function handleRefundSettlement(e) {
+      e.preventDefault();
+      if (!currentQuickClient) return;
+
+      const refundAmt = parseFloat(document.getElementById('refundPayAmount').value) || 0;
+      const refundDate = document.getElementById('refundPayDate').value || getTodayString();
+      const note = document.getElementById('refundPayNote').value.trim() || 'ਸਮਾਨ ਵਾਪਸੀ (Return Adjustment)';
+
+      if (refundAmt <= 0) return alert('ਕਿਰਪਾ ਕਰਕੇ ਸਹੀ ਰਕਮ ਭਰੋ!');
+
+      // 1. Log the refund adjustment in salesReturns
+      const retId = 'REF_' + Date.now();
+      const refundRecord = {
+        id: retId,
+        type: 'refund_settled',
+        client: currentQuickClient,
+        date: refundDate,
+        total: refundAmt,
+        note: note
+      };
+      db.ref('salesReturns/' + retId).set(refundRecord);
+
+      // 2. Automatically deduct this return amount from the client's top sales balance
+      const clientSales = sales.filter(s => (s.client || '').trim().toLowerCase() === currentQuickClient.trim().toLowerCase());
+      clientSales.sort((a, b) => new Date(a.date) - new Date(b.date));
+
+      let remainingToReduce = refundAmt;
+      for (let s of clientSales) {
+        const curBal = Number(s.balance) || 0;
+        if (curBal > 0 && remainingToReduce > 0) {
+          const reduce = Math.min(curBal, remainingToReduce);
+          s.total = Math.max(0, (Number(s.total) || 0) - reduce);
+          s.balance = curBal - reduce;
+          remainingToReduce -= reduce;
+          db.ref('sales/' + s.id).set(s);
+        }
+      }
+
+      if (remainingToReduce > 0 && clientSales.length > 0) {
+        const newest = clientSales[clientSales.length - 1];
+        newest.total = Math.max(0, (Number(newest.total) || 0) - remainingToReduce);
+        newest.balance = Math.max(0, (Number(newest.balance) || 0) - remainingToReduce);
+        db.ref('sales/' + newest.id).set(newest);
+      }
+
+      document.getElementById('refundPayAmount').value = '';
+      document.getElementById('refundPayNote').value = '';
+      alert(`✅ ₹${refundAmt} ਦੀ ਰਿਟਰਨ ਰਕਮ ਉੱਪਰ ਗਾਹਕ ਦੇ ਕੁੱਲ ਖਾਤੇ ਵਿੱਚੋਂ ਘਟਾ ਦਿੱਤੀ ਗਈ ਹੈ!`);
+      openClientQuickModal(currentQuickClient);
+    }
+
+    function deleteSalesReturnEntry(id) {
+      if (!confirm('ਕੀ ਤੁਸੀਂ ਇਹ ਵਾਪਸੀ/ਰਿਫੰਡ ਐਂਟਰੀ ਹਟਾਉਣਾ ਚਾਹੁੰਦੇ ਹੋ?')) return;
+      db.ref('salesReturns/' + id).remove();
+      if (currentQuickClient) openClientQuickModal(currentQuickClient);
     }
 
     function initDataSync() {
@@ -2097,6 +2343,12 @@
       db.ref('labourPayouts').on('value', snapshot => {
         const val = snapshot.val();
         labourPayouts = val ? Object.values(val) : [];
+        updateAllViews();
+      });
+
+      db.ref('salesReturns').on('value', snapshot => {
+        const val = snapshot.val();
+        salesReturns = val ? Object.values(val) : [];
         updateAllViews();
       });
 
@@ -2247,7 +2499,7 @@
         if (prev && prev.dispatches) existingDispatches = prev.dispatches;
         if (prev && prev.nextDeliveryDate) nextDeliveryDate = prev.nextDeliveryDate;
       } else {
-        if (advance > 0) existingPayments = [{ amount: advance, date }];
+        if (advance > 0) existingPayments = [{ amount: advance, date, note: 'ਐਡਵਾਂਸ (ਆਰਡਰ ਨਾਲ)' }];
       }
 
       const record = {
@@ -2307,7 +2559,7 @@
       addSaleItemRow();
     }
 
-    // OPEN CLIENT QUICK PROFILE WITH DISPATCH HISTORY (EDIT/DELETE) + PENDING ORDERS DISPATCH
+    // OPEN CLIENT QUICK PROFILE WITH ALL SECTIONS (PAYMENTS LOG, DISPATCHES, ORDERS & RETURNS)
     function openClientQuickModal(clientName) {
       currentQuickClient = clientName;
       const clientSales = sales.filter(s => (s.client || '').trim().toLowerCase() === clientName.trim().toLowerCase());
@@ -2337,10 +2589,50 @@
       document.getElementById('imSaleDate').value = today;
       document.getElementById('imSaleDeliveryDate').value = today;
       document.getElementById('imSaleAdvance').value = '0';
+      document.getElementById('retDate').value = today;
+      document.getElementById('refundPayDate').value = today;
       document.getElementById('inModalSaleItemsContainer').innerHTML = '';
       addInModalSaleItemRow();
 
-      // Render Dispatch History grouped by batchId with Edit & Delete buttons
+      const safeClient = clientName.replace(/'/g, "\\'");
+
+      // 1. Render Received Direct Payments History
+      const directPayBody = document.getElementById('cqDirectPaymentsHistoryBody');
+      const groupedPays = {};
+      clientSales.forEach(s => {
+        (s.payments || []).forEach((p, idx) => {
+          const gKey = p.payGroupId || `${s.id}_${idx}`;
+          if (!groupedPays[gKey]) {
+            groupedPays[gKey] = {
+              payGroupId: p.payGroupId || null,
+              saleId: s.id,
+              payIdx: idx,
+              date: p.date || s.date,
+              amount: 0,
+              note: p.note || 'ਜਮ੍ਹਾਂ ਰਕਮ'
+            };
+          }
+          groupedPays[gKey].amount += (Number(p.amount) || 0);
+        });
+      });
+
+      const payLogsList = Object.values(groupedPays).sort((a, b) => new Date(b.date) - new Date(a.date));
+      if (payLogsList.length === 0) {
+        directPayBody.innerHTML = '<tr><td colspan="4" style="text-align:center; color:var(--text-muted);">ਕੋਈ ਪੇਮੈਂਟ ਹਿਸਟਰੀ ਨਹੀਂ ਹੈ</td></tr>';
+      } else {
+        directPayBody.innerHTML = payLogsList.map(p => `
+          <tr>
+            <td><strong>${p.date}</strong></td>
+            <td style="color:var(--success); font-weight:700;">₹${p.amount.toLocaleString('en-IN')}</td>
+            <td>${p.note}</td>
+            <td>
+              <button class="btn btn-danger btn-sm" onclick="deleteClientDirectPayment('${safeClient}', '${p.payGroupId}', '${p.saleId}', ${p.payIdx})">🗑️</button>
+            </td>
+          </tr>
+        `).join('');
+      }
+
+      // 2. Render Dispatch History
       const dispatchHistoryBody = document.getElementById('cqDispatchHistoryBody');
       const allDispatches = [];
       clientSales.forEach(s => {
@@ -2373,7 +2665,6 @@
         });
 
         const dispatchGroupsList = Object.values(groupedDispatches).sort((a, b) => new Date(b.date) - new Date(a.date));
-        const safeClient = clientName.replace(/'/g, "\\'");
 
         dispatchHistoryBody.innerHTML = dispatchGroupsList.map(g => {
           const tags = [];
@@ -2395,13 +2686,12 @@
         }).join('');
       }
 
-      // Render Orders List with Deliver Button for Pending Orders
+      // 3. Render Orders List
       const tbody = document.getElementById('cqOrdersTableBody');
       if (clientSales.length === 0) {
         tbody.innerHTML = '<tr><td colspan="6" style="text-align:center;">ਕੋਈ ਆਰਡਰ ਨਹੀਂ ਹੈ</td></tr>';
       } else {
         clientSales.sort((a, b) => new Date(b.date) - new Date(a.date));
-        const safeClient = clientName.replace(/'/g, "\\'");
 
         tbody.innerHTML = clientSales.map(s => {
           const items = s.items || [{ item: s.item, color: s.color || 'Grey', qty: s.qty, total: s.total }];
@@ -2428,6 +2718,43 @@
                   <button class="btn btn-danger btn-sm" onclick="deleteRecord('${s.id}', 'sale')">🗑️</button>
                 </div>
               </td>
+            </tr>
+          `;
+        }).join('');
+      }
+
+      // 4. Render Item Returns & Refund Settlement History
+      const clientReturns = salesReturns.filter(r => (r.client || '').trim().toLowerCase() === clientName.trim().toLowerCase());
+      let totalRetAmt = 0;
+      let totalRefAmt = 0;
+
+      clientReturns.forEach(r => {
+        if (r.type === 'item_return') totalRetAmt += (Number(r.total) || 0);
+        if (r.type === 'refund_settled') totalRefAmt += (Number(r.total) || 0);
+      });
+
+      const pendingRef = Math.max(0, totalRetAmt - totalRefAmt);
+      document.getElementById('cqTotalReturnAmount').textContent = `₹${totalRetAmt.toLocaleString('en-IN')}`;
+      document.getElementById('cqTotalRefundedAmount').textContent = `₹${totalRefAmt.toLocaleString('en-IN')}`;
+      document.getElementById('cqPendingRefundAmount').textContent = `₹${pendingRef.toLocaleString('en-IN')}`;
+
+      const returnsBody = document.getElementById('cqReturnsTableBody');
+      if (clientReturns.length === 0) {
+        returnsBody.innerHTML = '<tr><td colspan="5" style="text-align:center; color:var(--text-muted);">ਕੋਈ ਵਾਪਸੀ (Return) ਰਿਕਾਰਡ ਨਹੀਂ ਹੈ</td></tr>';
+      } else {
+        clientReturns.sort((a, b) => new Date(b.date) - new Date(a.date));
+        returnsBody.innerHTML = clientReturns.map(r => {
+          const isItem = r.type === 'item_return';
+          const desc = isItem
+            ? `${r.item} [${r.color || 'Grey'}] - ${r.qty} ਨਗ @ ₹${r.rate}`
+            : `ਰਿਟਰਨ ਰਕਮ ਘਟਾਈ (${r.note || 'Adjusted'})`;
+          return `
+            <tr>
+              <td><strong>${r.date}</strong></td>
+              <td><span class="badge ${isItem ? 'badge-pending' : 'badge-cleared'}">${isItem ? 'ਸਮਾਨ ਵਾਪਸ' : 'ਰਕਮ ਸੈਟਲ'}</span></td>
+              <td>${desc}</td>
+              <td style="font-weight:700; color:${isItem ? 'var(--danger)' : 'var(--success)'};">₹${Number(r.total).toLocaleString('en-IN')}</td>
+              <td><button class="btn btn-danger btn-sm" onclick="deleteSalesReturnEntry('${r.id}')">🗑️</button></td>
             </tr>
           `;
         }).join('');
@@ -2547,7 +2874,7 @@
       }).join('');
     }
 
-    // STAGED MULTI-ITEM DISPATCH MODAL (BUILD PENDING OPTIONS + ADD-TO-QUEUE)
+    // STAGED MULTI-ITEM DISPATCH MODAL
     function openClientDispatchModal(clientName, preselectSaleId = null) {
       currentDispatchClientName = clientName;
       editingDispatchBatchId = null;
@@ -2580,7 +2907,7 @@
           let alreadySent = 0;
           dispatches.forEach((d, dIdx) => {
             const dKey = d.batchId || `${s.id}_${d.date}_${dIdx}`;
-            if (excludedBatchKey && dKey === excludedBatchKey) return; // Exclude batch currently being edited
+            if (excludedBatchKey && dKey === excludedBatchKey) return;
 
             if ((d.item || '').toLowerCase() === (it.item || '').toLowerCase() && (d.color || 'Grey') === (it.color || 'Grey')) {
               alreadySent += Number(d.qty) || 0;
@@ -2635,7 +2962,6 @@
       }
 
       const selected = availablePendingDispatchItems[idx];
-      // Subtract whatever is already staged in queue for this exact saleId + item + color
       const alreadyStaged = stagedDispatchQueue
         .filter(q => q.saleId === selected.saleId && q.item === selected.item && q.color === selected.color)
         .reduce((sum, cur) => sum + cur.qty, 0);
@@ -2729,7 +3055,6 @@
 
       const updatedSalesMap = {};
 
-      // If editing an existing dispatch batch, remove its old entries first
       if (editingDispatchBatchId) {
         const { batchKey, isExplicitBatch, saleId, dispatchIdx } = editingDispatchBatchId;
         const clientSales = sales.filter(s => (s.client || '').trim().toLowerCase() === currentDispatchClientName.trim().toLowerCase());
@@ -2796,7 +3121,6 @@
       openClientQuickModal(savedClient);
     }
 
-    // EDIT EXISTING DISPATCH BATCH ENTRY
     function editDispatchBatch(clientName, batchKey, isExplicitBatch, saleId, dispatchIdx) {
       currentDispatchClientName = clientName;
       const clientSales = sales.filter(s => (s.client || '').trim().toLowerCase() === clientName.trim().toLowerCase());
@@ -2841,7 +3165,6 @@
       document.getElementById('dispatchModal').classList.add('show');
     }
 
-    // DELETE DISPATCH BATCH ENTRY (RESTORES PENDING QTY & STOCK AUTOMATICALLY)
     function deleteDispatchBatch(clientName, batchKey, isExplicitBatch, saleId, dispatchIdx) {
       if (!confirm('ਕੀ ਤੁਸੀਂ ਇਹ ਡਿਸਪੈਚ ਐਂਟਰੀ ਡਿਲੀਟ ਕਰਨਾ ਚਾਹੁੰਦੇ ਹੋ? (ਇਸ ਨਾਲ ਮਾਲ ਵਾਪਸ ਪੈਂਡਿੰਗ ਅਤੇ ਸਟੋਕ ਵਿੱਚ ਜੁੜ ਜਾਵੇਗਾ)')) return;
 
@@ -3088,6 +3411,16 @@
               totalMade += q;
             }
           });
+        }
+      });
+
+      // Include returned items back into color-wise stock
+      salesReturns.forEach(r => {
+        if (r.type === 'item_return' && (r.item || '').trim().toLowerCase() === itemName.trim().toLowerCase()) {
+          const q = Number(r.qty) || 0;
+          const c = r.color || 'Grey';
+          colorMap[c] = (colorMap[c] || 0) + q;
+          totalMade += q;
         }
       });
 
@@ -3566,7 +3899,7 @@
       selectedLedgerParty = null;
     }
 
-    // FACTORY STOCK CALCULATION
+    // FACTORY STOCK CALCULATION (INCLUDES RETURNED ITEMS BACK TO STOCK)
     function renderFactoryStock() {
       const tbody = document.querySelector('#stockTable tbody');
       const allItemsWithCement = [...currentItemsData.map(i => i.name), "ਸੀਮੈਂਟ (Cement Bags)"];
@@ -3597,6 +3930,13 @@
               });
             } else if (log.item && log.item.trim().toLowerCase() === itemName.trim().toLowerCase()) {
               totalMadeOrIn += Number(log.qty) || 0;
+            }
+          });
+
+          // Returned items add back to available stock (+)
+          salesReturns.forEach(r => {
+            if (r.type === 'item_return' && (r.item || '').trim().toLowerCase() === itemName.trim().toLowerCase()) {
+              totalMadeOrIn += Number(r.qty) || 0;
             }
           });
 
@@ -3690,7 +4030,7 @@
         record.paid = (Number(record.paid) || 0) + actualPay;
         record.balance = Math.max(0, (Number(record.balance) || 0) - actualPay);
         if (!record.payments) record.payments = [];
-        record.payments.push({ amount: actualPay, date: payDate });
+        record.payments.push({ amount: actualPay, date: payDate, note: 'ਜਮ੍ਹਾਂ ਰਕਮ' });
 
         db.ref(path).set(record);
       }
@@ -3769,6 +4109,12 @@
                 });
               } else if ((l.item || '').toLowerCase() === itemName.toLowerCase()) {
                 made += Number(l.qty) || 0;
+              }
+            });
+
+            salesReturns.forEach(r => {
+              if (r.type === 'item_return' && (r.item || '').toLowerCase() === itemName.toLowerCase()) {
+                made += Number(r.qty) || 0;
               }
             });
 
