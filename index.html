@@ -253,8 +253,8 @@
     }
 
     .horizontal-row .form-group {
-      flex: 0 0 190px;
-      min-width: 170px;
+      flex: 0 0 185px;
+      min-width: 165px;
     }
 
     .items-box {
@@ -501,7 +501,7 @@
 
   <div class="container">
     
-    <!-- BLOCK 1: SALES -->
+    <!-- BLOCK 1: SALES WITH DISCOUNT FIELD -->
     <section id="tab-sale" class="tab-content active">
       <div class="card card-sale-theme">
         <div class="card-title">
@@ -544,7 +544,15 @@
 
           <div class="horizontal-row">
             <div class="form-group">
-              <label>ਕੁੱਲ ਰਕਮ / Grand Total (₹)</label>
+              <label>ਆਈਟਮਾਂ ਦਾ ਜੋੜ (Subtotal ₹)</label>
+              <input type="number" id="saleSubTotal" readonly>
+            </div>
+            <div class="form-group">
+              <label style="color:var(--danger);">ਡਿਸਕਾਊਂਟ / ਛੋਟ (Discount ₹)</label>
+              <input type="number" step="0.01" id="saleDiscount" min="0" value="0" oninput="calcSaleGrandTotal()">
+            </div>
+            <div class="form-group">
+              <label>ਕੁੱਲ ਬਿੱਲ / Grand Total (₹)</label>
               <input type="number" id="saleGrandTotal" readonly>
             </div>
             <div class="form-group">
@@ -797,7 +805,7 @@
       </div>
     </section>
 
-    <!-- BLOCK 6: LABOUR PRODUCTION & PAYOUT LEDGER -->
+    <!-- BLOCK 6: LABOUR PRODUCTION & PAYOUT LEDGER (16th-to-15th AUTO CYCLE + DATE PICKER) -->
     <section id="tab-labour" class="tab-content">
       
       <div class="card">
@@ -932,9 +940,31 @@
         </div>
       </div>
 
+      <!-- 2. LABOUR PAYOUT LEDGER (16TH TO 15TH CYCLE + CUSTOM DATE PICKER) -->
       <div class="card" style="border-top: 4px solid var(--purple);">
         <div class="card-title">
-          <span>2. ਲੇਬਰ ਭੁਗਤਾਨ & ਖਾਤਾ ਰਜਿਸਟਰ (Labour Wages & Payout Ledger)</span>
+          <span>2. ਲੇਬਰ ਭੁਗਤਾਨ & ਖਾਤਾ ਰਜਿਸਟਰ (16 ਤਰੀਕ ਤੋਂ 15 ਤਰੀਕ ਸਾਈਕਲ)</span>
+        </div>
+
+        <!-- Custom Cycle Calendar Filter -->
+        <div style="background:#f8fafc; border:1.5px solid #cbd5e1; border-radius:10px; padding:12px; margin-bottom:14px;">
+          <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:10px;">
+            <div>
+              <strong style="color:var(--purple); font-size:0.9rem;" id="labourCycleDisplayLabel">ਮੌਜੂਦਾ ਸਾਈਕਲ (16 ਤਰੀਕ ਤੋਂ 15 ਤਰੀਕ)</strong>
+              <small style="display:block; color:var(--text-muted); font-size:0.78rem;">ਹਰ 16 ਤਰੀਕ ਨੂੰ ਨਵਾਂ ਹਿਸਾਬ ਜ਼ੀਰੋ ਤੋਂ ਸ਼ੁਰੂ ਹੁੰਦਾ ਹੈ। ਪੁਰਾਣਾ ਦੇਖਣ ਲਈ ਤਾਰੀਖ ਚੁਣੋ:</small>
+            </div>
+            <div style="display:flex; align-items:center; gap:8px; flex-wrap:wrap;">
+              <div class="form-group" style="gap:2px;">
+                <label style="font-size:0.75rem;">ਤੋਂ (From):</label>
+                <input type="date" id="labourCycleFrom" onchange="renderLabourPayoutLedger()" style="padding:5px 8px; font-size:0.85rem;">
+              </div>
+              <div class="form-group" style="gap:2px;">
+                <label style="font-size:0.75rem;">ਤੱਕ (To):</label>
+                <input type="date" id="labourCycleTo" onchange="renderLabourPayoutLedger()" style="padding:5px 8px; font-size:0.85rem;">
+              </div>
+              <button type="button" class="btn btn-outline btn-sm" style="margin-top:16px;" onclick="resetToCurrent15thCycle()">🔄 ਮੌਜੂਦਾ ਸਾਈਕਲ</button>
+            </div>
+          </div>
         </div>
 
         <div class="stats-grid">
@@ -1323,7 +1353,7 @@
     </div>
   </div>
 
-  <!-- POPUP MODAL: CLIENT DEDICATED PAGE -->
+  <!-- POPUP MODAL: CLIENT DEDICATED PAGE (WITH ITEM-WISE DELIVERY SUMMARY BOX + DISCOUNT) -->
   <div class="modal" id="clientQuickModal">
     <div class="modal-box" style="max-width: 820px;">
       <div class="modal-header">
@@ -1335,7 +1365,7 @@
       </div>
 
       <!-- Financial Totals -->
-      <div style="display:flex; justify-content:space-between; align-items:center; background:#eff6ff; border:1.5px solid #bfdbfe; border-radius:10px; padding:14px; margin-bottom:14px; flex-wrap:wrap; gap:10px;">
+      <div style="display:flex; justify-content:space-between; align-items:center; background:#eff6ff; border:1.5px solid #bfdbfe; border-radius:10px; padding:14px; margin-bottom:12px; flex-wrap:wrap; gap:10px;">
         <div>
           <span style="font-size:0.82rem; color:#1e40af; font-weight:600;">ਸਾਰੇ ਆਰਡਰਾਂ ਦੀ ਕੁੱਲ ਰਕਮ:</span>
           <div style="font-size:1.25rem; font-weight:800; color:var(--primary);" id="cqTotalBusiness">₹0</div>
@@ -1350,6 +1380,26 @@
         </div>
         <div>
           <button type="button" class="btn btn-warning btn-sm" onclick="const c = currentQuickClient; closeClientQuickModal(); openClientDispatchModal(c);">🚚 ਮਾਲ ਡਿਸਪੈਚ ਕਰੋ</button>
+        </div>
+      </div>
+
+      <!-- NEW ITEM-WISE DELIVERY TRACKER BOX (TOTAL ORDERED vs SENT vs REMAINING) -->
+      <div style="background:#f8fafc; border:1.5px solid #cbd5e1; border-radius:10px; padding:12px; margin-bottom:14px;">
+        <strong style="font-size:0.92rem; color:var(--primary); display:block; margin-bottom:6px;">
+          📦 ਆਈਟਮ-ਵਾਰ ਡਿਸਪੈਚ ਅਤੇ ਬਾਕੀ ਮਾਲ (Total Ordered / Dispatched / Remaining):
+        </strong>
+        <div class="table-responsive" style="margin-top:2px; background:white; border-radius:8px;">
+          <table>
+            <thead>
+              <tr>
+                <th>ਆਈਟਮ & ਰੰਗ</th>
+                <th>ਕੁੱਲ ਆਰਡਰ (Total)</th>
+                <th>ਭੇਜ ਦਿੱਤਾ (Dispatched)</th>
+                <th>ਬਾਕੀ ਰਹਿੰਦਾ (Remaining)</th>
+              </tr>
+            </thead>
+            <tbody id="cqItemDeliverySummaryBody"></tbody>
+          </table>
         </div>
       </div>
 
@@ -1396,7 +1446,7 @@
         </div>
       </div>
 
-      <!-- IN-MODAL FORM TO DIRECTLY ADD NEXT DAY'S SALE ORDER WITH COLOR -->
+      <!-- IN-MODAL FORM TO DIRECTLY ADD NEXT DAY'S SALE ORDER WITH DISCOUNT -->
       <div class="card" style="border:1.5px dashed var(--primary); background:#f8fafc; margin-bottom:16px; padding:14px;">
         <div style="font-weight:800; color:var(--primary); font-size:0.98rem; margin-bottom:10px;">
           ➕ ਇਸ ਗਾਹਕ ਲਈ ਨਵਾਂ ਆਰਡਰ / ਅਗਲੇ ਦਿਨ ਦਾ ਸਮਾਨ ਸ਼ਾਮਲ ਕਰੋ:
@@ -1423,15 +1473,23 @@
 
           <div class="horizontal-row">
             <div class="form-group" style="flex:1;">
-              <label>ਇਸ ਆਰਡਰ ਦੀ ਕੁੱਲ ਰਕਮ (₹)</label>
+              <label>ਜੋੜ (Subtotal ₹)</label>
+              <input type="number" id="imSaleSubTotal" readonly>
+            </div>
+            <div class="form-group" style="flex:1;">
+              <label style="color:var(--danger);">ਡਿਸਕਾਊਂਟ (₹)</label>
+              <input type="number" step="0.01" id="imSaleDiscount" min="0" value="0" oninput="calcInModalSaleGrandTotal()">
+            </div>
+            <div class="form-group" style="flex:1;">
+              <label>ਕੁੱਲ ਬਿੱਲ (₹)</label>
               <input type="number" id="imSaleGrandTotal" readonly>
             </div>
             <div class="form-group" style="flex:1;">
-              <label>ਅੱਜ ਮਿਲੇ ਐਡਵਾਂਸ (₹)</label>
+              <label>ਐਡਵਾਂਸ (₹)</label>
               <input type="number" step="0.01" id="imSaleAdvance" min="0" value="0" oninput="calcInModalSaleGrandTotal()" required>
             </div>
             <div class="form-group" style="flex:1;">
-              <label>ਇਸ ਆਰਡਰ ਦਾ ਬਕਾਇਆ (₹)</label>
+              <label>ਬਕਾਇਆ (₹)</label>
               <input type="number" id="imSaleBalance" readonly>
             </div>
           </div>
@@ -1643,6 +1701,35 @@
       return `${year}-${month}-${day}`;
     }
 
+    // HELPER: COMPUTES 16th-TO-15th MONTHLY CYCLE BOUNDS
+    function getCurrent15thCycleRange() {
+      const now = new Date();
+      const day = now.getDate();
+      const year = now.getFullYear();
+      const month = now.getMonth(); // 0-indexed
+
+      let startDate, endDate;
+      if (day >= 16) {
+        // 16th of current month to 15th of next month
+        startDate = new Date(year, month, 16);
+        endDate = new Date(year, month + 1, 15);
+      } else {
+        // 16th of previous month to 15th of current month
+        startDate = new Date(year, month - 1, 16);
+        endDate = new Date(year, month, 15);
+      }
+
+      const fmt = (d) => `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
+      return { from: fmt(startDate), to: fmt(endDate) };
+    }
+
+    function resetToCurrent15thCycle() {
+      const range = getCurrent15thCycleRange();
+      document.getElementById('labourCycleFrom').value = range.from;
+      document.getElementById('labourCycleTo').value = range.to;
+      renderLabourPayoutLedger();
+    }
+
     window.addEventListener('DOMContentLoaded', () => {
       const today = getTodayString();
       document.getElementById('saleDate').value = today;
@@ -1653,6 +1740,10 @@
       document.getElementById('modalPayDate').value = today;
       document.getElementById('dispatchDate').value = today;
       document.getElementById('summaryMonth').value = today.slice(0, 7);
+
+      const cycle = getCurrent15thCycleRange();
+      document.getElementById('labourCycleFrom').value = cycle.from;
+      document.getElementById('labourCycleTo').value = cycle.to;
 
       initItemSelectOptions();
       addSaleItemRow();
@@ -1976,8 +2067,9 @@
       calcSaleGrandTotal();
     }
 
+    // SALE CALCULATION WITH DISCOUNT DEDUCTION
     function calcSaleGrandTotal() {
-      let grandTotal = 0;
+      let subTotal = 0;
       const rows = document.querySelectorAll('#saleItemsContainer .item-entry-row');
 
       rows.forEach(r => {
@@ -1985,10 +2077,14 @@
         const rate = parseFloat(r.querySelector('.sale-item-rate').value) || 0;
         const lineTotal = qty * rate;
         r.querySelector('.sale-item-linetotal').value = lineTotal.toFixed(2);
-        grandTotal += lineTotal;
+        subTotal += lineTotal;
       });
 
+      const discount = parseFloat(document.getElementById('saleDiscount').value) || 0;
+      const grandTotal = Math.max(0, subTotal - discount);
       const advance = parseFloat(document.getElementById('saleAdvance').value) || 0;
+
+      document.getElementById('saleSubTotal').value = subTotal.toFixed(2);
       document.getElementById('saleGrandTotal').value = grandTotal.toFixed(2);
       document.getElementById('saleBalance').value = Math.max(0, grandTotal - advance).toFixed(2);
     }
@@ -2047,7 +2143,7 @@
     }
 
     function calcInModalSaleGrandTotal() {
-      let grandTotal = 0;
+      let subTotal = 0;
       const rows = document.querySelectorAll('#inModalSaleItemsContainer .item-entry-row');
 
       rows.forEach(r => {
@@ -2055,10 +2151,14 @@
         const rate = parseFloat(r.querySelector('.im-item-rate').value) || 0;
         const lineTotal = qty * rate;
         r.querySelector('.im-item-linetotal').value = lineTotal.toFixed(2);
-        grandTotal += lineTotal;
+        subTotal += lineTotal;
       });
 
+      const discount = parseFloat(document.getElementById('imSaleDiscount').value) || 0;
+      const grandTotal = Math.max(0, subTotal - discount);
       const advance = parseFloat(document.getElementById('imSaleAdvance').value) || 0;
+
+      document.getElementById('imSaleSubTotal').value = subTotal.toFixed(2);
       document.getElementById('imSaleGrandTotal').value = grandTotal.toFixed(2);
       document.getElementById('imSaleBalance').value = Math.max(0, grandTotal - advance).toFixed(2);
     }
@@ -2078,7 +2178,7 @@
 
       const rows = document.querySelectorAll('#inModalSaleItemsContainer .item-entry-row');
       const itemsList = [];
-      let grandTotal = 0;
+      let subTotal = 0;
 
       rows.forEach(r => {
         const item = r.querySelector('.im-item-name').value.trim();
@@ -2088,12 +2188,14 @@
         const lineTotal = qty * rate;
         if (item && qty > 0) {
           itemsList.push({ item, color, qty, rate, total: lineTotal });
-          grandTotal += lineTotal;
+          subTotal += lineTotal;
         }
       });
 
       if (itemsList.length === 0) return alert('ਕਿਰਪਾ ਕਰਕੇ ਘੱਟੋ-ਘੱਟ ਇੱਕ ਆਈਟਮ ਭਰੋ!');
 
+      const discount = parseFloat(document.getElementById('imSaleDiscount').value) || 0;
+      const grandTotal = Math.max(0, subTotal - discount);
       const advance = parseFloat(document.getElementById('imSaleAdvance').value) || 0;
       const balance = Math.max(0, grandTotal - advance);
 
@@ -2104,6 +2206,8 @@
       const record = {
         id, client: currentQuickClient, phone, address, date, deliveryDate, nextDeliveryDate: deliveryDate,
         items: itemsList,
+        subTotal: subTotal,
+        discount: discount,
         total: grandTotal,
         paid: advance, balance,
         payments: existingPayments,
@@ -2234,7 +2338,6 @@
       openClientQuickModal(currentQuickClient);
     }
 
-    // REFUND SETTLEMENT: DEDUCTS RETURN MONEY FROM TOP BALANCE & SAVES DEDUCTION BREAKDOWN FOR UNDO ON DELETE
     function handleRefundSettlement(e) {
       e.preventDefault();
       if (!currentQuickClient) return;
@@ -2289,7 +2392,6 @@
       openClientQuickModal(currentQuickClient);
     }
 
-    // DELETE RETURN / REFUND ENTRY: AUTOMATICALLY RESTORES DEDUCTED AMOUNT BACK TO TOP NET DUE!
     function deleteSalesReturnEntry(id) {
       const entry = salesReturns.find(r => r.id === id);
       if (!entry) return;
@@ -2310,7 +2412,6 @@
             }
           });
         } else if (clientSales.length > 0) {
-          // Fallback if entry had no breakdown stored: restore directly to latest sale
           clientSales.sort((a, b) => new Date(b.date) - new Date(a.date));
           const newest = clientSales[0];
           newest.total = (Number(newest.total) || 0) + restoreAmt;
@@ -2324,7 +2425,6 @@
       if (currentQuickClient) openClientQuickModal(currentQuickClient);
     }
 
-    // AUTOMATIC ONE-TIME NORMALIZATION FOR ROPAR PAYMENT HISTORY TO SINGLE 2026-11-05 (₹1,00,000) ENTRY
     function normalizeRoparPaymentHistoryIfNeeded() {
       if (roparPaymentNormalized || sales.length === 0) return;
 
@@ -2547,6 +2647,7 @@
       `).join('');
     }
 
+    // SAVE SALE WITH DISCOUNT DEDUCTION
     function saveSale(e) {
       e.preventDefault();
       const editId = document.getElementById('editSaleId').value;
@@ -2558,7 +2659,7 @@
 
       const rows = document.querySelectorAll('#saleItemsContainer .item-entry-row');
       const itemsList = [];
-      let grandTotal = 0;
+      let subTotal = 0;
 
       rows.forEach(r => {
         const item = r.querySelector('.sale-item-name').value.trim();
@@ -2568,12 +2669,14 @@
         const lineTotal = qty * rate;
         if (item && qty > 0) {
           itemsList.push({ item, color, qty, rate, total: lineTotal });
-          grandTotal += lineTotal;
+          subTotal += lineTotal;
         }
       });
 
       if (itemsList.length === 0) return alert('ਕਿਰਪਾ ਕਰਕੇ ਘੱਟੋ-ਘੱਟ ਇੱਕ ਆਈਟਮ ਭਰੋ!');
 
+      const discount = parseFloat(document.getElementById('saleDiscount').value) || 0;
+      const grandTotal = Math.max(0, subTotal - discount);
       const advance = parseFloat(document.getElementById('saleAdvance').value) || 0;
       const balance = Math.max(0, grandTotal - advance);
 
@@ -2594,6 +2697,8 @@
       const record = {
         id, client, phone, address, date, deliveryDate, nextDeliveryDate,
         items: itemsList,
+        subTotal: subTotal,
+        discount: discount,
         total: grandTotal,
         paid: advance, balance,
         payments: existingPayments,
@@ -2617,6 +2722,7 @@
       document.getElementById('saleAddress').value = s.address || '';
       document.getElementById('saleDate').value = s.date;
       document.getElementById('saleDeliveryDate').value = s.deliveryDate || s.date;
+      document.getElementById('saleDiscount').value = s.discount || 0;
       document.getElementById('saleAdvance').value = s.paid;
 
       const container = document.getElementById('saleItemsContainer');
@@ -2640,6 +2746,7 @@
       document.getElementById('saleDate').value = today;
       document.getElementById('saleDeliveryDate').value = today;
       document.getElementById('saleAddress').value = '';
+      document.getElementById('saleDiscount').value = '0';
       document.getElementById('saleFormTitle').textContent = 'ਨਵੀਂ ਸੇਲ ਆਰਡਰ ਐਂਟਰੀ';
       document.getElementById('saleSubmitBtn').textContent = '➕ ਸੇਲ ਸੇਵ ਕਰੋ';
       document.getElementById('cancelSaleEditBtn').style.display = 'none';
@@ -2648,6 +2755,7 @@
       addSaleItemRow();
     }
 
+    // OPEN CLIENT QUICK PROFILE WITH ITEM-WISE DELIVERY TRACKER BOX + ALL LEDGER BLOCKS
     function openClientQuickModal(clientName) {
       currentQuickClient = clientName;
       const clientSales = sales.filter(s => (s.client || '').trim().toLowerCase() === clientName.trim().toLowerCase());
@@ -2662,20 +2770,71 @@
       let totalPaidAmount = 0;
       let netBal = 0;
 
+      // Aggregate item-wise total ordered vs dispatched vs remaining
+      const itemDeliveryMap = {};
+
       clientSales.forEach(s => {
         totalSalesAmount += (Number(s.total) || 0);
         totalPaidAmount += (Number(s.paid) || 0);
         netBal += (Number(s.balance) || 0);
+
+        const items = s.items || [{ item: s.item, color: s.color || 'Grey', qty: s.qty }];
+        items.forEach(it => {
+          const key = `${it.item}__${it.color || 'Grey'}`;
+          if (!itemDeliveryMap[key]) {
+            itemDeliveryMap[key] = {
+              item: it.item,
+              color: it.color || 'Grey',
+              ordered: 0,
+              dispatched: 0
+            };
+          }
+          itemDeliveryMap[key].ordered += (Number(it.qty) || 0);
+        });
+
+        (s.dispatches || []).forEach(d => {
+          const dColor = d.color || 'Grey';
+          const keyWithColor = `${d.item}__${dColor}`;
+          if (itemDeliveryMap[keyWithColor]) {
+            itemDeliveryMap[keyWithColor].dispatched += (Number(d.qty) || 0);
+          } else {
+            // Fallback match by item name if color was omitted in legacy dispatch
+            const matchingKey = Object.keys(itemDeliveryMap).find(k => k.toLowerCase().startsWith(d.item.toLowerCase() + '__'));
+            if (matchingKey) {
+              itemDeliveryMap[matchingKey].dispatched += (Number(d.qty) || 0);
+            }
+          }
+        });
       });
 
       document.getElementById('cqTotalBusiness').textContent = `₹${totalSalesAmount.toLocaleString('en-IN')}`;
       document.getElementById('cqTotalPaid').textContent = `₹${totalPaidAmount.toLocaleString('en-IN')}`;
       document.getElementById('cqNetBalance').textContent = `₹${netBal.toLocaleString('en-IN')}`;
 
+      // Render Item-wise Delivery Tracker Table
+      const deliverySummaryBody = document.getElementById('cqItemDeliverySummaryBody');
+      const itemSummaryList = Object.values(itemDeliveryMap);
+      if (itemSummaryList.length === 0) {
+        deliverySummaryBody.innerHTML = '<tr><td colspan="4" style="text-align:center; color:var(--text-muted);">ਕੋਈ ਆਈਟਮ ਦਰਜ ਨਹੀਂ ਹੈ</td></tr>';
+      } else {
+        deliverySummaryBody.innerHTML = itemSummaryList.map(row => {
+          const rem = Math.max(0, row.ordered - row.dispatched);
+          return `
+            <tr>
+              <td><strong>${row.item}</strong> <span class="badge badge-stock">${row.color}</span></td>
+              <td><strong>${row.ordered.toLocaleString('en-IN')} ਨਗ</strong></td>
+              <td style="color:var(--success); font-weight:700;">${row.dispatched.toLocaleString('en-IN')} ਨਗ</td>
+              <td><span class="badge ${rem > 0 ? 'badge-pending' : 'badge-cleared'}">${rem.toLocaleString('en-IN')} ਨਗ ਬਾਕੀ</span></td>
+            </tr>
+          `;
+        }).join('');
+      }
+
       const today = getTodayString();
       document.getElementById('directPayDate').value = today;
       document.getElementById('imSaleDate').value = today;
       document.getElementById('imSaleDeliveryDate').value = today;
+      document.getElementById('imSaleDiscount').value = '0';
       document.getElementById('imSaleAdvance').value = '0';
       document.getElementById('retDate').value = today;
       document.getElementById('refundPayDate').value = today;
@@ -2784,6 +2943,7 @@
         tbody.innerHTML = clientSales.map(s => {
           const items = s.items || [{ item: s.item, color: s.color || 'Grey', qty: s.qty, total: s.total }];
           const desc = items.map(it => `${it.item} [${it.color || 'Grey'}] (${it.qty})`).join(', ');
+          const discInfo = Number(s.discount || 0) > 0 ? `<br><small style="color:var(--danger);">ਡਿਸਕਾਊਂਟ: -₹${Number(s.discount).toLocaleString('en-IN')}</small>` : '';
 
           let totalOrderQty = 0;
           items.forEach(it => totalOrderQty += (Number(it.qty) || 0));
@@ -2794,7 +2954,7 @@
           return `
             <tr>
               <td><strong>${s.date}</strong></td>
-              <td>${desc}</td>
+              <td>${desc}${discInfo}</td>
               <td><strong>₹${Number(s.total).toLocaleString('en-IN')}</strong></td>
               <td style="color:var(--success); font-weight:700;">₹${Number(s.paid).toLocaleString('en-IN')}</td>
               <td style="color:var(--danger); font-weight:700;">₹${Number(s.balance).toLocaleString('en-IN')}</td>
@@ -3751,25 +3911,57 @@
       alert(`✅ ਠੇਕੇਦਾਰ ${team} ਲਈ ₹${amount} ਲੇਬਰ ਭੁਗਤਾਨ ਦਰਜ ਹੋ ਗਿਆ ਹੈ!`);
     }
 
+    // 2. LABOUR PAYOUT LEDGER: FILTERS EARNED & PAID BY SELECTED 16TH-TO-15TH CYCLE OR CUSTOM DATES
     function renderLabourPayoutLedger() {
       const today = getTodayString();
       const todayBody = document.getElementById('labourPayoutTodayBody');
       const pastBody = document.getElementById('labourPayoutPastBody');
 
-      let totalEarned = 0;
-      labourLogs.forEach(l => totalEarned += (Number(l.total) || 0));
+      const defaultCycle = getCurrent15thCycleRange();
+      const fromDate = document.getElementById('labourCycleFrom').value || defaultCycle.from;
+      const toDate = document.getElementById('labourCycleTo').value || defaultCycle.to;
 
-      const loadingWage = window.cachedLoadingWage || 0;
-      totalEarned += loadingWage;
+      document.getElementById('labourCycleDisplayLabel').textContent = `ਸਾਈਕਲ ਮਿਆਦ: ${fromDate} ਤੋਂ ${toDate} ਤੱਕ`;
 
-      let totalPaid = 0;
-      labourPayouts.forEach(p => totalPaid += (Number(p.amount) || 0));
+      // Filter Production Wages in selected date range
+      let cycleEarned = 0;
+      labourLogs.forEach(l => {
+        const d = (l.date || '').trim();
+        if (d >= fromDate && d <= toDate) {
+          cycleEarned += (Number(l.total) || 0);
+        }
+      });
 
-      const balanceDue = totalEarned - totalPaid;
+      // Filter Loading/Unloading Wages in selected date range
+      sales.forEach(s => {
+        (s.dispatches || []).forEach(d => {
+          if (d.loaded || d.unloaded) {
+            const dispDate = (d.date || s.date || '').trim();
+            if (dispDate >= fromDate && dispDate <= toDate) {
+              const rate = getLoadingRateForItem(d.item);
+              let actions = 0;
+              if (d.loaded) actions += 1;
+              if (d.unloaded) actions += 1;
+              cycleEarned += (Number(d.qty) || 0) * rate * actions;
+            }
+          }
+        });
+      });
 
-      document.getElementById('statLabourEarned').textContent = `₹${totalEarned.toLocaleString('en-IN', {minimumFractionDigits: 2, maximumFractionDigits: 2})}`;
-      document.getElementById('statLabourPaid').textContent = `₹${totalPaid.toLocaleString('en-IN', {minimumFractionDigits: 2, maximumFractionDigits: 2})}`;
-      document.getElementById('statLabourDue').textContent = `₹${balanceDue.toLocaleString('en-IN', {minimumFractionDigits: 2, maximumFractionDigits: 2})}`;
+      // Filter Payouts in selected date range
+      let cyclePaid = 0;
+      labourPayouts.forEach(p => {
+        const d = (p.date || '').trim();
+        if (d >= fromDate && d <= toDate) {
+          cyclePaid += (Number(p.amount) || 0);
+        }
+      });
+
+      const cycleBalanceDue = cycleEarned - cyclePaid;
+
+      document.getElementById('statLabourEarned').textContent = `₹${cycleEarned.toLocaleString('en-IN', {minimumFractionDigits: 2, maximumFractionDigits: 2})}`;
+      document.getElementById('statLabourPaid').textContent = `₹${cyclePaid.toLocaleString('en-IN', {minimumFractionDigits: 2, maximumFractionDigits: 2})}`;
+      document.getElementById('statLabourDue').textContent = `₹${cycleBalanceDue.toLocaleString('en-IN', {minimumFractionDigits: 2, maximumFractionDigits: 2})}`;
 
       const todayPayouts = labourPayouts.filter(p => (p.date || '').trim() === today);
       const pastPayouts = labourPayouts.filter(p => (p.date || '').trim() !== today);
@@ -4160,10 +4352,10 @@
     function exportToCSV(type) {
       let csv = 'data:text/csv;charset=utf-8,';
       if (type === 'sales') {
-        csv += 'Date,DeliveryDate,Client,Phone,Address,Items,Total,Paid,Balance\n';
+        csv += 'Date,DeliveryDate,Client,Phone,Address,Items,Discount,Total,Paid,Balance\n';
         sales.forEach(s => {
           const itemSummary = (s.items || [{ item: s.item, color: s.color || 'Grey', qty: s.qty }]).map(i => `${i.item}[${i.color||'Grey'}](${i.qty})`).join('; ');
-          csv += `"${s.date}","${s.deliveryDate||''}","${s.client}","${s.phone || ''}","${s.address || ''}","${itemSummary}",${s.total},${s.paid},${s.balance}\n`;
+          csv += `"${s.date}","${s.deliveryDate||''}","${s.client}","${s.phone || ''}","${s.address || ''}","${itemSummary}",${s.discount || 0},${s.total},${s.paid},${s.balance}\n`;
         });
       } else if (type === 'purchases') {
         csv += 'Date,Supplier,Phone,Item,Quantity,Rate,Total,Paid,Balance\n';
