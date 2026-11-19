@@ -778,7 +778,7 @@
       </div>
     </section>
 
-    <!-- BLOCK 5: FACTORY STOCK (CEMENT DISPATCHES ALSO DEDUCT FROM CEMENT STOCK) -->
+    <!-- BLOCK 5: FACTORY STOCK -->
     <section id="tab-stock" class="tab-content">
       <div class="card">
         <div class="card-title">
@@ -1351,7 +1351,7 @@
     </div>
   </div>
 
-  <!-- POPUP MODAL: CLIENT DEDICATED PAGE (WITH COLLAPSIBLE ACTION BLOCKS + AMOUNT BREAKDOWN) -->
+  <!-- POPUP MODAL: CLIENT DEDICATED PAGE (WITH GRAND TOTAL FOOTER IN ITEM-WISE DELIVERY TABLE) -->
   <div class="modal" id="clientQuickModal">
     <div class="modal-box" style="max-width: 820px;">
       <div class="modal-header">
@@ -1362,7 +1362,6 @@
         <button class="close-modal" onclick="closeClientQuickModal()">×</button>
       </div>
 
-      <!-- Financial Totals + Quick Toggle Action Buttons -->
       <div style="background:#eff6ff; border:1.5px solid #bfdbfe; border-radius:10px; padding:14px; margin-bottom:12px;">
         <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:10px; margin-bottom:12px;">
           <div>
@@ -1379,7 +1378,6 @@
           </div>
         </div>
 
-        <!-- 3 QUICK ACTION BUTTONS: DISPATCH, DIRECT PAYMENT, ADD NEW ORDER -->
         <div style="display:flex; gap:8px; flex-wrap:wrap; border-top:1px dashed #93c5fd; padding-top:10px;">
           <button type="button" class="btn btn-warning btn-sm" onclick="const c = currentQuickClient; closeClientQuickModal(); openClientDispatchModal(c);">🚚 ਮਾਲ ਡਿਸਪੈਚ ਕਰੋ</button>
           <button type="button" class="btn btn-success btn-sm" onclick="toggleClientSubPanel('cqDirectPaymentBox')">💵 ਸਿੱਧੀ ਪੇਮੈਂਟ ਜਮ੍ਹਾਂ ਕਰੋ</button>
@@ -1473,7 +1471,7 @@
         </form>
       </div>
 
-      <!-- ITEM-WISE DELIVERY & VALUE TRACKER BOX -->
+      <!-- ITEM-WISE DELIVERY & VALUE TRACKER BOX WITH GRAND TOTAL FOOTER ROW -->
       <div style="background:#f8fafc; border:1.5px solid #cbd5e1; border-radius:10px; padding:12px; margin-bottom:14px;">
         <strong style="font-size:0.92rem; color:var(--primary); display:block; margin-bottom:6px;">
           📦 ਆਈਟਮ-ਵਾਰ ਡਿਸਪੈਚ ਅਤੇ ਬਾਕੀ ਮਾਲ (ਨਗ ਅਤੇ ਰਕਮ ਸਮੇਤ):
@@ -2772,7 +2770,7 @@
       addSaleItemRow();
     }
 
-    // OPEN CLIENT QUICK PROFILE WITH ITEM-WISE DELIVERY & VALUE TRACKER BOX
+    // OPEN CLIENT QUICK PROFILE WITH ITEM-WISE DELIVERY & VALUE TRACKER BOX + GRAND TOTAL FOOTER
     function openClientQuickModal(clientName) {
       currentQuickClient = clientName;
       const clientSales = sales.filter(s => (s.client || '').trim().toLowerCase() === clientName.trim().toLowerCase());
@@ -2787,7 +2785,6 @@
       let totalPaidAmount = 0;
       let netBal = 0;
 
-      // Aggregate item-wise total ordered vs dispatched vs remaining WITH MONETARY VALUE
       const itemDeliveryMap = {};
 
       clientSales.forEach(s => {
@@ -2834,17 +2831,25 @@
       document.getElementById('cqTotalPaid').textContent = `₹${totalPaidAmount.toLocaleString('en-IN')}`;
       document.getElementById('cqNetBalance').textContent = `₹${netBal.toLocaleString('en-IN')}`;
 
-      // Render Item-wise Delivery Tracker Table WITH VALUES
+      // Render Item-wise Delivery Tracker Table WITH VALUES AND BOTTOM TOTAL SUMMARY ROW
       const deliverySummaryBody = document.getElementById('cqItemDeliverySummaryBody');
       const itemSummaryList = Object.values(itemDeliveryMap);
       if (itemSummaryList.length === 0) {
         deliverySummaryBody.innerHTML = '<tr><td colspan="4" style="text-align:center; color:var(--text-muted);">ਕੋਈ ਆਈਟਮ ਦਰਜ ਨਹੀਂ ਹੈ</td></tr>';
       } else {
-        deliverySummaryBody.innerHTML = itemSummaryList.map(row => {
+        let sumAllOrderedValue = 0;
+        let sumAllDispatchedValue = 0;
+        let sumAllRemainingValue = 0;
+
+        const rowsHtml = itemSummaryList.map(row => {
           const rem = Math.max(0, row.ordered - row.dispatched);
           const avgRate = row.ordered > 0 ? (row.orderedValue / row.ordered) : row.rate;
           const sentValue = row.dispatched * avgRate;
           const remValue = rem * avgRate;
+
+          sumAllOrderedValue += row.orderedValue;
+          sumAllDispatchedValue += sentValue;
+          sumAllRemainingValue += remValue;
 
           return `
             <tr>
@@ -2864,6 +2869,27 @@
             </tr>
           `;
         }).join('');
+
+        // Fourth / Final Summary Total Row
+        const totalSummaryFooterHtml = `
+          <tr style="background:#eff6ff; border-top:2px solid #93c5fd; font-weight:800;">
+            <td><strong style="color:var(--primary); font-size:0.95rem;">📊 ਕੁੱਲ ਜੋੜ (Total):</strong></td>
+            <td>
+              <span style="font-size:0.75rem; color:var(--text-muted); display:block;">ਟੋਟਲ ਪੇਮੈਂਟ:</span>
+              <strong style="color:var(--primary); font-size:1rem;">₹${Math.round(sumAllOrderedValue).toLocaleString('en-IN')}</strong>
+            </td>
+            <td>
+              <span style="font-size:0.75rem; color:var(--text-muted); display:block;">ਹੁਣ ਤੱਕ ਆਈ ਪੇਮੈਂਟ (Current):</span>
+              <strong style="color:var(--success); font-size:1rem;">₹${Math.round(sumAllDispatchedValue).toLocaleString('en-IN')}</strong>
+            </td>
+            <td>
+              <span style="font-size:0.75rem; color:var(--text-muted); display:block;">ਰਿਮੇਨਿੰਗ ਪੇਮੈਂਟ (Remaining):</span>
+              <strong style="color:var(--danger); font-size:1rem;">₹${Math.round(sumAllRemainingValue).toLocaleString('en-IN')}</strong>
+            </td>
+          </tr>
+        `;
+
+        deliverySummaryBody.innerHTML = rowsHtml + totalSummaryFooterHtml;
       }
 
       const today = getTodayString();
@@ -4209,7 +4235,7 @@
       selectedLedgerParty = null;
     }
 
-    // FACTORY STOCK CALCULATION (INCLUDES CEMENT DISPATCH DEDUCTIONS!)
+    // FACTORY STOCK CALCULATION
     function renderFactoryStock() {
       const tbody = document.querySelector('#stockTable tbody');
       const allItemsWithCement = [...currentItemsData.map(i => i.name), "ਸੀਮੈਂਟ (Cement Bags)"];
@@ -4227,11 +4253,9 @@
               totalMadeOrIn += Number(p.qty) || 0;
             }
           });
-          // Subtract cement used in daily production
           labourLogs.forEach(l => {
             totalSoldOrUsed += Number(l.totalCement) || 0;
           });
-          // Also subtract cement bags delivered in sales dispatches!
           sales.forEach(s => {
             if (s.dispatches && s.dispatches.length > 0) {
               s.dispatches.forEach(d => {
