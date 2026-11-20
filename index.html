@@ -501,14 +501,14 @@
 
   <div class="container">
     
-    <!-- BLOCK 1: SALES WITH DISCOUNT FIELD -->
+    <!-- BLOCK 1: SALES WITH SAVE & SAVE+DISPATCH BUTTONS -->
     <section id="tab-sale" class="tab-content active">
       <div class="card card-sale-theme">
         <div class="card-title">
           <span id="saleFormTitle">📦 ਨਵੀਂ ਸੇਲ ਆਰਡਰ ਐਂਟਰੀ</span>
           <button type="button" id="cancelSaleEditBtn" class="btn btn-outline btn-sm" style="display:none;" onclick="cancelSaleEdit()">ਰੱਦ ਕਰੋ ✖</button>
         </div>
-        <form id="saleForm" onsubmit="saveSale(event)">
+        <form id="saleForm" onsubmit="saveSale(event, false)">
           <input type="hidden" id="editSaleId" value="">
           
           <div class="horizontal-row">
@@ -565,8 +565,22 @@
             </div>
           </div>
 
-          <div style="margin-top: 14px; display: flex; gap: 10px;">
+          <!-- Optional Immediate Loading/Unloading Ticks for Save & Dispatch -->
+          <div style="margin-top:10px; background:#fefce8; border:1px solid #fde047; border-radius:8px; padding:8px 12px; display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:8px;">
+            <span style="font-size:0.84rem; font-weight:700; color:#854d0e;">ਜੇ ਨਾਲ ਦੀ ਨਾਲ ਡਿਸਪੈਚ ਕਰਨਾ ਹੈ ਤਾਂ ਲੇਬਰ ਚੁਣੋ:</span>
+            <div class="checkbox-row">
+              <label class="checkbox-label">
+                <input type="checkbox" id="saleInstantLoaded"> 📦 Loaded (ਲੋਡ ਹੋਇਆ)
+              </label>
+              <label class="checkbox-label">
+                <input type="checkbox" id="saleInstantUnloaded"> 🚛 Unloaded (ਅਨਲੋਡ ਹੋਇਆ)
+              </label>
+            </div>
+          </div>
+
+          <div style="margin-top: 14px; display: flex; flex-wrap: wrap; gap: 10px;">
             <button type="submit" id="saleSubmitBtn" class="btn btn-success">➕ ਸੇਲ ਸੇਵ ਕਰੋ</button>
+            <button type="button" id="saleSaveDispatchBtn" class="btn btn-warning" onclick="saveSale(event, true)">🚚 ਸੇਵ & ਡਿਸਪੈਚ ਕਰੋ</button>
             <button type="button" class="btn btn-outline" onclick="exportToCSV('sales')">📥 Excel Export</button>
           </div>
         </form>
@@ -596,7 +610,7 @@
       </div>
     </section>
 
-    <!-- BLOCK 2: PURCHASE (FULL LIST WITH EDIT, PAY & DELETE) -->
+    <!-- BLOCK 2: PURCHASE -->
     <section id="tab-purchase" class="tab-content">
       <div class="card card-purchase-theme">
         <div class="card-title">
@@ -1422,7 +1436,7 @@
           </div>
           <button type="button" class="btn btn-outline btn-sm" onclick="toggleClientSubPanel('cqNewOrderBox')">✖</button>
         </div>
-        <form id="inModalSaleForm" onsubmit="saveInModalSale(event)">
+        <form id="inModalSaleForm" onsubmit="saveInModalSale(event, false)">
           <div class="horizontal-row">
             <div class="form-group" style="flex:1;">
               <label>ਬੁਕਿੰਗ ਤਾਰੀਖ</label>
@@ -1465,8 +1479,17 @@
             </div>
           </div>
 
-          <div style="margin-top:12px; display:flex; justify-content:flex-end;">
-            <button type="submit" class="btn btn-primary">💾 ਇਹ ਨਵਾਂ ਆਰਡਰ ਖਾਤੇ ਵਿੱਚ ਸੇਵ ਕਰੋ</button>
+          <div style="margin-top:8px; background:#fefce8; border:1px solid #fde047; border-radius:8px; padding:6px 10px; display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:6px;">
+            <span style="font-size:0.8rem; font-weight:700; color:#854d0e;">ਨਾਲ ਡਿਸਪੈਚ ਲਈ ਲੇਬਰ:</span>
+            <div class="checkbox-row">
+              <label class="checkbox-label"><input type="checkbox" id="imSaleInstantLoaded"> 📦 Loaded</label>
+              <label class="checkbox-label"><input type="checkbox" id="imSaleInstantUnloaded"> 🚛 Unloaded</label>
+            </div>
+          </div>
+
+          <div style="margin-top:12px; display:flex; justify-content:flex-end; flex-wrap:wrap; gap:8px;">
+            <button type="submit" class="btn btn-primary btn-sm">💾 ਆਰਡਰ ਸੇਵ ਕਰੋ</button>
+            <button type="button" class="btn btn-warning btn-sm" onclick="saveInModalSale(event, true)">🚚 ਸੇਵ & ਡਿਸਪੈਚ ਕਰੋ</button>
           </div>
         </form>
       </div>
@@ -2179,8 +2202,9 @@
       document.getElementById('imSaleBalance').value = Math.max(0, grandTotal - advance).toFixed(2);
     }
 
-    function saveInModalSale(e) {
-      e.preventDefault();
+    // SAVE IN-MODAL SALE (SUPPORTS SAVE ONLY OR SAVE + INSTANT DISPATCH)
+    function saveInModalSale(e, withImmediateDispatch = false) {
+      if (e) e.preventDefault();
       if (!currentQuickClient) return;
 
       const clientSales = sales.filter(s => (s.client || '').trim().toLowerCase() === currentQuickClient.trim().toLowerCase());
@@ -2219,6 +2243,32 @@
       let existingPayments = [];
       if (advance > 0) existingPayments = [{ amount: advance, date, note: 'ਐਡਵਾਂਸ (ਆਰਡਰ ਨਾਲ)' }];
 
+      let initialDispatches = [];
+      if (withImmediateDispatch) {
+        const loaded = document.getElementById('imSaleInstantLoaded').checked;
+        const unloaded = document.getElementById('imSaleInstantUnloaded').checked;
+        const batchId = 'B_' + Date.now();
+
+        itemsList.forEach(it => {
+          const ratePerAction = getLoadingRateForItem(it.item);
+          let loadingCost = 0;
+          if (loaded) loadingCost += it.qty * ratePerAction;
+          if (unloaded) loadingCost += it.qty * ratePerAction;
+
+          initialDispatches.push({
+            batchId: batchId,
+            item: it.item,
+            color: it.color,
+            qty: it.qty,
+            date: deliveryDate || date,
+            loaded: loaded,
+            unloaded: unloaded,
+            ratePerAction: ratePerAction,
+            loadingCost: loadingCost
+          });
+        });
+      }
+
       const record = {
         id, client: currentQuickClient, phone, address, date, deliveryDate, nextDeliveryDate: deliveryDate,
         items: itemsList,
@@ -2227,12 +2277,15 @@
         total: grandTotal,
         paid: advance, balance,
         payments: existingPayments,
-        dispatches: []
+        dispatches: initialDispatches
       };
 
       db.ref('sales/' + id).set(record);
       saveParty(currentQuickClient, phone);
-      alert(`✅ ${currentQuickClient} ਦੇ ਖਾਤੇ ਵਿੱਚ ਨਵਾਂ ਆਰਡਰ ਸੇਵ ਹੋ ਗਿਆ ਹੈ!`);
+      alert(withImmediateDispatch
+        ? `🚚 ${currentQuickClient} ਦਾ ਨਵਾਂ ਆਰਡਰ ਸੇਵ ਅਤੇ ਨਾਲ ਦੀ ਨਾਲ ਡਿਸਪੈਚ ਹੋ ਗਿਆ ਹੈ!`
+        : `✅ ${currentQuickClient} ਦੇ ਖਾਤੇ ਵਿੱਚ ਨਵਾਂ ਆਰਡਰ ਸੇਵ ਹੋ ਗਿਆ ਹੈ!`
+      );
       openClientQuickModal(currentQuickClient);
     }
 
@@ -2613,7 +2666,6 @@
       document.getElementById('purBalance').value = Math.max(0, total - advance).toFixed(2);
     }
 
-    // RENDER ALL PURCHASE ENTRIES ON PAGE 2 WITH EDIT, PAY, WHATSAPP & DELETE
     function renderPurchases() {
       const tbody = document.querySelector('#purchaseTable tbody');
       if (!tbody) return;
@@ -2706,14 +2758,19 @@
       `).join('');
     }
 
-    function saveSale(e) {
-      e.preventDefault();
+    // SAVE SALE (SUPPORTS BOTH "SAVE" AND "SAVE & DISPATCH")
+    function saveSale(e, withImmediateDispatch = false) {
+      if (e) e.preventDefault();
       const editId = document.getElementById('editSaleId').value;
       const client = document.getElementById('saleClient').value.trim();
       const phone = document.getElementById('salePhone').value.trim();
       const address = document.getElementById('saleAddress').value.trim();
       const date = document.getElementById('saleDate').value;
       const deliveryDate = document.getElementById('saleDeliveryDate').value;
+
+      if (!client || !date || !deliveryDate) {
+        return alert('ਕਿਰਪਾ ਕਰਕੇ ਗਾਹਕ ਦਾ ਨਾਮ ਅਤੇ ਤਾਰੀਖ ਭਰੋ!');
+      }
 
       const rows = document.querySelectorAll('#saleItemsContainer .item-entry-row');
       const itemsList = [];
@@ -2752,6 +2809,33 @@
         if (advance > 0) existingPayments = [{ amount: advance, date, note: 'ਐਡਵਾਂਸ (ਆਰਡਰ ਨਾਲ)' }];
       }
 
+      if (withImmediateDispatch) {
+        const loaded = document.getElementById('saleInstantLoaded').checked;
+        const unloaded = document.getElementById('saleInstantUnloaded').checked;
+        const batchId = 'B_' + Date.now();
+
+        // Replace or add dispatches for all items in this order
+        existingDispatches = [];
+        itemsList.forEach(it => {
+          const ratePerAction = getLoadingRateForItem(it.item);
+          let loadingCost = 0;
+          if (loaded) loadingCost += it.qty * ratePerAction;
+          if (unloaded) loadingCost += it.qty * ratePerAction;
+
+          existingDispatches.push({
+            batchId: batchId,
+            item: it.item,
+            color: it.color,
+            qty: it.qty,
+            date: deliveryDate || date,
+            loaded: loaded,
+            unloaded: unloaded,
+            ratePerAction: ratePerAction,
+            loadingCost: loadingCost
+          });
+        });
+      }
+
       const record = {
         id, client, phone, address, date, deliveryDate, nextDeliveryDate,
         items: itemsList,
@@ -2767,7 +2851,11 @@
       saveParty(client, phone);
 
       cancelSaleEdit();
-      alert(editId ? 'ਸੇਲ ਅੱਪਡੇਟ ਹੋ ਗਈ ਹੈ!' : 'ਸੇਲ ਆਰਡਰ ਸੇਵ ਹੋ ਗਿਆ ਹੈ!');
+      if (withImmediateDispatch) {
+        alert('🚚 ਸੇਲ ਆਰਡਰ ਸੇਵ ਹੋ ਗਿਆ ਹੈ ਅਤੇ ਸਾਰਾ ਮਾਲ ਨਾਲ ਦੀ ਨਾਲ ਡਿਸਪੈਚ ਵੀ ਹੋ ਗਿਆ ਹੈ!');
+      } else {
+        alert(editId ? 'ਸੇਲ ਅੱਪਡੇਟ ਹੋ ਗਈ ਹੈ!' : 'ਸੇਲ ਆਰਡਰ ਸੇਵ ਹੋ ਗਿਆ ਹੈ!');
+      }
     }
 
     function editSale(id) {
@@ -2805,7 +2893,9 @@
       document.getElementById('saleDeliveryDate').value = today;
       document.getElementById('saleAddress').value = '';
       document.getElementById('saleDiscount').value = '0';
-      document.getElementById('saleFormTitle').textContent = 'ਨਵੀਂ ਸੇਲ ਆਰਡਰ ਐਂਟਰੀ';
+      document.getElementById('saleInstantLoaded').checked = false;
+      document.getElementById('saleInstantUnloaded').checked = false;
+      document.getElementById('saleFormTitle').textContent = '📦 ਨਵੀਂ ਸੇਲ ਆਰਡਰ ਐਂਟਰੀ';
       document.getElementById('saleSubmitBtn').textContent = '➕ ਸੇਲ ਸੇਵ ਕਰੋ';
       document.getElementById('cancelSaleEditBtn').style.display = 'none';
 
@@ -2813,7 +2903,6 @@
       addSaleItemRow();
     }
 
-    // OPEN CLIENT QUICK PROFILE
     function openClientQuickModal(clientName) {
       currentQuickClient = clientName;
       const clientSales = sales.filter(s => (s.client || '').trim().toLowerCase() === clientName.trim().toLowerCase());
@@ -2939,6 +3028,8 @@
       document.getElementById('imSaleDeliveryDate').value = today;
       document.getElementById('imSaleDiscount').value = '0';
       document.getElementById('imSaleAdvance').value = '0';
+      document.getElementById('imSaleInstantLoaded').checked = false;
+      document.getElementById('imSaleInstantUnloaded').checked = false;
       document.getElementById('retDate').value = today;
       document.getElementById('refundPayDate').value = today;
       document.getElementById('inModalSaleItemsContainer').innerHTML = '';
