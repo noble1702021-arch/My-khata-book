@@ -1117,7 +1117,7 @@
     </div>
   </div>
 
-  <!-- MULTI-ITEM STAGED DISPATCH MODAL -->
+  <!-- MULTI-ITEM STAGED DISPATCH MODAL (SWAPPED: SENDING QTY FIRST, REMAINING SECOND, DEFAULT 0) -->
   <div class="modal" id="dispatchModal">
     <div class="modal-box" style="max-width: 740px;">
       <div class="modal-header">
@@ -1142,7 +1142,7 @@
 
         <div class="items-box" style="background:#f8fafc; padding:12px;">
           <strong style="font-size:0.9rem; color:var(--primary); display:block; margin-bottom:8px;">
-            1. ਆਈਟਮ ਚੁਣੋ, ਨਗ ਭਰੋ ਅਤੇ ਲੋਡਿੰਗ/ਅਨਲੋਡਿੰਗ ਟਿੱਕ ਕਰਕੇ ਲਿਸਟ ਵਿੱਚ ਜੋੜੋ:
+            1. ਆਈਟਮ ਚੁਣੋ, ਭੇਜਣ ਵਾਲੇ ਨਗ ਭਰੋ ਅਤੇ ਲੋਡਿੰਗ/ਅਨਲੋਡਿੰਗ ਟਿੱਕ ਕਰਕੇ ਲਿਸਟ ਵਿੱਚ ਜੋੜੋ:
           </strong>
 
           <div class="horizontal-row" style="align-items:flex-end;">
@@ -1150,13 +1150,13 @@
               <label>ਕਿਹੜੀ ਆਈਟਮ ਭੇਜਣੀ ਹੈ?</label>
               <select id="dispatchItemSelect" onchange="updateSelectedPendingQty()"></select>
             </div>
+            <div class="form-group" style="flex:0.9; min-width:105px;">
+              <label>ਭੇਜਣੇ (Qty)</label>
+              <input type="number" id="dispatchSelectedQty" min="1" value="0" placeholder="0">
+            </div>
             <div class="form-group" style="flex:0.8; min-width:95px;">
               <label>ਬਾਕੀ ਪਈ</label>
               <input type="number" id="dispatchSelectedPending" readonly>
-            </div>
-            <div class="form-group" style="flex:0.9; min-width:105px;">
-              <label>ਭੇਜਣੇ (Qty)</label>
-              <input type="number" id="dispatchSelectedQty" min="1" placeholder="ਨਗ">
             </div>
           </div>
 
@@ -1351,7 +1351,7 @@
     </div>
   </div>
 
-  <!-- POPUP MODAL: CLIENT DEDICATED PAGE (WITH GRAND TOTAL FOOTER IN ITEM-WISE DELIVERY TABLE) -->
+  <!-- POPUP MODAL: CLIENT DEDICATED PAGE -->
   <div class="modal" id="clientQuickModal">
     <div class="modal-box" style="max-width: 820px;">
       <div class="modal-header">
@@ -1471,7 +1471,7 @@
         </form>
       </div>
 
-      <!-- ITEM-WISE DELIVERY & VALUE TRACKER BOX WITH GRAND TOTAL FOOTER ROW -->
+      <!-- ITEM-WISE DELIVERY & VALUE TRACKER BOX WITH BALANCE FOOTER ROW -->
       <div style="background:#f8fafc; border:1.5px solid #cbd5e1; border-radius:10px; padding:12px; margin-bottom:14px;">
         <strong style="font-size:0.92rem; color:var(--primary); display:block; margin-bottom:6px;">
           📦 ਆਈਟਮ-ਵਾਰ ਡਿਸਪੈਚ ਅਤੇ ਬਾਕੀ ਮਾਲ (ਨਗ ਅਤੇ ਰਕਮ ਸਮੇਤ):
@@ -2770,7 +2770,7 @@
       addSaleItemRow();
     }
 
-    // OPEN CLIENT QUICK PROFILE WITH ITEM-WISE DELIVERY & VALUE TRACKER BOX + GRAND TOTAL FOOTER
+    // OPEN CLIENT QUICK PROFILE WITH UPDATED FOOTER BALANCE (DISPATCHED VALUE - PAID AMOUNT)
     function openClientQuickModal(clientName) {
       currentQuickClient = clientName;
       const clientSales = sales.filter(s => (s.client || '').trim().toLowerCase() === clientName.trim().toLowerCase());
@@ -2831,7 +2831,6 @@
       document.getElementById('cqTotalPaid').textContent = `₹${totalPaidAmount.toLocaleString('en-IN')}`;
       document.getElementById('cqNetBalance').textContent = `₹${netBal.toLocaleString('en-IN')}`;
 
-      // Render Item-wise Delivery Tracker Table WITH VALUES AND BOTTOM TOTAL SUMMARY ROW
       const deliverySummaryBody = document.getElementById('cqItemDeliverySummaryBody');
       const itemSummaryList = Object.values(itemDeliveryMap);
       if (itemSummaryList.length === 0) {
@@ -2839,7 +2838,6 @@
       } else {
         let sumAllOrderedValue = 0;
         let sumAllDispatchedValue = 0;
-        let sumAllRemainingValue = 0;
 
         const rowsHtml = itemSummaryList.map(row => {
           const rem = Math.max(0, row.ordered - row.dispatched);
@@ -2849,7 +2847,6 @@
 
           sumAllOrderedValue += row.orderedValue;
           sumAllDispatchedValue += sentValue;
-          sumAllRemainingValue += remValue;
 
           return `
             <tr>
@@ -2870,7 +2867,9 @@
           `;
         }).join('');
 
-        // Fourth / Final Summary Total Row
+        // Balance = Dispatched Tiles Value (Current Earned) - Total Paid Amount by Client
+        const dispatchedBalance = Math.max(0, Math.round(sumAllDispatchedValue) - Math.round(totalPaidAmount));
+
         const totalSummaryFooterHtml = `
           <tr style="background:#eff6ff; border-top:2px solid #93c5fd; font-weight:800;">
             <td><strong style="color:var(--primary); font-size:0.95rem;">📊 ਕੁੱਲ ਜੋੜ (Total):</strong></td>
@@ -2883,8 +2882,8 @@
               <strong style="color:var(--success); font-size:1rem;">₹${Math.round(sumAllDispatchedValue).toLocaleString('en-IN')}</strong>
             </td>
             <td>
-              <span style="font-size:0.75rem; color:var(--text-muted); display:block;">ਰਿਮੇਨਿੰਗ ਪੇਮੈਂਟ (Remaining):</span>
-              <strong style="color:var(--danger); font-size:1rem;">₹${Math.round(sumAllRemainingValue).toLocaleString('en-IN')}</strong>
+              <span style="font-size:0.75rem; color:var(--text-muted); display:block;">ਬੈਲੈਂਸ (Balance):</span>
+              <strong style="color:var(--danger); font-size:1rem;">₹${dispatchedBalance.toLocaleString('en-IN')}</strong>
             </td>
           </tr>
         `;
@@ -3251,7 +3250,7 @@
       if (availablePendingDispatchItems.length === 0) {
         select.innerHTML = '<option value="">ਕੋਈ ਪੈਂਡਿੰਗ ਆਈਟਮ ਨਹੀਂ ਬਚੀ</option>';
         document.getElementById('dispatchSelectedPending').value = 0;
-        document.getElementById('dispatchSelectedQty').value = '';
+        document.getElementById('dispatchSelectedQty').value = '0';
         return;
       }
 
@@ -3266,7 +3265,7 @@
       const idx = parseInt(document.getElementById('dispatchItemSelect').value);
       if (isNaN(idx) || !availablePendingDispatchItems[idx]) {
         document.getElementById('dispatchSelectedPending').value = 0;
-        document.getElementById('dispatchSelectedQty').value = '';
+        document.getElementById('dispatchSelectedQty').value = '0';
         return;
       }
 
@@ -3277,7 +3276,8 @@
 
       const rem = Math.max(0, selected.pending - alreadyStaged);
       document.getElementById('dispatchSelectedPending').value = rem;
-      document.getElementById('dispatchSelectedQty').value = rem > 0 ? rem : '';
+      // Keep Sending Qty at 0 by default so user types exact quantity manually
+      document.getElementById('dispatchSelectedQty').value = '0';
     }
 
     function addDispatchItemToQueue() {
