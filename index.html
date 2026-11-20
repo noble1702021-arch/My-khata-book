@@ -596,7 +596,7 @@
       </div>
     </section>
 
-    <!-- BLOCK 2: PURCHASE -->
+    <!-- BLOCK 2: PURCHASE (FULL LIST WITH EDIT, PAY & DELETE) -->
     <section id="tab-purchase" class="tab-content">
       <div class="card card-purchase-theme">
         <div class="card-title">
@@ -651,7 +651,7 @@
       </div>
 
       <div class="card card-purchase-theme">
-        <div class="card-title"><span>ਖਰੀਦ ਹਿਸਾਬ ਸੂਚੀ</span></div>
+        <div class="card-title"><span>ਖਰੀਦ ਹਿਸਾਬ ਸੂਚੀ (ਸਾਰੀਆਂ ਖਰੀਦ ਐਂਟਰੀਆਂ)</span></div>
         <div class="table-responsive">
           <table id="purchaseTable">
             <thead>
@@ -661,9 +661,9 @@
                 <th>ਸਮਾਨ</th>
                 <th>ਮਾਤਰਾ</th>
                 <th>ਰੇਟ</th>
-                <th>ਕੁੱਲ</th>
+                <th>ਕੁੱਲ ਰਕਮ</th>
                 <th>ਦਿੱਤੇ</th>
-                <th>ਬਕਾਇਆ</th>
+                <th>ਬਾਕੀ ਬਕਾਇਆ</th>
                 <th>ਐਕਸ਼ਨ</th>
               </tr>
             </thead>
@@ -1117,7 +1117,7 @@
     </div>
   </div>
 
-  <!-- MULTI-ITEM STAGED DISPATCH MODAL (SWAPPED: SENDING QTY FIRST, REMAINING SECOND, DEFAULT 0) -->
+  <!-- MULTI-ITEM STAGED DISPATCH MODAL -->
   <div class="modal" id="dispatchModal">
     <div class="modal-box" style="max-width: 740px;">
       <div class="modal-header">
@@ -2613,6 +2613,49 @@
       document.getElementById('purBalance').value = Math.max(0, total - advance).toFixed(2);
     }
 
+    // RENDER ALL PURCHASE ENTRIES ON PAGE 2 WITH EDIT, PAY, WHATSAPP & DELETE
+    function renderPurchases() {
+      const tbody = document.querySelector('#purchaseTable tbody');
+      if (!tbody) return;
+
+      if (purchases.length === 0) {
+        tbody.innerHTML = '<tr><td colspan="9" style="text-align:center;">ਕੋਈ ਖਰੀਦ ਰਿਕਾਰਡ ਨਹੀਂ ਹੈ</td></tr>';
+        return;
+      }
+
+      const sortedPurchases = purchases.slice().sort((a, b) => new Date(b.date) - new Date(a.date));
+
+      tbody.innerHTML = sortedPurchases.map(p => {
+        const bal = Number(p.balance) || 0;
+        const paid = Number(p.paid) || 0;
+        const tot = Number(p.total) || 0;
+
+        return `
+          <tr>
+            <td><strong>${p.date || '-'}</strong></td>
+            <td>
+              <strong>${p.supplier || '-'}</strong>
+              ${p.phone ? `<br><small>${p.phone}</small>` : ''}
+            </td>
+            <td><strong>${p.item || '-'}</strong></td>
+            <td>${Number(p.qty || 0).toLocaleString('en-IN')}</td>
+            <td>₹${Number(p.rate || 0).toFixed(2)}</td>
+            <td><strong>₹${tot.toLocaleString('en-IN')}</strong></td>
+            <td style="color:var(--success); font-weight:700;">₹${paid.toLocaleString('en-IN')}</td>
+            <td><span class="badge ${bal > 0 ? 'badge-pending' : 'badge-cleared'}">₹${bal.toLocaleString('en-IN')}</span></td>
+            <td>
+              <div style="display:flex; flex-wrap:wrap; gap:4px;">
+                ${bal > 0 ? `<button class="btn btn-success btn-sm" onclick="openPaymentModal('${p.id}', 'purchase')" title="ਬਕਾਇਆ ਜਮ੍ਹਾਂ ਕਰੋ">✅ ਜਮ੍ਹਾਂ</button>` : ''}
+                ${p.phone ? `<button class="btn btn-whatsapp btn-sm" onclick="sendWhatsAppInvoice('${p.id}', 'purchase')" title="WhatsApp ਭੇਜੋ">💬 WA</button>` : ''}
+                <button class="btn btn-edit btn-sm" onclick="editPurchase('${p.id}')" title="ਐਡਿਟ ਕਰੋ">✏️</button>
+                <button class="btn btn-danger btn-sm" onclick="deleteRecord('${p.id}', 'purchase')" title="ਡਿਲੀਟ ਕਰੋ">🗑️</button>
+              </div>
+            </td>
+          </tr>
+        `;
+      }).join('');
+    }
+
     function renderDeliveryDateAlerts() {
       const banner = document.getElementById('deliveryReminderBanner');
       const list = document.getElementById('reminderList');
@@ -2770,7 +2813,7 @@
       addSaleItemRow();
     }
 
-    // OPEN CLIENT QUICK PROFILE WITH UPDATED FOOTER BALANCE (DISPATCHED VALUE - PAID AMOUNT)
+    // OPEN CLIENT QUICK PROFILE
     function openClientQuickModal(clientName) {
       currentQuickClient = clientName;
       const clientSales = sales.filter(s => (s.client || '').trim().toLowerCase() === clientName.trim().toLowerCase());
@@ -2867,7 +2910,6 @@
           `;
         }).join('');
 
-        // Balance = Dispatched Tiles Value (Current Earned) - Total Paid Amount by Client
         const dispatchedBalance = Math.max(0, Math.round(sumAllDispatchedValue) - Math.round(totalPaidAmount));
 
         const totalSummaryFooterHtml = `
@@ -3276,7 +3318,6 @@
 
       const rem = Math.max(0, selected.pending - alreadyStaged);
       document.getElementById('dispatchSelectedPending').value = rem;
-      // Keep Sending Qty at 0 by default so user types exact quantity manually
       document.getElementById('dispatchSelectedQty').value = '0';
     }
 
@@ -4427,7 +4468,7 @@
         });
       } else if (type === 'purchases') {
         csv += 'Date,Supplier,Phone,Item,Quantity,Rate,Total,Paid,Balance\n';
-        purchases.forEach(p => { csv += `"${p.date}","${p.supplier}","${p.phone || ''}","${p.item}",${p.qty},${p.rate},${p.total},${p.balance}\n`; });
+        purchases.forEach(p => { csv += `"${p.date}","${p.supplier}","${p.phone || ''}","${p.item}",${p.qty},${p.rate},${p.total},${p.paid},${p.balance}\n`; });
       } else if (type === 'labour') {
         csv += 'Date,Team,Items,TotalWage,TotalCement\n';
         labourLogs.forEach(l => {
