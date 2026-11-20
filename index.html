@@ -313,10 +313,30 @@
       display: inline-flex;
       align-items: center;
       gap: 5px;
-      font-size: 0.84rem;
-      font-weight: 600;
+      font-size: 0.85rem;
+      font-weight: 700;
       cursor: pointer;
       user-select: none;
+    }
+
+    .dispatch-toggle-box {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: #fefce8;
+      border: 1.5px solid #facc15;
+      padding: 8px 12px;
+      border-radius: 8px;
+      cursor: pointer;
+      user-select: none;
+      font-weight: 700;
+      font-size: 0.88rem;
+      color: #854d0e;
+    }
+    .dispatch-toggle-box input[type="checkbox"] {
+      width: 16px;
+      height: 16px;
+      cursor: pointer;
     }
 
     .btn {
@@ -501,14 +521,14 @@
 
   <div class="container">
     
-    <!-- BLOCK 1: SALES WITH SAVE & SAVE+DISPATCH BUTTONS -->
+    <!-- BLOCK 1: SALES WITH DISPATCH CHECKBOX & CONDITIONAL LOAD/UNLOAD -->
     <section id="tab-sale" class="tab-content active">
       <div class="card card-sale-theme">
         <div class="card-title">
           <span id="saleFormTitle">📦 ਨਵੀਂ ਸੇਲ ਆਰਡਰ ਐਂਟਰੀ</span>
           <button type="button" id="cancelSaleEditBtn" class="btn btn-outline btn-sm" style="display:none;" onclick="cancelSaleEdit()">ਰੱਦ ਕਰੋ ✖</button>
         </div>
-        <form id="saleForm" onsubmit="saveSale(event, false)">
+        <form id="saleForm" onsubmit="saveSale(event)">
           <input type="hidden" id="editSaleId" value="">
           
           <div class="horizontal-row">
@@ -565,23 +585,30 @@
             </div>
           </div>
 
-          <!-- Optional Immediate Loading/Unloading Ticks for Save & Dispatch -->
-          <div style="margin-top:10px; background:#fefce8; border:1px solid #fde047; border-radius:8px; padding:8px 12px; display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:8px;">
-            <span style="font-size:0.84rem; font-weight:700; color:#854d0e;">ਜੇ ਨਾਲ ਦੀ ਨਾਲ ਡਿਸਪੈਚ ਕਰਨਾ ਹੈ ਤਾਂ ਲੇਬਰ ਚੁਣੋ:</span>
-            <div class="checkbox-row">
-              <label class="checkbox-label">
-                <input type="checkbox" id="saleInstantLoaded"> 📦 Loaded (ਲੋਡ ਹੋਇਆ)
-              </label>
-              <label class="checkbox-label">
-                <input type="checkbox" id="saleInstantUnloaded"> 🚛 Unloaded (ਅਨਲੋਡ ਹੋਇਆ)
-              </label>
-            </div>
+          <!-- Action Buttons + Dispatch Checkbox beside them -->
+          <div style="margin-top: 14px; display: flex; align-items: center; flex-wrap: wrap; gap: 10px;">
+            <button type="submit" id="saleSubmitBtn" class="btn btn-success">➕ ਸੇਲ ਸੇਵ ਕਰੋ</button>
+            <button type="button" class="btn btn-outline" onclick="exportToCSV('sales')">📥 Excel Export</button>
+            
+            <label class="dispatch-toggle-box">
+              <input type="checkbox" id="saleInstantDispatchCheck" onchange="toggleInstantDispatchOptions('saleInstantDispatchCheck', 'saleInstantLabourBox')">
+              <span>🚚 ਡਿਸਪੈਚ (ਨਾਲ ਦੀ ਨਾਲ ਭੇਜੋ)</span>
+            </label>
           </div>
 
-          <div style="margin-top: 14px; display: flex; flex-wrap: wrap; gap: 10px;">
-            <button type="submit" id="saleSubmitBtn" class="btn btn-success">➕ ਸੇਲ ਸੇਵ ਕਰੋ</button>
-            <button type="button" id="saleSaveDispatchBtn" class="btn btn-warning" onclick="saveSale(event, true)">🚚 ਸੇਵ & ਡਿਸਪੈਚ ਕਰੋ</button>
-            <button type="button" class="btn btn-outline" onclick="exportToCSV('sales')">📥 Excel Export</button>
+          <!-- Conditional Loading / Unloading Box (Appears ONLY when Dispatch Checkbox is ticked) -->
+          <div id="saleInstantLabourBox" style="display:none; margin-top:10px; background:#fffbeb; border:1.5px solid #fde047; border-radius:8px; padding:10px 14px;">
+            <div style="display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:8px;">
+              <span style="font-size:0.85rem; font-weight:700; color:#854d0e;">ਲੇਬਰ ਲੋਡਿੰਗ / ਅਨਲੋਡਿੰਗ ਚੁਣੋ:</span>
+              <div class="checkbox-row">
+                <label class="checkbox-label">
+                  <input type="checkbox" id="saleInstantLoaded"> 📦 Loaded (ਲੋਡ ਹੋਇਆ)
+                </label>
+                <label class="checkbox-label">
+                  <input type="checkbox" id="saleInstantUnloaded"> 🚛 Unloaded (ਅਨਲੋਡ ਹੋਇਆ)
+                </label>
+              </div>
+            </div>
           </div>
         </form>
       </div>
@@ -1428,7 +1455,7 @@
         </form>
       </div>
 
-      <!-- COLLAPSIBLE: IN-MODAL NEW ORDER FORM -->
+      <!-- COLLAPSIBLE: IN-MODAL NEW ORDER FORM WITH DISPATCH CHECKBOX -->
       <div id="cqNewOrderBox" style="display:none; border:1.5px dashed var(--primary); background:#f8fafc; border-radius:10px; margin-bottom:14px; padding:14px;">
         <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;">
           <div style="font-weight:800; color:var(--primary); font-size:0.98rem;">
@@ -1436,7 +1463,7 @@
           </div>
           <button type="button" class="btn btn-outline btn-sm" onclick="toggleClientSubPanel('cqNewOrderBox')">✖</button>
         </div>
-        <form id="inModalSaleForm" onsubmit="saveInModalSale(event, false)">
+        <form id="inModalSaleForm" onsubmit="saveInModalSale(event)">
           <div class="horizontal-row">
             <div class="form-group" style="flex:1;">
               <label>ਬੁਕਿੰਗ ਤਾਰੀਖ</label>
@@ -1479,17 +1506,22 @@
             </div>
           </div>
 
-          <div style="margin-top:8px; background:#fefce8; border:1px solid #fde047; border-radius:8px; padding:6px 10px; display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:6px;">
-            <span style="font-size:0.8rem; font-weight:700; color:#854d0e;">ਨਾਲ ਡਿਸਪੈਚ ਲਈ ਲੇਬਰ:</span>
-            <div class="checkbox-row">
-              <label class="checkbox-label"><input type="checkbox" id="imSaleInstantLoaded"> 📦 Loaded</label>
-              <label class="checkbox-label"><input type="checkbox" id="imSaleInstantUnloaded"> 🚛 Unloaded</label>
-            </div>
+          <div style="margin-top:12px; display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:8px;">
+            <label class="dispatch-toggle-box" style="padding:6px 10px; font-size:0.82rem;">
+              <input type="checkbox" id="imSaleInstantDispatchCheck" onchange="toggleInstantDispatchOptions('imSaleInstantDispatchCheck', 'imSaleInstantLabourBox')">
+              <span>🚚 ਡਿਸਪੈਚ (ਨਾਲ ਦੀ ਨਾਲ ਭੇਜੋ)</span>
+            </label>
+            <button type="submit" class="btn btn-primary btn-sm">💾 ਇਹ ਨਵਾਂ ਆਰਡਰ ਖਾਤੇ ਵਿੱਚ ਸੇਵ ਕਰੋ</button>
           </div>
 
-          <div style="margin-top:12px; display:flex; justify-content:flex-end; flex-wrap:wrap; gap:8px;">
-            <button type="submit" class="btn btn-primary btn-sm">💾 ਆਰਡਰ ਸੇਵ ਕਰੋ</button>
-            <button type="button" class="btn btn-warning btn-sm" onclick="saveInModalSale(event, true)">🚚 ਸੇਵ & ਡਿਸਪੈਚ ਕਰੋ</button>
+          <div id="imSaleInstantLabourBox" style="display:none; margin-top:8px; background:#fffbeb; border:1px solid #fde047; border-radius:8px; padding:6px 10px;">
+            <div style="display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:6px;">
+              <span style="font-size:0.8rem; font-weight:700; color:#854d0e;">ਲੇਬਰ ਚੁਣੋ:</span>
+              <div class="checkbox-row">
+                <label class="checkbox-label"><input type="checkbox" id="imSaleInstantLoaded"> 📦 Loaded</label>
+                <label class="checkbox-label"><input type="checkbox" id="imSaleInstantUnloaded"> 🚛 Unloaded</label>
+              </div>
+            </div>
           </div>
         </form>
       </div>
@@ -1731,6 +1763,17 @@
       const month = String(now.getMonth() + 1).padStart(2, '0');
       const day = String(now.getDate()).padStart(2, '0');
       return `${year}-${month}-${day}`;
+    }
+
+    function toggleInstantDispatchOptions(checkboxId, boxId) {
+      const isChecked = document.getElementById(checkboxId).checked;
+      const box = document.getElementById(boxId);
+      if (box) {
+        box.style.display = isChecked ? 'block' : 'none';
+        if (!isChecked) {
+          box.querySelectorAll('input[type="checkbox"]').forEach(cb => cb.checked = false);
+        }
+      }
     }
 
     function toggleClientSubPanel(panelId) {
@@ -2202,9 +2245,9 @@
       document.getElementById('imSaleBalance').value = Math.max(0, grandTotal - advance).toFixed(2);
     }
 
-    // SAVE IN-MODAL SALE (SUPPORTS SAVE ONLY OR SAVE + INSTANT DISPATCH)
-    function saveInModalSale(e, withImmediateDispatch = false) {
-      if (e) e.preventDefault();
+    // SAVE IN-MODAL SALE (CHECKS DISPATCH CHECKBOX)
+    function saveInModalSale(e) {
+      e.preventDefault();
       if (!currentQuickClient) return;
 
       const clientSales = sales.filter(s => (s.client || '').trim().toLowerCase() === currentQuickClient.trim().toLowerCase());
@@ -2243,6 +2286,7 @@
       let existingPayments = [];
       if (advance > 0) existingPayments = [{ amount: advance, date, note: 'ਐਡਵਾਂਸ (ਆਰਡਰ ਨਾਲ)' }];
 
+      const withImmediateDispatch = document.getElementById('imSaleInstantDispatchCheck').checked;
       let initialDispatches = [];
       if (withImmediateDispatch) {
         const loaded = document.getElementById('imSaleInstantLoaded').checked;
@@ -2758,19 +2802,15 @@
       `).join('');
     }
 
-    // SAVE SALE (SUPPORTS BOTH "SAVE" AND "SAVE & DISPATCH")
-    function saveSale(e, withImmediateDispatch = false) {
-      if (e) e.preventDefault();
+    // SAVE SALE (CHECKS DISPATCH CHECKBOX FOR IMMEDIATE DISPATCH & CONDITIONAL LABOUR)
+    function saveSale(e) {
+      e.preventDefault();
       const editId = document.getElementById('editSaleId').value;
       const client = document.getElementById('saleClient').value.trim();
       const phone = document.getElementById('salePhone').value.trim();
       const address = document.getElementById('saleAddress').value.trim();
       const date = document.getElementById('saleDate').value;
       const deliveryDate = document.getElementById('saleDeliveryDate').value;
-
-      if (!client || !date || !deliveryDate) {
-        return alert('ਕਿਰਪਾ ਕਰਕੇ ਗਾਹਕ ਦਾ ਨਾਮ ਅਤੇ ਤਾਰੀਖ ਭਰੋ!');
-      }
 
       const rows = document.querySelectorAll('#saleItemsContainer .item-entry-row');
       const itemsList = [];
@@ -2809,12 +2849,12 @@
         if (advance > 0) existingPayments = [{ amount: advance, date, note: 'ਐਡਵਾਂਸ (ਆਰਡਰ ਨਾਲ)' }];
       }
 
+      const withImmediateDispatch = document.getElementById('saleInstantDispatchCheck').checked;
       if (withImmediateDispatch) {
         const loaded = document.getElementById('saleInstantLoaded').checked;
         const unloaded = document.getElementById('saleInstantUnloaded').checked;
         const batchId = 'B_' + Date.now();
 
-        // Replace or add dispatches for all items in this order
         existingDispatches = [];
         itemsList.forEach(it => {
           const ratePerAction = getLoadingRateForItem(it.item);
@@ -2852,7 +2892,7 @@
 
       cancelSaleEdit();
       if (withImmediateDispatch) {
-        alert('🚚 ਸੇਲ ਆਰਡਰ ਸੇਵ ਹੋ ਗਿਆ ਹੈ ਅਤੇ ਸਾਰਾ ਮਾਲ ਨਾਲ ਦੀ ਨਾਲ ਡਿਸਪੈਚ ਵੀ ਹੋ ਗਿਆ ਹੈ!');
+        alert('🚚 ਸੇਲ ਸੇਵ ਹੋ ਗਈ ਹੈ ਅਤੇ ਸਾਰਾ ਮਾਲ ਨਾਲ ਦੀ ਨਾਲ ਡਿਸਪੈਚ ਵੀ ਹੋ ਗਿਆ ਹੈ!');
       } else {
         alert(editId ? 'ਸੇਲ ਅੱਪਡੇਟ ਹੋ ਗਈ ਹੈ!' : 'ਸੇਲ ਆਰਡਰ ਸੇਵ ਹੋ ਗਿਆ ਹੈ!');
       }
@@ -2893,8 +2933,10 @@
       document.getElementById('saleDeliveryDate').value = today;
       document.getElementById('saleAddress').value = '';
       document.getElementById('saleDiscount').value = '0';
+      document.getElementById('saleInstantDispatchCheck').checked = false;
       document.getElementById('saleInstantLoaded').checked = false;
       document.getElementById('saleInstantUnloaded').checked = false;
+      document.getElementById('saleInstantLabourBox').style.display = 'none';
       document.getElementById('saleFormTitle').textContent = '📦 ਨਵੀਂ ਸੇਲ ਆਰਡਰ ਐਂਟਰੀ';
       document.getElementById('saleSubmitBtn').textContent = '➕ ਸੇਲ ਸੇਵ ਕਰੋ';
       document.getElementById('cancelSaleEditBtn').style.display = 'none';
@@ -3028,8 +3070,10 @@
       document.getElementById('imSaleDeliveryDate').value = today;
       document.getElementById('imSaleDiscount').value = '0';
       document.getElementById('imSaleAdvance').value = '0';
+      document.getElementById('imSaleInstantDispatchCheck').checked = false;
       document.getElementById('imSaleInstantLoaded').checked = false;
       document.getElementById('imSaleInstantUnloaded').checked = false;
+      document.getElementById('imSaleInstantLabourBox').style.display = 'none';
       document.getElementById('retDate').value = today;
       document.getElementById('refundPayDate').value = today;
       document.getElementById('inModalSaleItemsContainer').innerHTML = '';
